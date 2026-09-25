@@ -286,12 +286,29 @@ body:not(.rol-admin) .solo-admin{display:none!important}
 /* Conecta el panel con el sistema del club (Google Apps Script) usando la URL de assets/config.js */
 (function () {
   var API = (window.CDSC_CONFIG || {}).API_URL || '';
-  function llamar(fn, args, ok, ko) {
+  // Funciones que solo leen datos: si falla la conexión se reintentan solas (hasta 3 veces).
+  // Las que registran algo (pagos, socios, etc.) NO se reintentan, para no duplicar registros.
+  var LECTURA = /^api(Datos|Panel|SocioDetalle|Caja|SimularPago|SitioDatos|SitioPendientes|Usuarios|Exportar|Comprobante(Html|Pdf)|ConsultaSocio)$/;
+  function llamar(fn, args, ok, ko, intento) {
+    intento = intento || 1;
     if (!/^https?:\/\//.test(API) || /PEGAR/.test(API)) { if (ko) ko(new Error('Falta configurar API_URL en assets/config.js')); return; }
-    fetch(API, { method: 'POST', body: JSON.stringify({ tipo: 'api', fn: fn, args: args }), redirect: 'follow' })
-      .then(function (r) { return r.json(); })
-      .then(function (r) { if (r.ok) { if (ok) ok(r.data); } else if (ko) ko(new Error(r.error)); })
-      .catch(function () { if (ko) ko(new Error('No se pudo conectar con el sistema del club. Revisa tu conexión e intenta nuevamente.')); });
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, 45000);
+    fetch(API, { method: 'POST', body: JSON.stringify({ tipo: 'api', fn: fn, args: args }), redirect: 'follow', signal: ctrl ? ctrl.signal : undefined })
+      .then(function (r) { return r.text(); })
+      .then(function (txt) {
+        clearTimeout(t);
+        var r;
+        try { r = JSON.parse(txt); } catch (e) { throw new Error('respuesta-no-json'); }
+        if (r.ok) { if (ok) ok(r.data); } else if (ko) ko(new Error(r.error));
+      })
+      .catch(function () {
+        clearTimeout(t);
+        if (LECTURA.test(fn) && intento < 3) { setTimeout(function () { llamar(fn, args, ok, ko, intento + 1); }, 800 * intento); return; }
+        if (ko) ko(new Error(LECTURA.test(fn)
+          ? 'No se pudo conectar con el sistema del club. Revisa tu conexión e intenta nuevamente.'
+          : 'No se recibió confirmación del sistema. Antes de reintentar, revisa si el registro quedó guardado (por ejemplo, en la ficha del socio).'));
+      });
   }
   function crear(ok, ko) {
     return new Proxy({}, { get: function (_, fn) {
