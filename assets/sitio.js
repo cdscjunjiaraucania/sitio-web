@@ -6,7 +6,7 @@
 
   var CFG = window.CDSC_CONFIG || {};
   var API = /^https:\/\/script\.google(usercontent)?\.com\//.test(CFG.API_URL || '') || /^http:\/\/localhost/.test(CFG.API_URL || '') ? CFG.API_URL : '';
-  var SISTEMA = CFG.SISTEMA_URL || API;
+  var SISTEMA = CFG.SISTEMA_URL || 'directiva/';
   var PAGINA = document.body.getAttribute('data-pagina') || 'inicio';
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
   var MES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
