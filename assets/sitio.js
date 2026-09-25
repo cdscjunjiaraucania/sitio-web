@@ -311,6 +311,8 @@
       (SISTEMA ? '<p style="text-align:center;margin-top:26px"><a class="enlace-flecha" href="' + esc(SISTEMA) + '" target="_blank" rel="noopener">' + ico('candado') + ' Acceso directiva y tesorería</a></p>' : '') + '</div></section>';
   };
   PAGINAS.socios.despues = function (d) {
+    // "Despierta" el servidor apenas se abre la página, para que la consulta responda más rápido.
+    if (API) { var despertado = false; var despertar = function () { if (!despertado) { despertado = true; fetch(API + '?api=ping').catch(function () { }); } }; despertar(); }
     var f = $('#f-socio');
     f.rut.addEventListener('input', function () { f.rut.value = formatoRut(f.rut.value); });
     f.onsubmit = function (e) {
