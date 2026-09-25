@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Acceso directiva · CDSC JUNJI Araucanía</title>
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <script src="../assets/config.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root{
+  --verde:#1e7b34; --verde-2:#2e9a47; --verde-bg:#e8f3ea; --verde-borde:#b9d8bf;
+  --azul:#1f63c6; --azul-bg:#e7effb; --cielo:#dcefef;
+  --ambar:#b26a00; --ambar-bg:#fff3dd;
+  --rojo:#b3261e; --rojo-bg:#fdecea;
+  --gris:#6b7280; --gris-bg:#eef0f2; --gris-2:#d1d5db;
+  --tinta:#17231b; --tinta-2:#4b5563; --tinta-3:#6b7280;
+  --fondo:#f4f6f4; --superficie:#ffffff; --borde:#e2e6e3;
+  --radio:12px; --sombra:0 1px 2px rgba(16,24,20,.06),0 4px 16px rgba(16,24,20,.05);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--fondo);color:var(--tinta);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{margin:0;line-height:1.2}
+h2{font-size:20px;font-weight:700}
+h3{font-size:15px;font-weight:650}
+a{color:var(--azul)}
+.oculto{display:none!important}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--tinta-3)}
+.small{font-size:12.5px}
+
+/* ── Barra superior ── */
+.top{position:sticky;top:0;z-index:20;background:var(--verde);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.top-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 16px}
+.top img{width:40px;height:40px;border-radius:50%;background:#fff}
+.top .marca{font-weight:700;font-size:15px;line-height:1.15}
+.top .marca small{display:block;font-weight:400;opacity:.85;font-size:12px}
+.top .usuario{margin-left:auto;text-align:right;font-size:12.5px;line-height:1.2}
+.top .usuario b{display:block;font-size:13.5px}
+.top .salir{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;padding:7px 12px;border-radius:8px;cursor:pointer}
+.top .salir:hover{background:rgba(255,255,255,.24)}
+.nav{background:#fff;border-bottom:1px solid var(--borde);position:sticky;top:60px;z-index:19}
+.nav-in{max-width:1240px;margin:0 auto;display:flex;gap:4px;padding:0 12px;overflow-x:auto;scrollbar-width:none}
+.nav button{background:none;border:0;padding:13px 14px;font-weight:600;color:var(--tinta-2);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.nav button:hover{color:var(--verde)}
+.nav button.activo{color:var(--verde);border-bottom-color:var(--verde)}
+main{max-width:1240px;margin:0 auto;padding:22px 16px 60px}
+.cab-vista{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.cab-vista p{margin:4px 0 0;color:var(--tinta-3)}
+
+/* ── Tarjetas ── */
+.card{background:var(--superficie);border:1px solid var(--borde);border-radius:var(--radio);box-shadow:var(--sombra);padding:18px}
+.card + .card{margin-top:16px}
+.grid > .card + .card{margin-top:0}
+.card-cab{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g-panel{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+@media (max-width:900px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3,.g-panel,.g2{grid-template-columns:1fr}}
+@media (max-width:480px){.g4{grid-template-columns:1fr 1fr}}
+
+.kpi{padding:16px 18px}
+.kpi .et{font-size:12.5px;color:var(--tinta-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.kpi .val{font-size:26px;font-weight:750;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .det{font-size:12.5px;color:var(--tinta-3);margin-top:2px}
+.kpi.alerta .val{color:var(--rojo)}
+.kpi.ok .val{color:var(--verde)}
+
+/* ── Botones y formularios ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:9px;border:1px solid var(--borde);background:#fff;padding:9px 14px;font-weight:600;cursor:pointer;text-decoration:none;color:var(--tinta);white-space:nowrap}
+.btn:hover{background:var(--gris-bg)}
+.btn.prim{background:var(--verde);border-color:var(--verde);color:#fff}
+.btn.prim:hover{background:#186a2c}
+.btn.azul{background:var(--azul);border-color:var(--azul);color:#fff}
+.btn.wa{background:#1fa855;border-color:#1fa855;color:#fff}
+.btn.wa:hover{background:#178f47}
+.btn.peligro{color:var(--rojo);border-color:#f0c3bf}
+.btn.peligro:hover{background:var(--rojo-bg)}
+.btn.chico{padding:6px 10px;font-size:12.5px;border-radius:7px}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+label.campo{display:block}
+label.campo > span{display:block;font-size:12.5px;font-weight:600;color:var(--tinta-2);margin-bottom:5px}
+.inp{width:100%;border:1px solid var(--gris-2);border-radius:9px;padding:9px 11px;background:#fff;outline:none;min-height:40px}
+.inp:focus{border-color:var(--verde);box-shadow:0 0 0 3px rgba(30,123,52,.15)}
+textarea.inp{min-height:70px;resize:vertical}
+.form{display:grid;gap:12px}
+.form.f2{grid-template-columns:1fr 1fr}
+.form.f3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:640px){.form.f2,.form.f3{grid-template-columns:1fr}}
+.full{grid-column:1/-1}
+.ayuda{font-size:12px;color:var(--tinta-3);margin-top:4px}
+.seg{display:inline-flex;background:var(--gris-bg);padding:3px;border-radius:10px;gap:2px}
+.seg button{border:0;background:none;padding:7px 14px;border-radius:8px;font-weight:600;color:var(--tinta-2);cursor:pointer}
+.seg button.activo{background:#fff;color:var(--tinta);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--borde);background:#fff;border-radius:99px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--tinta-2)}
+.chip.activo{background:var(--verde);border-color:var(--verde);color:#fff}
+.chip .n{opacity:.75;margin-left:4px}
+
+/* ── Tablas ── */
+.tabla-wrap{overflow-x:auto;border:1px solid var(--borde);border-radius:10px}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+table.t th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--tinta-3);background:#fafbfa;padding:10px 12px;border-bottom:1px solid var(--borde);white-space:nowrap}
+table.t td{padding:10px 12px;border-bottom:1px solid #eef0ee;vertical-align:middle}
+table.t tr:last-child td{border-bottom:0}
+table.t tr.clic{cursor:pointer}
+table.t tr.clic:hover td{background:#f6faf7}
+table.t .r{text-align:right;white-space:nowrap}
+table.t tr.anulado td{color:var(--tinta-3);text-decoration:line-through}
+
+/* ── Estados ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;font-size:12px;font-weight:650;white-space:nowrap}
+.badge::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor}
+.b-ok{background:var(--verde-bg);color:var(--verde)}
+.b-deuda{background:var(--rojo-bg);color:var(--rojo)}
+.b-parcial{background:var(--ambar-bg);color:var(--ambar)}
+.b-ret{background:var(--gris-bg);color:var(--gris)}
+.b-azul{background:var(--azul-bg);color:var(--azul)}
+
+/* ── Matriz de meses ── */
+.matriz{display:grid;grid-template-columns:48px repeat(12,minmax(0,1fr));gap:4px;align-items:stretch}
+.matriz .anio{font-weight:700;font-size:12.5px;color:var(--tinta-2);display:flex;align-items:center}
+.matriz .mcab{font-size:11px;text-transform:uppercase;color:var(--tinta-3);text-align:center;font-weight:600}
+.mes{border-radius:7px;min-height:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11.5px;font-weight:650;border:1px solid transparent;position:relative;font-variant-numeric:tabular-nums;padding:2px}
+.mes small{font-size:9.5px;font-weight:600;opacity:.85}
+.m-pagado{background:#c6e0b4;color:#1d4f1f;border-color:#a9cf93}
+.m-adelantado{background:#d6ecc8;color:#1d4f1f;border:1px dashed #74b057}
+.m-parcial{background:var(--ambar-bg);color:var(--ambar);border-color:#f2cf8f}
+.m-pendiente{background:var(--rojo-bg);color:var(--rojo);border-color:#f3c1bc}
+.m-nosocio{background:#acb9ca;color:#415062;opacity:.75}
+.m-exento{background:var(--azul-bg);color:var(--azul);border-color:#bcd0f1}
+.m-encurso{background:#fff;color:var(--tinta-2);border:1.5px dashed var(--verde-2)}
+.m-futuro{background:#fafbfa;color:#b0b6bd;border-color:#eceeed}
+.matriz.compacta .mes{min-height:30px;font-size:12px}
+.mes.sel{outline:3px solid var(--azul);outline-offset:1px}
+.mes.selec{cursor:pointer}
+.leyenda{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--tinta-2)}
+.leyenda i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-3px;margin-right:5px}
+@media (max-width:640px){
+  .matriz{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .matriz .mcab{display:none}
+  .matriz .anio{grid-column:1/-1;margin-top:6px}
+  .mes{min-height:44px}
+  .mes::before{content:attr(data-m);font-size:9.5px;text-transform:uppercase;opacity:.8}
+}
+
+/* ── Login / consulta ── */
+.portada{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:36px 16px;background:linear-gradient(180deg,var(--cielo) 0,var(--fondo) 340px)}
+.portada .logo{width:118px;height:118px;border-radius:50%;background:#fff;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+.portada h1{font-size:22px;text-align:center;margin:14px 0 4px;color:var(--verde)}
+.portada .lema{color:var(--tinta-2);text-align:center;margin-bottom:22px}
+.acceso{width:100%;max-width:440px}
+.acceso .seg{width:100%;margin-bottom:14px}
+.acceso .seg button{flex:1}
+.resultado-consulta{width:100%;max-width:880px;margin-top:20px}
+.hero-deuda{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.hero-deuda .monto{font-size:38px;font-weight:800;font-variant-numeric:tabular-nums}
+.hero-deuda .monto.ok{color:var(--verde)}
+.hero-deuda .monto.mal{color:var(--rojo)}
+
+/* ── Modal ── */
+.modal-fondo{position:fixed;inset:0;background:rgba(15,25,18,.45);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:28px 12px;overflow-y:auto}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:640px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:sube .16s ease-out}
+.modal.ancho{max-width:980px}
+.modal-cab{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--borde)}
+.modal-cuerpo{padding:18px 20px}
+.modal-pie{padding:14px 20px;border-top:1px solid var(--borde);display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.cerrar{border:0;background:var(--gris-bg);width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;flex:none}
+@keyframes sube{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+
+/* ── Avisos ── */
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:8px;align-items:center;width:calc(100% - 32px);max-width:520px;pointer-events:none}
+.toast{background:#17231b;color:#fff;padding:11px 16px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.25);font-weight:550;pointer-events:auto;animation:sube .16s ease-out}
+.toast.error{background:var(--rojo)}
+.toast.ok{background:var(--verde)}
+.cargando{position:fixed;top:0;left:0;height:3px;background:var(--verde-2);z-index:90;animation:carga 1.1s ease-in-out infinite;width:40%}
+@keyframes carga{0%{left:-40%}100%{left:100%}}
+.vacio{padding:26px;text-align:center;color:var(--tinta-3)}
+.aviso{padding:11px 14px;border-radius:10px;background:var(--ambar-bg);color:#6d4300;font-size:13px;margin-bottom:14px}
+.aviso.info{background:var(--azul-bg);color:#17448a}
+.aviso.ok{background:var(--verde-bg);color:#17512a}
+
+/* ── Buscador socio ── */
+.buscador{position:relative}
+.sugerencias{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:#fff;border:1px solid var(--borde);border-radius:10px;box-shadow:var(--sombra);max-height:300px;overflow-y:auto;z-index:30}
+.sugerencias div{padding:9px 12px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
+.sugerencias div:hover,.sugerencias div.foco{background:var(--verde-bg)}
+
+/* ── Asignación de pago ── */
+.asig{display:flex;flex-wrap:wrap;gap:6px}
+.asig span{background:var(--verde-bg);border:1px solid var(--verde-borde);color:#17512a;border-radius:8px;padding:5px 9px;font-size:12.5px;font-weight:600}
+.asig span.parcial{background:var(--ambar-bg);border-color:#f2cf8f;color:var(--ambar)}
+.resumen-linea{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--borde)}
+.resumen-linea:last-child{border-bottom:0}
+.check-meses{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px;max-height:260px;overflow-y:auto;padding:2px}
+.check-meses label{display:flex;gap:7px;align-items:center;border:1px solid var(--borde);border-radius:8px;padding:7px 9px;font-size:12.5px;cursor:pointer}
+.check-meses label.pend{border-color:#f3c1bc;background:#fff8f7}
+
+/* ── Gráficos ── */
+.barras{position:relative;display:flex;align-items:flex-end;gap:4px;height:190px;padding:8px 0 0;border-bottom:1px solid var(--gris-2)}
+.barras .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative;cursor:default}
+.barras .col .b{background:var(--verde-2);border-radius:4px 4px 0 0;min-height:2px;transition:filter .1s}
+.barras .col:hover .b{filter:brightness(.88)}
+.barras .col.actual .b{background:repeating-linear-gradient(135deg,#8fcf9f 0 4px,#b9e2c2 4px 8px)}
+.barras .guia{position:absolute;left:0;right:0;border-top:1px dashed #e3e6e4;pointer-events:none}
+.barras .guia span{position:absolute;right:100%;margin-right:4px;top:-8px;font-size:10.5px;color:var(--tinta-3)}
+.ejes{display:flex;gap:4px;margin-top:5px}
+.ejes span{flex:1;text-align:center;font-size:10.5px;color:var(--tinta-3);text-transform:capitalize}
+.graf-wrap{padding-left:34px}
+.tip{position:fixed;z-index:70;background:#17231b;color:#fff;font-size:12px;padding:8px 10px;border-radius:8px;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:240px}
+.tramo{display:grid;grid-template-columns:92px 1fr 34px;align-items:center;gap:10px;margin:9px 0;font-size:13px}
+.tramo .pista{background:var(--gris-bg);border-radius:6px;height:14px;overflow:hidden}
+.tramo .relleno{height:100%;border-radius:0 4px 4px 0}
+.lista-morosos .fila{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #eef0ee;gap:8px;cursor:pointer}
+.lista-morosos .fila:last-child{border-bottom:0}
+.lista-morosos .fila:hover{color:var(--verde)}
+
+@media print{.top,.nav,.btn,.btns{display:none!important}main{padding:0}.card{box-shadow:none}}
+body.rol-consulta .solo-edita{display:none!important}
+body:not(.rol-admin) .solo-admin{display:none!important}
+</style>
+
+</head>
+<body>
+  <!-- ═══════════ Portada: consulta de socios + ingreso directiva ═══════════ -->
+  <section id="portada" class="portada">
+    <img class="logo" src="../assets/img/logo.png" alt="Logo CDSC JUNJI Araucanía">
+    <h1>Club Deportivo, Social y Cultural<br>JUNJI Araucanía</h1>
+    <div class="lema">Registro de socias y socios · Control de cuotas</div>
+
+    <div class="acceso card">
+      <h2 style="text-align:center;margin:0 0 16px">Acceso directiva</h2>
+      <form id="f-consulta" class="form oculto" autocomplete="off">
+        <label class="campo"><span>Tu RUT</span>
+          <input class="inp" id="c-rut" name="rut" placeholder="12.345.678-9" inputmode="text" required>
+        </label>
+        <button class="btn prim" type="submit">Ver mi estado de cuenta</button>
+        <div class="ayuda">Ingresa tu RUT con dígito verificador. Solo verás tu propia información.</div>
+      </form>
+      <form id="f-login" class="form">
+        <label class="campo"><span>Usuario</span><input class="inp" name="usuario" autocomplete="username" required></label>
+        <label class="campo"><span>Clave</span><input class="inp" name="clave" type="password" autocomplete="current-password" required></label>
+        <button class="btn prim" type="submit">Ingresar</button>
+      </form>
+    </div>
+    <div id="resultado-consulta" class="resultado-consulta"></div>
+    <p style="margin-top:18px;text-align:center"><a href="../">← Volver al sitio</a> · <a href="../socios.html#consulta">¿Eres socio? Consulta tu cuota</a></p>
+  </section>
+
+  <!-- ═══════════ Aplicación interna ═══════════ -->
+  <section id="app" class="oculto">
+    <header class="top">
+      <div class="top-in">
+        <img src="../assets/img/logo.png" alt="">
+        <div class="marca">CDSC JUNJI Araucanía<small>Socios y cuotas</small></div>
+        <div class="usuario"><b id="u-nombre"></b><span id="u-rol"></span></div>
+        <button class="salir" id="btn-salir" type="button">Salir</button>
+      </div>
+    </header>
+    <nav class="nav"><div class="nav-in">
+      <button data-vista="panel" class="activo">Panel</button>
+      <button data-vista="socios">Socios</button>
+      <button data-vista="pago" class="solo-edita">Registrar pago</button>
+      <button data-vista="caja">Caja</button>
+      <button data-vista="reportes">Reportes y avisos</button>
+      <button data-vista="sitio">Sitio web <span class="nav-badge oculto" id="badge-sitio"></span></button>
+      <button data-vista="config">Configuración</button>
+    </div></nav>
+    <main id="vista"></main>
+  </section>
+
+  <div id="modal-raiz"></div>
+  <div id="toast"></div>
+  <div id="cargando" class="cargando oculto"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script>
+/* Conecta el panel con el sistema del club (Google Apps Script) usando la URL de assets/config.js */
+(function () {
+  var API = (window.CDSC_CONFIG || {}).API_URL || '';
+  function llamar(fn, args, ok, ko) {
+    if (!/^https?:\/\//.test(API) || /PEGAR/.test(API)) { if (ko) ko(new Error('Falta configurar API_URL en assets/config.js')); return; }
+    fetch(API, { method: 'POST', body: JSON.stringify({ tipo: 'api', fn: fn, args: args }), redirect: 'follow' })
+      .then(function (r) { return r.json(); })
+      .then(function (r) { if (r.ok) { if (ok) ok(r.data); } else if (ko) ko(new Error(r.error)); })
+      .catch(function () { if (ko) ko(new Error('No se pudo conectar con el sistema del club. Revisa tu conexión e intenta nuevamente.')); });
+  }
+  function crear(ok, ko) {
+    return new Proxy({}, { get: function (_, fn) {
+      if (fn === 'withSuccessHandler') return function (f) { return crear(f, ko); };
+      if (fn === 'withFailureHandler') return function (f) { return crear(ok, f); };
+      return function () { llamar(fn, Array.prototype.slice.call(arguments), ok, ko); };
+    } });
+  }
+  window.google = { script: { run: crear(null, null) } };
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+
+  // ════════════════ Utilidades ════════════════
+  var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  var MES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  var S = { token: null, datos: null, vista: 'panel', filtro: 'todos', busqueda: '', pagoSocio: null, enviados: {} };
+
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function miles(n) { n = Math.round(Number(n) || 0); return (n < 0 ? '-' : '') + String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function pesos(n) { n = Math.round(Number(n) || 0); return (n < 0 ? '-$' : '$') + miles(Math.abs(n)); }
+  function fechaCL(f) { return f ? String(f).slice(0, 10).split('-').reverse().join('-') : ''; }
+  function nomP(p) { return MESES[Number(p.slice(5, 7)) - 1] + ' ' + p.slice(0, 4); }
+  function cortoP(p) { return MES_C[Number(p.slice(5, 7)) - 1] + ' ' + p.slice(0, 4); }
+  function sumarMes(p, n) { var a = +p.slice(0, 4), m = +p.slice(5, 7) + n; a += Math.floor((m - 1) / 12); m = ((m - 1) % 12 + 12) % 12 + 1; return a + '-' + ('0' + m).slice(-2); }
+  function capital(t) { return String(t || '').toLowerCase().replace(/(^|\s)\S/g, function (x) { return x.toUpperCase(); }); }
+  function primerNombre(s) { return capital(String(s.Nombres || s.nombre || '').split(' ')[0]); }
+  function normRut(r) { return String(r || '').replace(/[^0-9kK]/g, '').toUpperCase(); }
+  function formatoRut(v) {
+    var r = normRut(v);
+    if (r.length < 2) return r;
+    return r.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '-' + r.slice(-1);
+  }
+  function sinTildes(t) { return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function guardar(k, v) { try { if (v == null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) { } }
+  function leer(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  var puede = function () { return S.datos && S.datos.sesion.rol !== 'consulta'; };
+
+  /** Agrupa meses consecutivos: "ene a ago 2026, mar 2025" */
+  function listaMeses(periodos) {
+    if (!periodos || !periodos.length) return '';
+    var ps = periodos.slice().sort(), grupos = [], ini = ps[0], ant = ps[0];
+    for (var i = 1; i <= ps.length; i++) {
+      var p = ps[i];
+      if (p && p === sumarMes(ant, 1) && p.slice(0, 4) === ant.slice(0, 4)) { ant = p; continue; }
+      grupos.push(ini === ant ? cortoP(ini) : MES_C[+ini.slice(5, 7) - 1] + ' a ' + cortoP(ant));
+      ini = ant = p;
+    }
+    return grupos.join(', ');
+  }
+
+  // ════════════════ Comunicación con el servidor ════════════════
+  var pendientes = 0;
+  function carga(d) { pendientes += d; $('#cargando').classList.toggle('oculto', pendientes <= 0); }
+  function api(fn) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return new Promise(function (resolve, reject) {
+      carga(1);
+      google.script.run
+        .withSuccessHandler(function (r) { carga(-1); resolve(r); })
+        .withFailureHandler(function (e) {
+          carga(-1);
+          var msg = String((e && e.message) || e).replace(/^(Error|Exception):\s*/, '');
+          if (msg.indexOf('SESION:') >= 0) {
+            msg = msg.replace(/^.*SESION:\s*/, '');
+            salir(true);
+          }
+          reject(new Error(msg));
+        })[fn].apply(null, args);
+    });
+  }
+  function fallo(e) { toast(e.message || String(e), 'error'); }
+
+  function toast(msg, tipo) {
+    var d = document.createElement('div');
+    d.className = 'toast ' + (tipo || '');
+    d.textContent = msg;
+    $('#toast').appendChild(d);
+    setTimeout(function () { d.remove(); }, tipo === 'error' ? 6000 : 3500);
+  }
+
+  // ════════════════ Modales ════════════════
+  function modal(titulo, cuerpo, pie, opciones) {
+    opciones = opciones || {};
+    var raiz = $('#modal-raiz');
+    var fondo = document.createElement('div');
+    fondo.className = 'modal-fondo';
+    fondo.innerHTML = '<div class="modal ' + (opciones.ancho ? 'ancho' : '') + '" role="dialog" aria-modal="true">' +
+      '<div class="modal-cab"><div>' + titulo + '</div><button class="cerrar" type="button" aria-label="Cerrar">×</button></div>' +
+      '<div class="modal-cuerpo">' + cuerpo + '</div>' + (pie ? '<div class="modal-pie">' + pie + '</div>' : '') + '</div>';
+    raiz.appendChild(fondo);
+    document.body.style.overflow = 'hidden';
+    var cerrar = function () { fondo.remove(); if (!raiz.children.length) document.body.style.overflow = ''; };
+    fondo.querySelector('.cerrar').onclick = cerrar;
+    fondo.addEventListener('mousedown', function (e) { if (e.target === fondo) cerrar(); });
+    fondo.cerrar = cerrar;
+    return fondo;
+  }
+  function cerrarModales() { $$('.modal-fondo').forEach(function (m) { m.cerrar(); }); }
+
+  function confirmar(titulo, texto, boton, peligro) {
+    return new Promise(function (ok) {
+      var m = modal('<h3>' + titulo + '</h3>', '<p style="margin:0">' + texto + '</p>',
+        '<button class="btn" data-no>Cancelar</button><button class="btn ' + (peligro ? 'peligro' : 'prim') + '" data-si>' + boton + '</button>');
+      $('[data-no]', m).onclick = function () { m.cerrar(); ok(false); };
+      $('[data-si]', m).onclick = function () { m.cerrar(); ok(true); };
+    });
+  }
+  function pedirTexto(titulo, etiqueta, boton) {
+    return new Promise(function (ok) {
+      var m = modal('<h3>' + titulo + '</h3>', '<label class="campo"><span>' + etiqueta + '</span><textarea class="inp" id="pt-txt"></textarea></label>',
+        '<button class="btn" data-no>Cancelar</button><button class="btn peligro" data-si>' + boton + '</button>');
+      $('#pt-txt', m).focus();
+      $('[data-no]', m).onclick = function () { m.cerrar(); ok(null); };
+      $('[data-si]', m).onclick = function () {
+        var v = $('#pt-txt', m).value.trim();
+        if (!v) { toast('Debes indicar el motivo.', 'error'); return; }
+        m.cerrar(); ok(v);
+      };
+    });
+  }
+
+  // ════════════════ Matriz de meses ════════════════
+  var ETIQ = { pagado: 'Pagado', adelantado: 'Pagado por adelantado', parcial: 'Abono parcial', pendiente: 'Impago', nosocio: 'Aún no era socio / retirado', exento: 'Exento', encurso: 'Mes en curso (aún no vence)', futuro: 'Mes futuro' };
+  function contenidoMes(m) {
+    switch (m.estado) {
+      case 'pagado': return m.pagado ? miles(m.pagado) : '✓';
+      case 'adelantado': return miles(m.pagado) + '<small>adelant.</small>';
+      case 'parcial': return miles(m.pagado) + '<small>de ' + miles(m.cuota) + '</small>';
+      case 'pendiente': return 'Debe<small>' + miles(m.saldo) + '</small>';
+      case 'nosocio': return '—';
+      case 'exento': return 'Exento';
+      case 'encurso': return '<small>en curso</small>';
+      default: return '';
+    }
+  }
+  var COMPACTO = { pagado: '✓', adelantado: '✓', parcial: '½', pendiente: '✕', nosocio: '—', exento: 'E', encurso: '·', futuro: '' };
+  function matrizHTML(meses, opc) {
+    opc = opc || {};
+    var anios = {};
+    meses.forEach(function (m) { (anios[m.p.slice(0, 4)] = anios[m.p.slice(0, 4)] || []).push(m); });
+    var h = '<div class="matriz' + (opc.compacta ? ' compacta' : '') + '"><div></div>' + MES_C.map(function (m) { return '<div class="mcab">' + m + '</div>'; }).join('');
+    Object.keys(anios).sort().forEach(function (a) {
+      h += '<div class="anio">' + a + '</div>';
+      anios[a].forEach(function (m) {
+        var t = nomP(m.p) + ': ' + ETIQ[m.estado] + (m.pagado ? ' · pagado ' + pesos(m.pagado) : '') + (m.saldo ? ' · debe ' + pesos(m.saldo) : '') + (m.motivo ? ' · ' + m.motivo : '');
+        h += '<div class="mes m-' + m.estado + '" data-m="' + MES_C[+m.p.slice(5, 7) - 1] + '" data-p="' + m.p + '" title="' + esc(t) + '">' + (opc.compacta ? COMPACTO[m.estado] : contenidoMes(m)) + '</div>';
+      });
+    });
+    h += '</div>';
+    if (opc.leyenda !== false) {
+      h += '<div class="leyenda">' + [['pagado', 'Pagado'], ['parcial', 'Abono parcial'], ['pendiente', 'Impago'], ['exento', 'Exento'], ['nosocio', 'No era socio'], ['encurso', 'Mes en curso'], ['adelantado', 'Adelantado']]
+        .map(function (x) { return '<span><i class="m-' + x[0] + '"></i>' + x[1] + '</span>'; }).join('') + '</div>';
+    }
+    return h;
+  }
+
+  function badgeSocio(s) {
+    if (s.Estado === 'Retirado') return '<span class="badge b-ret">Retirado</span>';
+    if (s.deuda > 0) return '<span class="badge b-deuda">Con deuda</span>';
+    return '<span class="badge b-ok">Al día</span>';
+  }
+
+  // ════════════════ WhatsApp ════════════════
+  function waLink(num, texto) { return 'https://wa.me/' + num + '?text=' + encodeURIComponent(texto); }
+  function msgDeuda(s) {
+    var c = (S.datos && S.datos.config) || {};
+    return 'Hola ' + primerNombre(s) + ', te saludamos desde el ' + (c.NOMBRE_CLUB || 'Club Deportivo JUNJI Araucanía') + '. ' +
+      'Según nuestros registros, al ' + fechaCL(S.datos.hoy) + ' mantienes ' + s.mesesAdeudados + ' cuota' + (s.mesesAdeudados === 1 ? '' : 's') + ' pendiente' + (s.mesesAdeudados === 1 ? '' : 's') +
+      ' (' + listaMeses(s.periodosAdeudados) + '). Total adeudado: ' + pesos(s.deuda) + '. ' +
+      'Puedes regularizar con ' + (c.TESORERO_NOMBRE || 'tesorería') + ', ' + (c.TESORERO_CARGO || '').toLowerCase() + ' del club. ¡Gracias por ser parte del club!';
+  }
+  function msgComprobante(r) {
+    return 'Hola ' + capital(r.socio.split(' ')[0]) + ', confirmamos tu pago de ' + pesos(r.total) + ' (comprobante N° ' + r.folio + ') correspondiente a: ' +
+      r.asignacion.map(function (a) { return nomP(a.p) + (a.completo ? '' : ' (abono ' + pesos(a.monto) + ')'); }).join(', ') +
+      '. Deuda pendiente: ' + pesos(r.deudaDespues) + '. ¡Gracias! — Tesorería ' + (S.datos.config.NOMBRE_CLUB || '');
+  }
+
+  // ════════════════ Comprobantes ════════════════
+  function descargarPDF(folio) {
+    api('apiComprobantePdf', S.token, folio).then(function (r) {
+      var bin = atob(r.base64), arr = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      var url = URL.createObjectURL(new Blob([arr], { type: 'application/pdf' }));
+      var a = document.createElement('a');
+      a.href = url; a.download = r.nombre;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
+    }).catch(fallo);
+  }
+  function imprimirComprobante(folio) {
+    var w = window.open('', '_blank');
+    if (!w) { toast('El navegador bloqueó la ventana. Permite ventanas emergentes.', 'error'); return; }
+    w.document.write('<p style="font-family:sans-serif;padding:20px">Generando comprobante…</p>');
+    api('apiComprobanteHtml', S.token, folio).then(function (html) {
+      w.document.open();
+      w.document.write(html + '<script>setTimeout(function(){window.print()},500)<\/script>');
+      w.document.close();
+    }).catch(function (e) { w.close(); fallo(e); });
+  }
+
+  // ════════════════ Portada ════════════════
+  $$('[data-acceso]').forEach(function (b) {
+    b.onclick = function () {
+      $$('[data-acceso]').forEach(function (x) { x.classList.toggle('activo', x === b); });
+      $('#f-consulta').classList.toggle('oculto', b.dataset.acceso !== 'consulta');
+      $('#f-login').classList.toggle('oculto', b.dataset.acceso !== 'login');
+      $('#resultado-consulta').innerHTML = '';
+    };
+  });
+  $('#c-rut').addEventListener('input', function (e) { e.target.value = formatoRut(e.target.value); });
+  $('#f-consulta').onsubmit = function (e) {
+    e.preventDefault();
+    var rut = $('#c-rut').value;
+    api('apiConsultaSocio', rut).then(renderConsulta).catch(function (err) {
+      $('#resultado-consulta').innerHTML = '<div class="card"><div class="aviso" style="margin:0">' + esc(err.message) + '</div></div>';
+    });
+  };
+  function renderConsulta(r) {
+    var ok = r.deuda === 0;
+    $('#resultado-consulta').innerHTML =
+      '<div class="card"><div class="hero-deuda"><div><h2>' + esc(capital(r.nombre)) + '</h2>' +
+      '<div class="muted">RUT ' + esc(r.RUT) + ' · ' + esc(r.Estado) + '</div></div>' +
+      '<div style="text-align:right"><div class="muted small">' + (ok ? 'Estás al día' : 'Deuda al ' + fechaCL(r.hoy)) + '</div>' +
+      '<div class="monto ' + (ok ? 'ok' : 'mal') + '">' + pesos(r.deuda) + '</div>' +
+      (ok ? '' : '<div class="small muted">' + r.mesesAdeudados + ' cuota(s): ' + esc(listaMeses(r.periodosAdeudados)) + '</div>') + '</div></div></div>' +
+      '<div class="card"><div class="card-cab"><h3>Mis cuotas</h3><span class="muted small">Cuota mensual: ' + pesos(r.cuotaActual) + '</span></div>' + matrizHTML(r.meses) +
+      '<div class="aviso info" style="margin:14px 0 0">Para pagar o aclarar tu estado, contacta a ' + esc(r.tesorero) + ', ' + esc(String(r.tesoreroCargo || '').toLowerCase()) + ' del club al correo clubdeportivojunjiaraucania@gmail.com. ' +
+      'Solo cuentan como deuda los meses ya terminados.</div></div>';
+    $('#resultado-consulta').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  $('#f-login').onsubmit = function (e) {
+    e.preventDefault();
+    var f = e.target;
+    api('apiLogin', f.usuario.value, f.clave.value).then(function (ses) {
+      S.token = ses.token;
+      S.clavePorDefecto = ses.clavePorDefecto;
+      guardar('club_token', ses.token);
+      f.clave.value = '';
+      entrar();
+    }).catch(fallo);
+  };
+
+  function entrar() {
+    return api('apiDatos', S.token).then(function (d) {
+      S.datos = d;
+      document.body.className = 'rol-' + d.sesion.rol;
+      $('#u-nombre').textContent = d.sesion.nombre;
+      $('#u-rol').textContent = d.sesion.rolNombre;
+      if (window.CLUB_SITIO) window.CLUB_SITIO.alEntrar();
+      $('#portada').classList.add('oculto');
+      $('#app').classList.remove('oculto');
+      irA(S.vista || 'panel');
+    });
+  }
+  function salir(silencioso) {
+    if (S.token && !silencioso) api('apiLogout', S.token).catch(function () { });
+    S.token = null; S.datos = null;
+    guardar('club_token', null);
+    cerrarModales();
+    $('#app').classList.add('oculto');
+    $('#portada').classList.remove('oculto');
+    document.body.className = '';
+  }
+  $('#btn-salir').onclick = function () { salir(false); };
+
+  function recargar() {
+    return api('apiDatos', S.token).then(function (d) { S.datos = d; });
+  }
+
+  // ════════════════ Navegación ════════════════
+  $$('.nav button').forEach(function (b) { b.onclick = function () { irA(b.dataset.vista); }; });
+  function irA(vista, opc) {
+    S.vista = vista;
+    $$('.nav button').forEach(function (b) { b.classList.toggle('activo', b.dataset.vista === vista); });
+    var v = $('#vista');
+    v.innerHTML = '<div class="vacio">Cargando…</div>';
+    window.scrollTo(0, 0);
+    VISTAS[vista](v, opc || {});
+  }
+
+  // ════════════════ PANEL ════════════════
+  function vistaPanel(v) {
+    api('apiPanel', S.token).then(function (p) {
+      var pct = p.activos ? Math.round(p.alDia * 100 / p.activos) : 0;
+      var h = '<div class="cab-vista"><div><h2>Panel del club</h2><p>Situación al ' + fechaCL(p.hoy) + '. La deuda considera solo meses cerrados (hasta ' + nomP(sumarMes(p.actual, -1)) + ').</p></div></div>';
+      if (S.clavePorDefecto) h += '<div class="aviso">Estás usando la clave provisoria. Cámbiala en <a href="#" id="ir-clave">Configuración › Mi clave</a>.</div>';
+      h += '<div class="grid g4">' +
+        kpi('Socios activos', p.activos, p.retirados ? p.retirados + ' retirado(s)' : 'Sin retiros') +
+        kpi('Al día', p.alDia, pct + '% de los activos', 'ok') +
+        kpi('Con deuda', p.morosos, (100 - pct) + '% de los activos', p.morosos ? 'alerta' : '') +
+        kpi('Deuda total', pesos(p.deudaTotal), 'Cuotas impagas de socios activos', p.deudaTotal ? 'alerta' : '') + '</div>';
+      h += '<div class="grid g4" style="margin-top:16px">' +
+        kpi('Cuotas cobradas ' + p.anio, pesos(p.recaudadoAnio), 'Según fecha de pago') +
+        kpi('Saldo de caja', pesos(p.saldoCaja), 'Incluye cuotas y movimientos') +
+        kpi('Ingresos ' + p.anio, pesos(p.ingresosAnio), 'Cuotas + otros ingresos') +
+        kpi('Gastos ' + p.anio, pesos(p.egresosAnio), 'Egresos registrados en caja') + '</div>';
+      h += '<div class="grid g-panel" style="margin-top:16px">' +
+        '<div class="card"><div class="card-cab"><div><h3>Socios que pagaron cada mes</h3><div class="muted small">Porcentaje de socios con la cuota del mes pagada completa</div></div></div>' + graficoCumplimiento(p.cumplimiento, p.actual) + '</div>' +
+        '<div class="card"><h3 style="margin-bottom:6px">Antigüedad de la deuda</h3><div class="muted small" style="margin-bottom:6px">Socios activos por meses adeudados</div>' + graficoTramos(p.tramos, p.activos) + '</div></div>';
+      h += '<div class="card" style="margin-top:16px"><div class="card-cab"><h3>Mayores deudas</h3><button class="btn chico" id="ver-todos">Ver todos los socios con deuda</button></div>' +
+        (p.topMorosos.length ? '<div class="lista-morosos">' + p.topMorosos.map(function (m) {
+          return '<div class="fila" data-id="' + m.ID + '"><span>' + esc(capital(m.nombre)) + '</span><span class="num"><span class="muted small">' + m.meses + ' mes(es)</span> &nbsp;<b>' + pesos(m.deuda) + '</b></span></div>';
+        }).join('') + '</div>' : '<div class="vacio">Todos los socios están al día.</div>') + '</div>';
+      v.innerHTML = h;
+      $$('.lista-morosos .fila', v).forEach(function (f) { f.onclick = function () { abrirSocio(+f.dataset.id); }; });
+      $('#ver-todos', v).onclick = function () { S.filtro = 'deuda'; irA('socios'); };
+      var ic = $('#ir-clave', v); if (ic) ic.onclick = function (e) { e.preventDefault(); irA('config'); };
+      activarTips(v);
+    }).catch(fallo);
+  }
+  function kpi(et, val, det, cls) {
+    return '<div class="card kpi ' + (cls || '') + '"><div class="et">' + et + '</div><div class="val">' + val + '</div><div class="det">' + det + '</div></div>';
+  }
+  function graficoCumplimiento(datos, actual) {
+    if (!datos.length) return '<div class="vacio">Sin datos</div>';
+    var guias = [0, 50, 100].map(function (g) { return '<div class="guia" style="bottom:' + g + '%"><span>' + g + '%</span></div>'; }).join('');
+    var cols = datos.map(function (d) {
+      var pct = d.socios ? Math.round(d.pagaron * 100 / d.socios) : 0;
+      var tip = '<b>' + capital(nomP(d.p)) + '</b>' + (d.p === actual ? ' (en curso)' : '') + '<br>' + d.pagaron + ' de ' + d.socios + ' socios pagaron (' + pct + '%)<br>Recaudado ' + pesos(d.pagado) + ' de ' + pesos(d.esperado);
+      return '<div class="col ' + (d.p === actual ? 'actual' : '') + '" data-tip="' + esc(tip) + '"><div class="b" style="height:' + pct + '%"></div></div>';
+    }).join('');
+    var ejes = datos.map(function (d, i) {
+      var m = +d.p.slice(5, 7);
+      return '<span>' + (m === 1 || i === 0 ? MES_C[m - 1] + " '" + d.p.slice(2, 4) : (datos.length > 14 && m % 2 === 0 ? '' : MES_C[m - 1])) + '</span>';
+    }).join('');
+    return '<div class="graf-wrap"><div class="barras">' + guias + cols + '</div><div class="ejes">' + ejes + '</div></div>' +
+      '<div class="leyenda"><span><i style="background:repeating-linear-gradient(135deg,#8fcf9f 0 4px,#b9e2c2 4px 8px)"></i>Mes en curso (aún no vence)</span></div>';
+  }
+  function graficoTramos(t, total) {
+    var filas = [['0', 'Al día', '#2e9a47'], ['1-3', '1 a 3 meses', '#e3a53b'], ['4-6', '4 a 6 meses', '#d9822b'], ['7-12', '7 a 12 meses', '#c9523f'], ['13+', 'Más de 12', '#9e1f17']];
+    return filas.map(function (f) {
+      var n = t[f[0]] || 0, w = total ? n * 100 / total : 0;
+      return '<div class="tramo" data-tip="' + esc('<b>' + f[1] + '</b><br>' + n + ' socio(s) · ' + Math.round(w) + '%') + '"><span>' + f[1] + '</span><div class="pista"><div class="relleno" style="width:' + w + '%;background:' + f[2] + '"></div></div><b class="num" style="text-align:right">' + n + '</b></div>';
+    }).join('');
+  }
+  var tipEl = null;
+  function activarTips(raiz) {
+    $$('[data-tip]', raiz).forEach(function (el) {
+      el.addEventListener('mousemove', function (e) {
+        if (!tipEl) { tipEl = document.createElement('div'); tipEl.className = 'tip'; document.body.appendChild(tipEl); }
+        tipEl.innerHTML = el.dataset.tip;
+        tipEl.style.display = 'block';
+        var x = Math.min(e.clientX + 14, window.innerWidth - tipEl.offsetWidth - 8);
+        tipEl.style.left = x + 'px';
+        tipEl.style.top = (e.clientY - tipEl.offsetHeight - 12) + 'px';
+      });
+      el.addEventListener('mouseleave', function () { if (tipEl) tipEl.style.display = 'none'; });
+    });
+  }
+
+  // ════════════════ SOCIOS ════════════════
+  function vistaSocios(v) {
+    var d = S.datos;
+    var cuenta = { todos: d.socios.length, dia: 0, deuda: 0, seis: 0, ret: 0 };
+    d.socios.forEach(function (s) {
+      if (s.Estado === 'Retirado') { cuenta.ret++; return; }
+      if (s.deuda > 0) cuenta.deuda++; else cuenta.dia++;
+      if (s.mesesAdeudados >= 6) cuenta.seis++;
+    });
+    v.innerHTML = '<div class="cab-vista"><div><h2>Socios</h2><p>' + d.socios.length + ' registrados · cuota vigente ' + pesos(d.cuotaActual) + ' mensual</p></div>' +
+      '<div class="btns"><button class="btn prim solo-edita" id="nuevo-socio">+ Incorporar socio</button></div></div>' +
+      '<div class="card"><div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px">' +
+      '<input class="inp" id="buscar" placeholder="Buscar por nombre o RUT…" style="max-width:340px" value="' + esc(S.busqueda) + '">' +
+      '<div class="chips">' + [['todos', 'Todos'], ['dia', 'Al día'], ['deuda', 'Con deuda'], ['seis', '6+ meses'], ['ret', 'Retirados']].map(function (c) {
+        return '<button class="chip ' + (S.filtro === c[0] ? 'activo' : '') + '" data-f="' + c[0] + '">' + c[1] + '<span class="n">' + cuenta[c[0]] + '</span></button>';
+      }).join('') + '</div></div><div class="tabla-wrap"><table class="t"><thead><tr><th>N°</th><th>Socio</th><th>Ingreso</th><th>Estado</th><th class="r">Meses adeudados</th><th class="r">Deuda</th><th>Último pago</th></tr></thead><tbody id="tb-socios"></tbody></table></div></div>';
+    $('#nuevo-socio', v).onclick = function () { formSocio(); };
+    $('#buscar', v).oninput = function (e) { S.busqueda = e.target.value; filasSocios(); };
+    $$('[data-f]', v).forEach(function (b) {
+      b.onclick = function () { S.filtro = b.dataset.f; $$('[data-f]', v).forEach(function (x) { x.classList.toggle('activo', x === b); }); filasSocios(); };
+    });
+    filasSocios();
+  }
+  function filasSocios() {
+    var q = sinTildes(S.busqueda.trim()), qr = normRut(S.busqueda);
+    var lista = S.datos.socios.filter(function (s) {
+      var ret = s.Estado === 'Retirado';
+      if (S.filtro === 'ret' && !ret) return false;
+      if (S.filtro !== 'ret' && S.filtro !== 'todos' && ret) return false;
+      if (S.filtro === 'dia' && s.deuda > 0) return false;
+      if (S.filtro === 'deuda' && s.deuda === 0) return false;
+      if (S.filtro === 'seis' && s.mesesAdeudados < 6) return false;
+      if (!q) return true;
+      return sinTildes(s.nombre + ' ' + s.PrimerApellido + ' ' + s.SegundoApellido).indexOf(q) >= 0 || (qr.length >= 3 && normRut(s.RUT).indexOf(qr) >= 0);
+    });
+    if (S.filtro === 'deuda' || S.filtro === 'seis') lista.sort(function (a, b) { return b.deuda - a.deuda; });
+    $('#tb-socios').innerHTML = lista.length ? lista.map(function (s) {
+      return '<tr class="clic" data-id="' + s.ID + '"><td class="muted num">' + s.ID + '</td><td><b>' + esc(s.PrimerApellido + ' ' + s.SegundoApellido) + '</b>, ' + esc(capital(s.Nombres)) +
+        '<div class="muted small">' + esc(s.RUT) + '</div></td><td class="num">' + fechaCL(s.FechaIngreso) + '</td><td>' + badgeSocio(s) + '</td>' +
+        '<td class="r num">' + (s.mesesAdeudados || '—') + '</td><td class="r num"><b>' + (s.deuda ? pesos(s.deuda) : '—') + '</b></td><td class="num muted">' + (s.ultimoPago ? fechaCL(s.ultimoPago) : '—') + '</td></tr>';
+    }).join('') : '<tr><td colspan="7"><div class="vacio">No hay socios que coincidan.</div></td></tr>';
+    $$('#tb-socios tr[data-id]').forEach(function (tr) { tr.onclick = function () { abrirSocio(+tr.dataset.id); }; });
+  }
+
+  function abrirSocio(id) {
+    api('apiSocioDetalle', S.token, id).then(function (r) {
+      cerrarModales();
+      var s = r.socio, ret = s.Estado === 'Retirado';
+      var cab = '<h2 style="font-size:19px">' + esc(capital(s.nombre)) + ' ' + badgeSocio(s) + '</h2><div class="muted small" style="margin-top:4px">N° ' + s.ID + ' · RUT ' + esc(s.RUT) + ' · ' + esc(s.Telefono || 'sin teléfono') +
+        ' · Ingreso ' + fechaCL(s.FechaIngreso) + (ret ? ' · Retiro ' + fechaCL(s.FechaRetiro) : '') + '</div>';
+      var cuerpo = '<div class="grid g4" style="gap:10px;margin-bottom:14px">' +
+        kpi('Deuda', pesos(s.deuda), s.mesesAdeudados ? s.mesesAdeudados + ' mes(es)' : 'Al día', s.deuda ? 'alerta' : 'ok') +
+        kpi('Meses adeudados', s.mesesAdeudados, s.mesesAdeudados ? esc(listaMeses(s.periodosAdeudados)) : '—') +
+        kpi('Total pagado', pesos(s.totalPagado), 'Desde el inicio del registro') +
+        kpi('Pagado por adelantado', pesos(s.adelantado), 'Meses futuros ya cubiertos') + '</div>' +
+        '<div class="btns" style="margin-bottom:16px">' +
+        (!ret ? '<button class="btn prim solo-edita" data-a="pagar">Registrar pago</button>' : '') +
+        (s.deuda > 0 && s.whatsapp ? '<a class="btn wa" target="_blank" rel="noopener" href="' + esc(waLink(s.whatsapp, msgDeuda(s))) + '">Aviso de deuda por WhatsApp</a>' : '') +
+        (!ret ? '<button class="btn solo-edita" data-a="eximir">Eximir meses</button>' : '') +
+        '<button class="btn solo-edita" data-a="editar">Editar datos</button>' +
+        (ret ? '<button class="btn solo-edita" data-a="reactivar">Reincorporar</button>' : '<button class="btn peligro solo-edita" data-a="retirar">Retirar socio</button>') + '</div>' +
+        (s.Observaciones ? '<div class="aviso info">' + esc(s.Observaciones) + '</div>' : '') +
+        '<h3 style="margin-bottom:8px">Cuotas por mes</h3>' + matrizHTML(s.meses) +
+        '<h3 style="margin:22px 0 8px">Comprobantes de pago</h3>' +
+        (r.pagos.length ? '<div class="tabla-wrap"><table class="t"><thead><tr><th>N°</th><th>Fecha</th><th>Meses</th><th>Medio</th><th class="r">Monto</th><th></th></tr></thead><tbody>' +
+          r.pagos.map(function (p) {
+            var mig = String(p.Folio).indexOf('MIG') === 0, anu = p.Estado === 'Anulado';
+            return '<tr class="' + (anu ? 'anulado' : '') + '"><td class="num">' + esc(mig ? 'Histórico' : p.Folio) + '</td><td class="num">' + (mig ? '—' : fechaCL(p.Fecha)) + '</td><td>' + esc(listaMeses(p.periodos.map(function (x) { return x.p; }))) +
+              '</td><td>' + esc(p.Medio) + '</td><td class="r num"><b>' + pesos(p.total) + '</b></td><td class="r" style="white-space:nowrap">' +
+              (mig ? '<span class="muted small">Planilla</span>' : '<button class="btn chico" data-pdf="' + esc(p.Folio) + '">PDF</button> <button class="btn chico" data-imp="' + esc(p.Folio) + '">Imprimir</button>' +
+                (anu ? ' <span class="badge b-deuda">Anulado</span>' : ' <button class="btn chico peligro solo-edita" data-anular="' + esc(p.Folio) + '">Anular</button>')) + '</td></tr>';
+          }).join('') + '</tbody></table></div>' : '<div class="vacio">Sin pagos registrados.</div>') +
+        (r.exenciones.length ? '<h3 style="margin:22px 0 8px">Exenciones y condonaciones</h3><div class="tabla-wrap"><table class="t"><thead><tr><th>Mes</th><th>Motivo</th><th>Registrada</th><th></th></tr></thead><tbody>' +
+          r.exenciones.map(function (e) {
+            var anu = e.Estado === 'Anulado';
+            return '<tr class="' + (anu ? 'anulado' : '') + '"><td>' + nomP(e.Periodo) + '</td><td>' + esc(e.Motivo) + '</td><td class="small muted">' + esc(e.FechaRegistro) + ' · ' + esc(e.RegistradoPor) + '</td><td class="r">' +
+              (anu ? '' : '<button class="btn chico peligro solo-edita" data-anex="' + e.ID + '">Anular</button>') + '</td></tr>';
+          }).join('') + '</tbody></table></div>' : '');
+      var m = modal(cab, cuerpo, null, { ancho: true });
+      var acc = {
+        pagar: function () { m.cerrar(); irA('pago', { socioId: s.ID }); },
+        eximir: function () { formExencion(s); },
+        editar: function () { formSocio(s); },
+        retirar: function () { formRetiro(s); },
+        reactivar: function () { formReactivar(s); }
+      };
+      $$('[data-a]', m).forEach(function (b) { b.onclick = acc[b.dataset.a]; });
+      $$('[data-pdf]', m).forEach(function (b) { b.onclick = function () { descargarPDF(b.dataset.pdf); }; });
+      $$('[data-imp]', m).forEach(function (b) { b.onclick = function () { imprimirComprobante(b.dataset.imp); }; });
+      $$('[data-anular]', m).forEach(function (b) {
+        b.onclick = function () {
+          pedirTexto('Anular comprobante N° ' + b.dataset.anular, 'Motivo de la anulación', 'Anular comprobante').then(function (mot) {
+            if (!mot) return;
+            api('apiAnularPago', S.token, b.dataset.anular, mot).then(function (x) { toast(x.mensaje, 'ok'); return tras(s.ID); }).catch(fallo);
+          });
+        };
+      });
+      $$('[data-anex]', m).forEach(function (b) {
+        b.onclick = function () {
+          confirmar('Anular exención', 'El mes volverá a contar como deuda si no está pagado.', 'Anular', true).then(function (ok) {
+            if (ok) api('apiAnularExencion', S.token, +b.dataset.anex).then(function (x) { toast(x.mensaje, 'ok'); return tras(s.ID); }).catch(fallo);
+          });
+        };
+      });
+    }).catch(fallo);
+  }
+  /** Tras un cambio: recarga datos, refresca la vista y reabre la ficha. */
+  function tras(idSocio) {
+    return recargar().then(function () {
+      if (S.vista === 'socios') filasSociosSeguro();
+      if (idSocio) abrirSocio(idSocio); else cerrarModales();
+    });
+  }
+  function filasSociosSeguro() { if ($('#tb-socios')) vistaSocios($('#vista')); }
+
+  function formSocio(s, alGuardar) {
+    s = s || {};
+    var hoy = S.datos.hoy;
+    var cuerpo = '<form class="form f2" id="fs">' +
+      '<label class="campo"><span>Primer apellido *</span><input class="inp" name="PrimerApellido" required value="' + esc(s.PrimerApellido) + '"></label>' +
+      '<label class="campo"><span>Segundo apellido</span><input class="inp" name="SegundoApellido" value="' + esc(s.SegundoApellido) + '"></label>' +
+      '<label class="campo full"><span>Nombres *</span><input class="inp" name="Nombres" required value="' + esc(s.Nombres) + '"></label>' +
+      '<label class="campo"><span>RUT *</span><input class="inp" name="RUT" required placeholder="12.345.678-9" value="' + esc(s.RUT) + '"></label>' +
+      '<label class="campo"><span>Teléfono (WhatsApp)</span><input class="inp" name="Telefono" placeholder="+569 1234 5678" value="' + esc(s.Telefono) + '"></label>' +
+      '<label class="campo"><span>Fecha de ingreso *</span><input class="inp" type="date" name="FechaIngreso" required value="' + esc(s.FechaIngreso || hoy) + '"></label>' +
+      '<div class="ayuda" style="align-self:end">La cuota se cobra desde el mes de ingreso. Solo los meses cerrados cuentan como deuda.</div>' +
+      '<label class="campo full"><span>Observaciones</span><textarea class="inp" name="Observaciones">' + esc(s.ID ? '' : '') + '</textarea></label>' +
+      '</form>';
+    var m = modal('<h3>' + (s.ID ? 'Editar socio N° ' + s.ID : 'Incorporar nuevo socio') + '</h3>', cuerpo,
+      '<button class="btn" data-no>Cancelar</button><button class="btn prim" data-ok>' + (s.ID ? 'Guardar cambios' : 'Incorporar socio') + '</button>');
+    var f = $('#fs', m);
+    f.Observaciones.value = s.Observaciones || '';
+    f.RUT.oninput = function () { f.RUT.value = formatoRut(f.RUT.value); };
+    $('[data-no]', m).onclick = m.cerrar;
+    $('[data-ok]', m).onclick = function () {
+      if (!f.reportValidity()) return;
+      var datos = { ID: s.ID || null };
+      ['PrimerApellido', 'SegundoApellido', 'Nombres', 'RUT', 'Telefono', 'FechaIngreso', 'Observaciones'].forEach(function (k) { datos[k] = f[k].value; });
+      api('apiGuardarSocio', S.token, datos).then(function (r) {
+        toast(r.mensaje, 'ok'); m.cerrar();
+        if (alGuardar) return recargar().then(function () { alGuardar(r); });
+        return tras(r.ID);
+      }).catch(fallo);
+    };
+  }
+
+  function formRetiro(s) {
+    var cuerpo = '<div class="aviso">Al retirar al socio deja de generar cuotas y <b>su deuda pendiente (' + pesos(s.deuda) + ') queda condonada</b>. Queda registro en el historial.</div>' +
+      '<form class="form f2" id="fr"><label class="campo"><span>Fecha de retiro</span><input class="inp" type="date" name="fecha" value="' + S.datos.hoy + '" required></label>' +
+      '<label class="campo full"><span>Motivo</span><input class="inp" name="motivo" placeholder="Ej: renuncia voluntaria, término de funciones"></label></form>';
+    var m = modal('<h3>Retirar a ' + esc(capital(s.nombre)) + '</h3>', cuerpo, '<button class="btn" data-no>Cancelar</button><button class="btn peligro" data-ok>Confirmar retiro</button>');
+    $('[data-no]', m).onclick = m.cerrar;
+    $('[data-ok]', m).onclick = function () {
+      var f = $('#fr', m);
+      api('apiRetirarSocio', S.token, s.ID, f.fecha.value, f.motivo.value).then(function (r) { toast(r.mensaje, 'ok'); m.cerrar(); return tras(s.ID); }).catch(fallo);
+    };
+  }
+  function formReactivar(s) {
+    var cuerpo = '<p style="margin-top:0">Los meses entre el retiro y la reincorporación no se cobrarán.</p><form class="form f2" id="fa"><label class="campo"><span>Fecha de reincorporación</span><input class="inp" type="date" name="fecha" value="' + S.datos.hoy + '"></label></form>';
+    var m = modal('<h3>Reincorporar a ' + esc(capital(s.nombre)) + '</h3>', cuerpo, '<button class="btn" data-no>Cancelar</button><button class="btn prim" data-ok>Reincorporar</button>');
+    $('[data-no]', m).onclick = m.cerrar;
+    $('[data-ok]', m).onclick = function () {
+      api('apiReactivarSocio', S.token, s.ID, $('#fa', m).fecha.value).then(function (r) { toast(r.mensaje, 'ok'); m.cerrar(); return tras(s.ID); }).catch(fallo);
+    };
+  }
+  function mesesLibres(s, extra) {
+    // meses del socio sin pago, no exentos y dentro de su membresía; + meses futuros adicionales
+    var lista = s.meses.filter(function (m) { return ['pendiente', 'encurso', 'futuro'].indexOf(m.estado) >= 0; }).map(function (m) { return { p: m.p, pend: m.estado === 'pendiente', falta: m.cuota - m.pagado }; });
+    var ult = s.meses[s.meses.length - 1].p;
+    for (var i = 1; i <= (extra || 0); i++) lista.push({ p: sumarMes(ult, i), pend: false, falta: S.datos.cuotaActual });
+    return lista;
+  }
+  function formExencion(s) {
+    var libres = mesesLibres(s, 12);
+    var cuerpo = '<p style="margin-top:0" class="muted">Los meses exentos no generan deuda. Solo se pueden eximir meses sin pagos registrados. En rojo, los meses adeudados.</p>' +
+      '<div class="check-meses">' + libres.map(function (x) { return '<label class="' + (x.pend ? 'pend' : '') + '"><input type="checkbox" value="' + x.p + '">' + cortoP(x.p) + '</label>'; }).join('') + '</div>' +
+      '<label class="campo" style="margin-top:12px"><span>Motivo (obligatorio)</span><input class="inp" id="ex-mot" placeholder="Ej: acuerdo de directiva N° 5, licencia médica prolongada"></label>';
+    var m = modal('<h3>Eximir meses · ' + esc(capital(s.nombre)) + '</h3>', cuerpo, '<button class="btn" data-no>Cancelar</button><button class="btn prim" data-ok>Registrar exención</button>');
+    $('[data-no]', m).onclick = m.cerrar;
+    $('[data-ok]', m).onclick = function () {
+      var ps = $$('.check-meses input:checked', m).map(function (c) { return c.value; });
+      api('apiRegistrarExencion', S.token, s.ID, ps, $('#ex-mot', m).value).then(function (r) { toast(r.mensaje, 'ok'); m.cerrar(); return tras(s.ID); }).catch(fallo);
+    };
+  }
+
+  // ════════════════ REGISTRAR PAGO ════════════════
+  function vistaPago(v, opc) {
+    if (!puede()) { v.innerHTML = '<div class="vacio">Tu perfil es solo de consulta.</div>'; return; }
+    var d = S.datos;
+    S.pagoSocio = opc.socioId ? d.socios.filter(function (s) { return s.ID === opc.socioId; })[0] : null;
+    v.innerHTML = '<div class="cab-vista"><div><h2>Registrar pago de cuotas</h2><p>El monto se aplica primero a los meses adeudados más antiguos, luego al mes en curso y después a meses futuros (pago adelantado).</p></div></div>' +
+      '<div class="grid g2" style="align-items:start">' +
+      '<div class="card"><h3 style="margin-bottom:10px">1. Socio</h3><div class="buscador"><input class="inp" id="p-buscar" placeholder="Escribe nombre o RUT…" autocomplete="off"><div class="sugerencias oculto" id="p-sug"></div></div><div id="p-socio" style="margin-top:14px"></div></div>' +
+      '<div class="card"><h3 style="margin-bottom:10px">2. Pago</h3><form class="form f2" id="fp">' +
+      '<label class="campo full"><span>Monto recibido</span><input class="inp num" name="monto" type="number" min="1" step="1" placeholder="0" style="font-size:20px;font-weight:700"></label>' +
+      '<div class="chips full" id="p-rapidos"></div>' +
+      '<label class="campo"><span>Fecha de pago</span><input class="inp" type="date" name="fecha" value="' + d.hoy + '" max="' + d.hoy + '"></label>' +
+      '<label class="campo"><span>Medio de pago</span><select class="inp" name="medio"><option>Efectivo</option><option>Transferencia</option><option>Depósito</option><option>Otro</option></select></label>' +
+      '<label class="campo full"><span>Observación (opcional)</span><input class="inp" name="obs" placeholder="Ej: N° de transferencia"></label>' +
+      '<label class="full" style="display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" id="p-manual"> Elegir los meses manualmente</label>' +
+      '<div class="full oculto" id="p-meses"></div>' +
+      '</form><div id="p-prev" style="margin-top:14px"></div>' +
+      '<button class="btn prim" id="p-ok" style="width:100%;margin-top:14px;padding:12px" disabled>Registrar pago</button></div></div>';
+
+    var inp = $('#p-buscar', v), sug = $('#p-sug', v), f = $('#fp', v);
+    var candidatos = d.socios.filter(function (s) { return s.Estado !== 'Retirado'; });
+    var foco = -1;
+    function mostrarSug() {
+      var q = sinTildes(inp.value.trim()), qr = normRut(inp.value);
+      if (!q) { sug.classList.add('oculto'); return; }
+      var r = candidatos.filter(function (s) { return sinTildes(s.nombre + ' ' + s.PrimerApellido).indexOf(q) >= 0 || (qr.length >= 3 && normRut(s.RUT).indexOf(qr) >= 0); }).slice(0, 8);
+      foco = -1;
+      sug.innerHTML = r.length ? r.map(function (s) { return '<div data-id="' + s.ID + '"><span>' + esc(capital(s.nombre)) + '<br><span class="muted small">' + esc(s.RUT) + '</span></span><b class="num small">' + (s.deuda ? pesos(s.deuda) : 'Al día') + '</b></div>'; }).join('') : '<div class="muted">Sin resultados</div>';
+      sug.classList.remove('oculto');
+      $$('[data-id]', sug).forEach(function (x) { x.onmousedown = function (e) { e.preventDefault(); elegir(+x.dataset.id); }; });
+    }
+    inp.oninput = mostrarSug;
+    inp.onkeydown = function (e) {
+      var items = $$('[data-id]', sug);
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); foco = Math.max(0, Math.min(items.length - 1, foco + (e.key === 'ArrowDown' ? 1 : -1))); items.forEach(function (x, i) { x.classList.toggle('foco', i === foco); }); }
+      if (e.key === 'Enter') { e.preventDefault(); if (items[foco < 0 ? 0 : foco]) elegir(+items[foco < 0 ? 0 : foco].dataset.id); }
+    };
+    inp.onblur = function () { setTimeout(function () { sug.classList.add('oculto'); }, 150); };
+
+    function elegir(id) {
+      S.pagoSocio = d.socios.filter(function (s) { return s.ID === id; })[0];
+      inp.value = capital(S.pagoSocio.nombre);
+      sug.classList.add('oculto');
+      pintarSocio();
+    }
+    function pintarSocio() {
+      var s = S.pagoSocio;
+      if (!s) { $('#p-socio', v).innerHTML = '<div class="vacio">Busca y selecciona al socio que paga.</div>'; $('#p-rapidos', v).innerHTML = ''; return; }
+      $('#p-socio', v).innerHTML = '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px"><div><b>' + esc(capital(s.nombre)) + '</b><div class="muted small">RUT ' + esc(s.RUT) + '</div></div>' +
+        '<div style="text-align:right"><div class="muted small">Deuda</div><div class="num" style="font-size:22px;font-weight:800;color:' + (s.deuda ? 'var(--rojo)' : 'var(--verde)') + '">' + pesos(s.deuda) + '</div></div></div>' +
+        (s.mesesAdeudados ? '<div class="small muted" style="margin-bottom:10px">Adeuda: ' + esc(listaMeses(s.periodosAdeudados)) + '</div>' : '') + matrizHTML(s.meses, { leyenda: false, compacta: true });
+      var c = d.cuotaActual, rap = [];
+      if (s.deuda) rap.push(['Deuda total', s.deuda]);
+      [1, 3, 6, 12].forEach(function (n) { rap.push([n + ' cuota' + (n > 1 ? 's' : ''), n * c]); });
+      $('#p-rapidos', v).innerHTML = rap.map(function (r) { return '<button type="button" class="chip" data-m="' + r[1] + '">' + r[0] + ' · ' + pesos(r[1]) + '</button>'; }).join('');
+      $$('#p-rapidos .chip', v).forEach(function (b) { b.onclick = function () { f.monto.value = b.dataset.m; simular(); }; });
+      $('#p-manual', v).checked = false;
+      $('#p-meses', v).classList.add('oculto');
+      f.monto.value = s.deuda || '';
+      simular();
+    }
+    function periodosManual() {
+      if (!$('#p-manual', v).checked) return null;
+      return $$('#p-meses input:checked', v).map(function (c) { return c.value; });
+    }
+    $('#p-manual', v).onchange = function (e) {
+      var box = $('#p-meses', v);
+      if (!S.pagoSocio) { e.target.checked = false; return; }
+      box.classList.toggle('oculto', !e.target.checked);
+      if (e.target.checked) {
+        var libres = S.pagoSocio.meses.filter(function (m) { return ['pendiente', 'parcial', 'encurso', 'futuro'].indexOf(m.estado) >= 0; })
+          .map(function (m) { return { p: m.p, pend: m.estado === 'pendiente' || m.estado === 'parcial', falta: m.cuota - m.pagado }; });
+        var ult = S.pagoSocio.meses[S.pagoSocio.meses.length - 1].p;
+        for (var i = 1; i <= 12; i++) libres.push({ p: sumarMes(ult, i), pend: false, falta: d.cuotaActual });
+        box.innerHTML = '<div class="check-meses">' + libres.map(function (x) {
+          return '<label class="' + (x.pend ? 'pend' : '') + '"><input type="checkbox" value="' + x.p + '" data-falta="' + x.falta + '">' + cortoP(x.p) + ' <span class="muted small">' + miles(x.falta) + '</span></label>';
+        }).join('') + '</div><div class="ayuda">Al marcar meses, el monto se calcula solo (puedes ajustarlo para un abono parcial).</div>';
+        $$('input', box).forEach(function (c) {
+          c.onchange = function () {
+            f.monto.value = $$('input:checked', box).reduce(function (t, x) { return t + Number(x.dataset.falta); }, 0) || '';
+            simular();
+          };
+        });
+      }
+      simular();
+    };
+    var tSim = null, ultimaSim = null;
+    function simular() {
+      clearTimeout(tSim);
+      var btn = $('#p-ok', v), prev = $('#p-prev', v);
+      btn.disabled = true; ultimaSim = null;
+      var monto = Number(f.monto.value);
+      if (!S.pagoSocio || !(monto > 0)) { prev.innerHTML = ''; return; }
+      var pm = periodosManual();
+      if (pm && !pm.length) { prev.innerHTML = '<div class="aviso">Marca al menos un mes.</div>'; return; }
+      prev.innerHTML = '<div class="muted small">Calculando…</div>';
+      tSim = setTimeout(function () {
+        api('apiSimularPago', S.token, S.pagoSocio.ID, monto, pm).then(function (r) {
+          ultimaSim = r;
+          prev.innerHTML = '<div class="small muted" style="margin-bottom:6px">Se aplicará a:</div><div class="asig">' +
+            r.asignacion.map(function (a) { return '<span class="' + (a.completo ? '' : 'parcial') + '">' + cortoP(a.p) + ' · ' + pesos(a.monto) + (a.completo ? '' : ' (abono)') + '</span>'; }).join('') + '</div>' +
+            '<div style="margin-top:10px"><div class="resumen-linea"><span>Deuda antes</span><b class="num">' + pesos(r.deudaAntes) + '</b></div><div class="resumen-linea"><span>Deuda después</span><b class="num" style="color:' + (r.deudaDespues ? 'var(--rojo)' : 'var(--verde)') + '">' + pesos(r.deudaDespues) + '</b></div></div>';
+          btn.disabled = false;
+        }).catch(function (e) { prev.innerHTML = '<div class="aviso">' + esc(e.message) + '</div>'; });
+      }, 350);
+    }
+    f.monto.oninput = simular;
+    f.onsubmit = function (e) { e.preventDefault(); };
+    $('#p-ok', v).onclick = function () {
+      if (!ultimaSim || !S.pagoSocio) return;
+      var s = S.pagoSocio, btn = this;
+      btn.disabled = true;
+      api('apiRegistrarPago', S.token, { socioId: s.ID, monto: Number(f.monto.value), fecha: f.fecha.value, medio: f.medio.value, observacion: f.obs.value, periodos: periodosManual() })
+        .then(function (r) {
+          exitoPago(r);
+          return recargar().then(function () { irA('pago'); });
+        }).catch(function (e) { btn.disabled = false; fallo(e); });
+    };
+    if (S.pagoSocio) { inp.value = capital(S.pagoSocio.nombre); }
+    pintarSocio();
+  }
+  function exitoPago(r) {
+    var cuerpo = '<div class="aviso ok" style="font-size:14px">Pago de <b>' + pesos(r.total) + '</b> registrado para <b>' + esc(capital(r.socio)) + '</b>.</div>' +
+      '<div class="asig" style="margin-bottom:12px">' + r.asignacion.map(function (a) { return '<span class="' + (a.completo ? '' : 'parcial') + '">' + cortoP(a.p) + ' · ' + pesos(a.monto) + '</span>'; }).join('') + '</div>' +
+      '<div class="resumen-linea"><span>Deuda pendiente</span><b class="num">' + pesos(r.deudaDespues) + '</b></div>';
+    var m = modal('<h3>Comprobante N° ' + esc(r.folio) + '</h3>', cuerpo,
+      (r.whatsapp ? '<a class="btn wa" target="_blank" rel="noopener" href="' + esc(waLink(r.whatsapp, msgComprobante(r))) + '">Enviar por WhatsApp</a>' : '') +
+      '<button class="btn" data-imp>Imprimir</button><button class="btn azul" data-pdf>Descargar PDF</button><button class="btn prim" data-no>Listo</button>');
+    $('[data-pdf]', m).onclick = function () { descargarPDF(r.folio); };
+    $('[data-imp]', m).onclick = function () { imprimirComprobante(r.folio); };
+    $('[data-no]', m).onclick = m.cerrar;
+  }
+
+  // ════════════════ CAJA ════════════════
+  function vistaCaja(v, opc) {
+    var d = S.datos;
+    var desde = opc.desde || d.config.FECHA_SALDO_INICIAL, hasta = opc.hasta || d.hoy;
+    api('apiCaja', S.token, desde, hasta).then(function (c) {
+      var h = '<div class="cab-vista"><div><h2>Libro de caja</h2><p>Saldo inicial ' + pesos(c.saldoInicial) + ' al ' + fechaCL(c.fechaSaldoInicial) + '. Las cuotas pagadas se suman solas como ingreso «Cuotas socias».</p></div>' +
+        '<div class="btns"><button class="btn prim solo-edita" id="nuevo-mov">+ Registrar ingreso o gasto</button></div></div>' +
+        '<div class="card" style="margin-bottom:16px"><form class="form f3" id="fc" style="align-items:end">' +
+        '<label class="campo"><span>Desde</span><input class="inp" type="date" name="desde" value="' + c.desde + '"></label>' +
+        '<label class="campo"><span>Hasta</span><input class="inp" type="date" name="hasta" value="' + c.hasta + '"></label>' +
+        '<div class="btns"><button class="btn" type="submit">Filtrar</button><button class="btn" type="button" id="c-mes">Este mes</button><button class="btn" type="button" id="c-todo">Todo</button></div></form></div>' +
+        '<div class="grid g4">' + kpi('Saldo al inicio del período', pesos(c.saldoAnterior), fechaCL(c.desde)) + kpi('Ingresos', pesos(c.ingresos), 'En el período', 'ok') +
+        kpi('Egresos', pesos(c.egresos), 'En el período', c.egresos ? 'alerta' : '') + kpi('Saldo al cierre', pesos(c.saldoFinal), 'Saldo actual total: ' + pesos(c.saldoActual)) + '</div>' +
+        '<div class="grid g-panel" style="margin-top:16px;align-items:start"><div class="card"><h3 style="margin-bottom:10px">Movimientos</h3>' +
+        (c.movimientos.length ? '<div class="tabla-wrap"><table class="t"><thead><tr><th>Fecha</th><th>Detalle</th><th class="r">Monto</th><th class="r">Saldo</th><th></th></tr></thead><tbody>' +
+          c.movimientos.map(function (m) {
+            var eg = m.tipo === 'Egreso';
+            return '<tr><td class="num">' + fechaCL(m.fecha) + '</td><td><span class="badge ' + (eg ? 'b-deuda' : 'b-ok') + '">' + esc(m.categoria) + '</span> <span class="muted small">' + esc(m.area) + '</span><div>' + esc(m.descripcion) + '</div>' +
+              (m.documento ? '<div class="muted small">' + esc(m.documento) + '</div>' : '') + '</td><td class="r num" style="color:' + (eg ? 'var(--rojo)' : 'var(--verde)') + '"><b>' + (eg ? '−' : '+') + pesos(m.monto) + '</b></td><td class="r num">' + pesos(m.saldo) + '</td>' +
+              '<td class="r">' + (m.auto ? '' : '<button class="btn chico peligro solo-edita" data-anm="' + m.id + '">Anular</button>') + '</td></tr>';
+          }).join('') + '</tbody></table></div>' : '<div class="vacio">No hay movimientos en el período.</div>') + '</div>' +
+        '<div class="card"><h3 style="margin-bottom:10px">Resumen por categoría</h3>' + (c.porCategoria.length ? c.porCategoria.map(function (x) {
+          return '<div class="resumen-linea"><span>' + esc(x.categoria) + ' <span class="muted small">' + x.tipo.toLowerCase() + '</span></span><b class="num" style="color:' + (x.tipo === 'Egreso' ? 'var(--rojo)' : 'var(--verde)') + '">' + pesos(x.monto) + '</b></div>';
+        }).join('') : '<div class="vacio">Sin datos</div>') + '</div></div>';
+      v.innerHTML = h;
+      var f = $('#fc', v);
+      f.onsubmit = function (e) { e.preventDefault(); vistaCaja(v, { desde: f.desde.value, hasta: f.hasta.value }); };
+      $('#c-mes', v).onclick = function () { vistaCaja(v, { desde: d.hoy.slice(0, 8) + '01', hasta: d.hoy }); };
+      $('#c-todo', v).onclick = function () { vistaCaja(v, {}); };
+      $('#nuevo-mov', v).onclick = function () { formMovimiento(function () { vistaCaja(v, { desde: c.desde, hasta: c.hasta }); }); };
+      $$('[data-anm]', v).forEach(function (b) {
+        b.onclick = function () {
+          pedirTexto('Anular movimiento', 'Motivo de la anulación', 'Anular').then(function (mot) {
+            if (mot) api('apiAnularMovimiento', S.token, +b.dataset.anm, mot).then(function (r) { toast(r.mensaje, 'ok'); vistaCaja(v, { desde: c.desde, hasta: c.hasta }); }).catch(fallo);
+          });
+        };
+      });
+    }).catch(fallo);
+  }
+  function formMovimiento(despues) {
+    var d = S.datos, tipo = 'Egreso';
+    var cuerpo = '<div class="seg" style="margin-bottom:14px"><button type="button" data-t="Ingreso">Ingreso</button><button type="button" data-t="Egreso" class="activo">Gasto / egreso</button></div>' +
+      '<form class="form f2" id="fm"><label class="campo"><span>Fecha</span><input class="inp" type="date" name="fecha" value="' + d.hoy + '" min="' + d.config.FECHA_SALDO_INICIAL + '" max="' + d.hoy + '"></label>' +
+      '<label class="campo"><span>Monto</span><input class="inp num" type="number" min="1" name="monto" required></label>' +
+      '<label class="campo"><span>Categoría</span><select class="inp" name="categoria"></select></label>' +
+      '<label class="campo"><span>Área</span><select class="inp" name="area">' + d.areas.map(function (a) { return '<option>' + esc(a) + '</option>'; }).join('') + '</select></label>' +
+      '<label class="campo full"><span>Descripción</span><input class="inp" name="descripcion" required placeholder="Ej: Compra de balones para campeonato de baby fútbol"></label>' +
+      '<label class="campo full"><span>Documento de respaldo (opcional)</span><input class="inp" name="documento" placeholder="Ej: Boleta N° 12345"></label></form>';
+    var m = modal('<h3>Registrar movimiento de caja</h3>', cuerpo, '<button class="btn" data-no>Cancelar</button><button class="btn prim" data-ok>Guardar</button>');
+    var f = $('#fm', m);
+    function cats() {
+      f.categoria.innerHTML = (d.categorias[tipo] || []).filter(function (c) { return c !== 'Cuotas socias'; }).map(function (c) { return '<option>' + esc(c) + '</option>'; }).join('');
+    }
+    $$('[data-t]', m).forEach(function (b) { b.onclick = function () { tipo = b.dataset.t; $$('[data-t]', m).forEach(function (x) { x.classList.toggle('activo', x === b); }); cats(); }; });
+    cats();
+    $('[data-no]', m).onclick = m.cerrar;
+    $('[data-ok]', m).onclick = function () {
+      if (!f.reportValidity()) return;
+      api('apiGuardarMovimiento', S.token, { tipo: tipo, fecha: f.fecha.value, monto: f.monto.value, categoria: f.categoria.value, area: f.area.value, descripcion: f.descripcion.value, documento: f.documento.value })
+        .then(function (r) { toast(r.mensaje, 'ok'); m.cerrar(); despues(); }).catch(fallo);
+    };
+  }
+
+  // ════════════════ REPORTES Y AVISOS ════════════════
+  function vistaReportes(v, opc) {
+    var d = S.datos, min = opc.min || 1;
+    var morosos = d.socios.filter(function (s) { return s.Estado !== 'Retirado' && s.mesesAdeudados >= min; }).sort(function (a, b) { return b.deuda - a.deuda; });
+    var total = morosos.reduce(function (t, s) { return t + s.deuda; }, 0);
+    v.innerHTML = '<div class="cab-vista"><div><h2>Reportes y avisos</h2><p>Descarga la información completa o envía recordatorios de deuda.</p></div></div>' +
+      '<div class="card"><div class="card-cab"><div><h3>Descargar en Excel</h3><div class="muted small">Incluye resumen de socios, matriz por año (igual a la planilla original), pagos, caja y exenciones.</div></div>' +
+      '<button class="btn prim" id="xls">Descargar Excel</button></div></div>' +
+      '<div class="card"><div class="card-cab"><div><h3>Avisos de deuda por WhatsApp</h3><div class="muted small">' + morosos.length + ' socio(s) · ' + pesos(total) + ' en total. Cada botón abre WhatsApp con el mensaje listo; solo debes presionar enviar.</div></div>' +
+      '<div class="chips">' + [1, 3, 6, 12].map(function (n) { return '<button class="chip ' + (n === min ? 'activo' : '') + '" data-min="' + n + '">' + (n === 1 ? 'Toda deuda' : n + '+ meses') + '</button>'; }).join('') + '</div></div>' +
+      (morosos.length ? '<div class="tabla-wrap"><table class="t"><thead><tr><th>Socio</th><th>Meses</th><th class="r">Deuda</th><th></th></tr></thead><tbody>' +
+        morosos.map(function (s) {
+          return '<tr><td><b>' + esc(capital(s.nombre)) + '</b><div class="muted small">' + esc(listaMeses(s.periodosAdeudados)) + '</div></td><td class="num">' + s.mesesAdeudados + '</td><td class="r num"><b>' + pesos(s.deuda) + '</b></td>' +
+            '<td class="r" style="white-space:nowrap">' + (s.whatsapp ? '<a class="btn chico wa" data-env="' + s.ID + '" target="_blank" rel="noopener" href="' + esc(waLink(s.whatsapp, msgDeuda(s))) + '">' + (S.enviados[s.ID] ? '✓ Enviado' : 'WhatsApp') + '</a> ' : '<span class="muted small">Sin teléfono</span> ') +
+            '<button class="btn chico" data-copiar="' + s.ID + '">Copiar mensaje</button></td></tr>';
+        }).join('') + '</tbody></table></div>' : '<div class="vacio">No hay socios en este tramo.</div>') + '</div>';
+    $('#xls', v).onclick = exportarExcel;
+    $$('[data-min]', v).forEach(function (b) { b.onclick = function () { vistaReportes(v, { min: +b.dataset.min }); }; });
+    $$('[data-env]', v).forEach(function (a) { a.addEventListener('click', function () { S.enviados[a.dataset.env] = 1; a.textContent = '✓ Enviado'; }); });
+    $$('[data-copiar]', v).forEach(function (b) {
+      b.onclick = function () {
+        var s = d.socios.filter(function (x) { return x.ID === +b.dataset.copiar; })[0];
+        var txt = msgDeuda(s);
+        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { toast('Mensaje copiado.', 'ok'); })
+          .catch(function () { modal('<h3>Mensaje</h3>', '<textarea class="inp" style="min-height:160px">' + esc(txt) + '</textarea>'); });
+      };
+    });
+  }
+  function exportarExcel() {
+    if (typeof XLSX === 'undefined') { toast('No se pudo cargar el generador de Excel. Revisa tu conexión.', 'error'); return; }
+    api('apiExportar', S.token).then(function (r) {
+      var wb = XLSX.utils.book_new();
+      function hoja(nombre, filas, anchos) {
+        var ws = XLSX.utils.aoa_to_sheet(filas);
+        ws['!cols'] = (anchos || filas[0].map(function () { return 14; })).map(function (w) { return { wch: w }; });
+        ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: filas.length - 1, c: filas[0].length - 1 } }) };
+        XLSX.utils.book_append_sheet(wb, ws, nombre);
+      }
+      hoja('Resumen socios', r.resumen, [5, 16, 16, 24, 13, 14, 12, 10, 10, 10, 11, 12]);
+      r.matrices.forEach(function (m) { hoja('Matriz ' + m.anio, m.filas, [5, 16, 16, 24, 13].concat(new Array(12).fill(9)).concat([11])); });
+      hoja('Pagos', r.pagos, [10, 11, 8, 13, 32, 9, 8, 16, 30, 12, 16, 9]);
+      hoja('Caja', r.caja, [11, 12, 22, 11, 50, 22, 11, 11, 11]);
+      hoja('Exenciones', r.exenciones, [8, 32, 9, 40, 12, 16, 9]);
+      XLSX.writeFile(wb, 'Reporte_Club_JUNJI_Araucania_' + r.hoy + '.xlsx');
+      toast('Excel descargado.', 'ok');
+    }).catch(fallo);
+  }
+
+  // ════════════════ CONFIGURACIÓN ════════════════
+  function vistaConfig(v) {
+    var d = S.datos, c = d.config;
+    var h = '<div class="cab-vista"><div><h2>Configuración</h2><p>Sesión de ' + esc(d.sesion.nombre) + ' · ' + esc(d.sesion.rolNombre) + '</p></div></div><div class="grid g2" style="align-items:start">' +
+      '<div class="card"><h3 style="margin-bottom:12px">Mi clave</h3><form class="form" id="f-clave"><label class="campo"><span>Clave actual</span><input class="inp" type="password" name="actual" required autocomplete="current-password"></label>' +
+      '<label class="campo"><span>Nueva clave (mínimo 8 caracteres)</span><input class="inp" type="password" name="nueva" minlength="8" required autocomplete="new-password"></label>' +
+      '<label class="campo"><span>Repetir nueva clave</span><input class="inp" type="password" name="rep" minlength="8" required autocomplete="new-password"></label><button class="btn prim">Cambiar clave</button></form></div>' +
+      '<div class="card solo-admin"><h3 style="margin-bottom:12px">Caja y comprobantes</h3><form class="form f2" id="f-cfg">' +
+      '<label class="campo"><span>Saldo inicial de caja</span><input class="inp num" type="number" name="SALDO_INICIAL_CAJA" value="' + c.SALDO_INICIAL_CAJA + '"></label>' +
+      '<label class="campo"><span>Fecha del saldo inicial</span><input class="inp" type="date" name="FECHA_SALDO_INICIAL" value="' + esc(c.FECHA_SALDO_INICIAL) + '"></label>' +
+      '<div class="ayuda full">Cuando tengan el monto exacto del saldo 2025, actualízalo aquí; todos los saldos se recalculan solos.</div>' +
+      '<label class="campo"><span>Nombre de quien firma</span><input class="inp" name="TESORERO_NOMBRE" value="' + esc(c.TESORERO_NOMBRE) + '"></label>' +
+      '<label class="campo"><span>Cargo</span><input class="inp" name="TESORERO_CARGO" value="' + esc(c.TESORERO_CARGO) + '"></label>' +
+      '<button class="btn prim full">Guardar</button></form></div>' +
+      '<div class="card solo-admin"><h3 style="margin-bottom:12px">Valor de la cuota</h3><div class="tabla-wrap" style="margin-bottom:12px"><table class="t"><thead><tr><th>Vigente desde</th><th class="r">Monto</th><th>Observación</th></tr></thead><tbody>' +
+      d.cuotas.map(function (q) { return '<tr><td>' + capital(nomP(q.Desde)) + '</td><td class="r num"><b>' + pesos(q.Monto) + '</b></td><td class="muted small">' + esc(q.Observacion) + '</td></tr>'; }).join('') +
+      '</tbody></table></div><form class="form f3" id="f-cuota" style="align-items:end"><label class="campo"><span>Nuevo valor desde</span><input class="inp" type="month" name="desde" required placeholder="AAAA-MM"></label>' +
+      '<label class="campo"><span>Monto</span><input class="inp num" type="number" name="monto" min="1" required></label><label class="campo"><span>Acuerdo / obs.</span><input class="inp" name="obs"></label>' +
+      '<button class="btn prim full">Agregar valor</button><div class="ayuda full">El cambio aplica desde ese mes en adelante; los meses anteriores mantienen su valor.</div></form></div>' +
+      '<div class="card solo-admin"><h3 style="margin-bottom:12px">Usuarios del sistema</h3><div id="usuarios"><div class="vacio">Cargando…</div></div>' +
+      '<form class="form f2" id="f-usr" style="margin-top:14px"><label class="campo"><span>Usuario</span><input class="inp" name="Usuario" required placeholder="ej: presidencia"></label>' +
+      '<label class="campo"><span>Nombre</span><input class="inp" name="Nombre" required></label>' +
+      '<label class="campo"><span>Rol</span><select class="inp" name="Rol"><option value="editor">Encargado (registra pagos y socios)</option><option value="consulta">Directiva (solo consulta)</option><option value="admin">Administrador (todo)</option></select></label>' +
+      '<label class="campo"><span>Clave (nueva o para restablecer)</span><input class="inp" name="clave" type="text" placeholder="mínimo 8 caracteres"></label>' +
+      '<label class="full" style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="Activo" checked> Usuario activo</label>' +
+      '<button class="btn prim full">Guardar usuario</button></form></div></div>';
+    v.innerHTML = h;
+    $('#f-clave', v).onsubmit = function (e) {
+      e.preventDefault(); var f = e.target;
+      if (f.nueva.value !== f.rep.value) { toast('Las claves nuevas no coinciden.', 'error'); return; }
+      api('apiCambiarClave', S.token, f.actual.value, f.nueva.value).then(function (r) { toast(r.mensaje, 'ok'); S.clavePorDefecto = false; f.reset(); }).catch(fallo);
+    };
+    if (d.sesion.rol !== 'admin') return;
+    $('#f-cfg', v).onsubmit = function (e) {
+      e.preventDefault(); var f = e.target, datos = {};
+      ['SALDO_INICIAL_CAJA', 'FECHA_SALDO_INICIAL', 'TESORERO_NOMBRE', 'TESORERO_CARGO'].forEach(function (k) { datos[k] = f[k].value; });
+      api('apiGuardarConfig', S.token, datos).then(function (r) { toast(r.mensaje, 'ok'); return recargar(); }).catch(fallo);
+    };
+    $('#f-cuota', v).onsubmit = function (e) {
+      e.preventDefault(); var f = e.target;
+      confirmar('Cambiar valor de la cuota', 'Desde ' + nomP(f.desde.value) + ' la cuota será ' + pesos(f.monto.value) + '. ¿Confirmas?', 'Confirmar').then(function (ok) {
+        if (ok) api('apiAgregarCuota', S.token, f.desde.value, f.monto.value, f.obs.value).then(function (r) { toast(r.mensaje, 'ok'); return recargar().then(function () { irA('config'); }); }).catch(fallo);
+      });
+    };
+    function cargarUsuarios() {
+      api('apiUsuarios', S.token).then(function (us) {
+        $('#usuarios', v).innerHTML = '<div class="tabla-wrap"><table class="t"><thead><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Estado</th></tr></thead><tbody>' +
+          us.map(function (u) { return '<tr class="clic" data-u="' + esc(u.Usuario) + '"><td><b>' + esc(u.Usuario) + '</b></td><td>' + esc(u.Nombre) + '</td><td>' + esc(u.rolNombre) + '</td><td>' + (u.Activo ? '<span class="badge b-ok">Activo</span>' : '<span class="badge b-ret">Inactivo</span>') + '</td></tr>'; }).join('') +
+          '</tbody></table></div><div class="ayuda">Toca un usuario para editarlo o restablecer su clave.</div>';
+        $$('[data-u]', v).forEach(function (tr) {
+          tr.onclick = function () {
+            var u = us.filter(function (x) { return x.Usuario === tr.dataset.u; })[0], f = $('#f-usr', v);
+            f.Usuario.value = u.Usuario; f.Nombre.value = u.Nombre; f.Rol.value = u.Rol; f.Activo.checked = u.Activo; f.clave.value = '';
+            f.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          };
+        });
+      }).catch(fallo);
+    }
+    cargarUsuarios();
+    $('#f-usr', v).onsubmit = function (e) {
+      e.preventDefault(); var f = e.target;
+      api('apiGuardarUsuario', S.token, { Usuario: f.Usuario.value, Nombre: f.Nombre.value, Rol: f.Rol.value, clave: f.clave.value, Activo: f.Activo.checked })
+        .then(function (r) { toast(r.mensaje, 'ok'); f.reset(); cargarUsuarios(); }).catch(fallo);
+    };
+  }
+
+  // ════════════════ Extensiones (panel del sitio web) ════════════════
+  var VISTAS = { panel: vistaPanel, socios: vistaSocios, pago: vistaPago, caja: vistaCaja, reportes: vistaReportes, config: vistaConfig };
+  window.CLUB = {
+    S: S, api: api, toast: toast, fallo: fallo, modal: modal, confirmar: confirmar, pedirTexto: pedirTexto, cerrarModales: cerrarModales,
+    esc: esc, pesos: pesos, fechaCL: fechaCL, capital: capital, formatoRut: formatoRut, irA: function (v, o) { irA(v, o); },
+    formSocio: formSocio, abrirSocio: abrirSocio, puede: puede, $: $, $$: $$, vistas: VISTAS
+  };
+
+  // ════════════════ Inicio ════════════════
+  var tokenGuardado = leer('club_token');
+  if (tokenGuardado) {
+    S.token = tokenGuardado;
+    entrar().catch(function () { salir(true); });
+  }
+})();
+</script>
+
+  <style>
+.nav-badge{display:inline-flex;min-width:19px;height:19px;border-radius:99px;background:var(--rojo);color:#fff;font-size:11px;font-weight:700;align-items:center;justify-content:center;padding:0 5px;margin-left:4px;vertical-align:1px}
+.st-thumb{width:64px;height:44px;border-radius:6px;object-fit:cover;background:var(--gris-bg);display:block}
+.st-foto{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.st-foto img{width:140px;height:92px;object-fit:cover;border-radius:8px;background:var(--gris-bg);border:1px solid var(--borde)}
+.st-foto .vacia{width:140px;height:92px;border-radius:8px;border:1.5px dashed var(--gris-2);display:flex;align-items:center;justify-content:center;color:var(--tinta-3);font-size:12px}
+.st-albums{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.st-album{border:1px solid var(--borde);border-radius:12px;overflow:hidden;cursor:pointer;background:#fff;transition:box-shadow .15s}
+.st-album:hover{box-shadow:var(--sombra)}
+.st-album .port{aspect-ratio:4/3;background:var(--cielo) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--tinta-3);font-size:12px}
+.st-album .inf{padding:10px 12px}
+.st-fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.st-fotos figure{margin:0;border:1px solid var(--borde);border-radius:10px;overflow:hidden;background:#fff}
+.st-fotos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--gris-bg)}
+.st-fotos figcaption{padding:6px;display:flex;gap:4px;flex-wrap:wrap}
+.st-tarjeta{border:1px solid var(--borde);border-radius:12px;padding:14px 16px;background:#fff}
+.st-tarjeta + .st-tarjeta{margin-top:10px}
+.st-tarjeta .fila{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.st-tarjeta .datos{font-size:13px;color:var(--tinta-2);margin-top:4px;display:flex;gap:14px;flex-wrap:wrap}
+.st-tarjeta .msj{margin-top:8px;white-space:pre-wrap;background:#fafbfa;border-radius:8px;padding:10px;font-size:13.5px}
+</style>
+<script>
+(function () {
+  'use strict';
+  var C = window.CLUB;
+  if (!C) return;
+  var $ = C.$, $$ = C.$$, esc = C.esc;
+  var D = null, TAB = null;
+  var AREAS = ['Deportiva', 'Social', 'Cultural', 'Club'];
+
+  function img(id, w) { return id ? 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || 400) : ''; }
+  function sino(v) { return String(v || '').toUpperCase() === 'SI'; }
+  function badge(ok, si, no) { return '<span class="badge ' + (ok ? 'b-ok' : 'b-ret') + '">' + (ok ? si : no) + '</span>'; }
+
+  // ─── Definición de formularios ───
+  var DEF = {
+    Noticias: {
+      uno: 'noticia', campos: [['Fecha', 'Fecha', 'date'], ['Area', 'Área', 'select', AREAS], ['Titulo', 'Título', 'text', null, 1], ['Resumen', 'Resumen (se ve en la portada)', 'textarea'],
+        ['Contenido', 'Texto completo (separa párrafos con una línea en blanco)', 'textarea-lg'], ['FotoID', 'Foto principal', 'foto'], ['Publicada', 'Publicada en el sitio', 'sino'], ['Destacada', 'Destacar en la portada', 'sino']]
+    },
+    Eventos: {
+      uno: 'actividad', campos: [['Fecha', 'Fecha', 'date'], ['Hora', 'Hora', 'time'], ['Titulo', 'Nombre de la actividad', 'text', null, 1], ['Lugar', 'Lugar', 'text'], ['Area', 'Área', 'select', AREAS],
+        ['Estado', 'Estado', 'select', ['Programado', 'Realizado', 'Suspendido']], ['Descripcion', 'Descripción', 'textarea'], ['Resultado', 'Resultado o comentario (después de realizada)', 'textarea'], ['FotoID', 'Imagen (opcional)', 'foto'], ['Publicado', 'Visible en el sitio', 'sino']]
+    },
+    Disciplinas: {
+      uno: 'disciplina o taller', campos: [['Nombre', 'Nombre', 'text', null, 1], ['Area', 'Área', 'select', AREAS], ['Descripcion', 'Descripción', 'textarea'], ['Horario', 'Horario', 'text'], ['Lugar', 'Lugar', 'text'],
+        ['Orden', 'Orden en la lista', 'number'], ['FotoID', 'Imagen (opcional)', 'foto'], ['Activa', 'Visible en el sitio', 'sino']]
+    },
+    Directiva: {
+      uno: 'integrante', campos: [['Nombre', 'Nombre completo', 'text', null, 1], ['Cargo', 'Cargo', 'text'], ['Correo', 'Correo (opcional, se muestra en el sitio)', 'text'], ['Orden', 'Orden', 'number'], ['FotoID', 'Foto (opcional)', 'foto'], ['Activo', 'Visible en el sitio', 'sino']]
+    },
+    Albumes: { uno: 'álbum', campos: [['Fecha', 'Fecha', 'date'], ['Titulo', 'Título del álbum', 'text', null, 1], ['Descripcion', 'Descripción', 'textarea'], ['Publicado', 'Publicado en el sitio', 'sino']] }
+  };
+  var DEFECTOS = { Publicada: 'SI', Publicado: 'SI', Activa: 'SI', Activo: 'SI', Destacada: 'NO', Estado: 'Programado', Area: 'Deportiva' };
+
+  function campoHTML(c, val) {
+    var n = c[0], et = c[1], tipo = c[2], full = ['textarea', 'textarea-lg', 'foto', 'text'].indexOf(tipo) >= 0 && (tipo !== 'text' || c[4]) ? ' full' : '';
+    val = val == null ? '' : val;
+    var h = '<label class="campo' + full + '"><span>' + et + '</span>';
+    if (tipo === 'textarea' || tipo === 'textarea-lg') h += '<textarea class="inp" name="' + n + '" style="min-height:' + (tipo === 'textarea-lg' ? 220 : 80) + 'px">' + esc(val) + '</textarea>';
+    else if (tipo === 'select') h += '<select class="inp" name="' + n + '">' + c[3].map(function (o) { return '<option' + (o === val ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select>';
+    else if (tipo === 'sino') h = '<label class="campo" style="display:flex;gap:8px;align-items:center;padding-top:22px"><input type="checkbox" name="' + n + '"' + (sino(val) ? ' checked' : '') + '> ' + et;
+    else if (tipo === 'foto') {
+      h = '<div class="campo full"><span style="display:block;font-size:12.5px;font-weight:600;color:var(--tinta-2);margin-bottom:5px">' + et + '</span><div class="st-foto" data-foto="' + n + '"><input type="hidden" name="' + n + '" value="' + esc(val) + '">' +
+        (val ? '<img src="' + img(val, 300) + '" alt="">' : '<div class="vacia">Sin imagen</div>') +
+        '<div class="btns"><label class="btn chico" style="cursor:pointer">Subir imagen<input type="file" accept="image/*" hidden></label>' + (val ? '<button type="button" class="btn chico peligro" data-quitar>Quitar</button>' : '') + '</div></div></div>';
+      return h;
+    } else h += '<input class="inp" name="' + n + '" type="' + tipo + '" value="' + esc(val) + '">';
+    return h + '</label>';
+  }
+
+  function activarFotos(raiz) {
+    $$('[data-foto]', raiz).forEach(function (box) {
+      var inp = $('input[type=hidden]', box);
+      var pintar = function (id) {
+        inp.value = id;
+        var vis = box.querySelector('img, .vacia');
+        var nuevo = document.createElement(id ? 'img' : 'div');
+        if (id) nuevo.src = img(id, 300); else { nuevo.className = 'vacia'; nuevo.textContent = 'Sin imagen'; }
+        vis.replaceWith(nuevo);
+      };
+      $('input[type=file]', box).onchange = function (e) {
+        var f = e.target.files[0]; if (!f) return;
+        C.toast('Subiendo imagen…');
+        subirImagen(f, null).then(function (r) { pintar(r.id); C.toast('Imagen cargada.', 'ok'); }).catch(C.fallo);
+      };
+      var q = $('[data-quitar]', box); if (q) q.onclick = function () { pintar(''); q.remove(); };
+    });
+  }
+
+  /** Reduce la imagen en el navegador (máx. 1600 px, JPEG) y la sube a Drive. */
+  function subirImagen(file, albumId, descripcion) {
+    return new Promise(function (ok, ko) {
+      if (!/^image\//.test(file.type)) return ko(new Error('El archivo no es una imagen.'));
+      var lector = new FileReader();
+      lector.onerror = function () { ko(new Error('No se pudo leer la imagen.')); };
+      lector.onload = function () {
+        var im = new Image();
+        im.onerror = function () { ko(new Error('Formato de imagen no soportado (usa JPG o PNG).')); };
+        im.onload = function () {
+          var max = 1600, w = im.width, h = im.height, k = Math.min(1, max / Math.max(w, h));
+          var cv = document.createElement('canvas'); cv.width = Math.round(w * k); cv.height = Math.round(h * k);
+          var cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(im, 0, 0, cv.width, cv.height);
+          var b64 = cv.toDataURL('image/jpeg', 0.85).split(',')[1];
+          C.api('apiSubirFoto', C.S.token, { base64: b64, mime: 'image/jpeg', nombre: file.name.replace(/\.\w+$/, '') + '.jpg', albumId: albumId || null, descripcion: descripcion || '' }).then(ok, ko);
+        };
+        im.src = lector.result;
+      };
+      lector.readAsDataURL(file);
+    });
+  }
+
+  function formRegistro(hoja, reg, despues) {
+    var d = DEF[hoja], nuevo = !reg;
+    reg = reg || {};
+    var vals = {};
+    d.campos.forEach(function (c) { vals[c[0]] = reg[c[0]] != null && reg[c[0]] !== '' ? reg[c[0]] : (nuevo ? (c[2] === 'date' ? C.S.datos.hoy : DEFECTOS[c[0]]) : reg[c[0]]); });
+    var m = C.modal('<h3>' + (nuevo ? 'Nueva ' : 'Editar ') + d.uno + '</h3>', '<form class="form f2" id="fr-sitio">' + d.campos.map(function (c) { return campoHTML(c, vals[c[0]]); }).join('') + '</form>',
+      '<button class="btn" data-no>Cancelar</button><button class="btn prim" data-ok>Guardar</button>', { ancho: hoja === 'Noticias' });
+    var f = $('#fr-sitio', m);
+    activarFotos(m);
+    $('[data-no]', m).onclick = m.cerrar;
+    $('[data-ok]', m).onclick = function () {
+      var datos = { ID: reg.ID || null };
+      d.campos.forEach(function (c) { var el = f.elements[c[0]]; datos[c[0]] = c[2] === 'sino' ? (el.checked ? 'SI' : 'NO') : el.value; });
+      C.api('apiGuardarRegistro', C.S.token, hoja, datos).then(function (r) { C.toast(r.mensaje, 'ok'); m.cerrar(); if (despues) despues(r); else recargarTab(); }).catch(C.fallo);
+    };
+  }
+
+  function eliminar(hoja, id, nombre) {
+    C.confirmar('Eliminar', '¿Eliminar «' + esc(nombre) + '»? Esta acción no se puede deshacer.', 'Eliminar', true).then(function (ok) {
+      if (ok) C.api('apiEliminarRegistro', C.S.token, hoja, id).then(function (r) { C.toast(r.mensaje, 'ok'); C.cerrarModales(); recargarTab(); }).catch(C.fallo);
+    });
+  }
+
+  // ─── Vista principal ───
+  function vistaSitio(v, opc) {
+    C.api('apiSitioDatos', C.S.token).then(function (datos) {
+      D = datos;
+      var pend = D.solicitudes.filter(function (s) { return s.Estado === 'Pendiente'; }).length;
+      var nuevos = D.mensajes.filter(function (s) { return s.Estado === 'Nuevo'; }).length;
+      actualizarBadge(pend + nuevos);
+      TAB = opc.tab || TAB || (pend ? 'solicitudes' : nuevos ? 'mensajes' : 'noticias');
+      var tabs = [['solicitudes', 'Solicitudes de socio', pend], ['mensajes', 'Mensajes', nuevos], ['noticias', 'Noticias', 0], ['eventos', 'Actividades', 0], ['galeria', 'Galería', 0],
+        ['disciplinas', 'Disciplinas', 0], ['directiva', 'Directiva', 0], ['textos', 'Textos del sitio', 0]];
+      v.innerHTML = '<div class="cab-vista"><div><h2>Sitio web del club</h2><p>Lo que publiques aquí aparece en el sitio en menos de 5 minutos.</p></div>' +
+        (D.sitioUrl ? '<a class="btn azul" href="' + esc(D.sitioUrl) + '" target="_blank" rel="noopener">Ver sitio web ↗</a>' : '') + '</div>' +
+        '<div class="chips" style="margin-bottom:16px">' + tabs.map(function (t) {
+          return '<button class="chip ' + (TAB === t[0] ? 'activo' : '') + '" data-tab="' + t[0] + '">' + t[1] + (t[2] ? ' <span class="nav-badge">' + t[2] + '</span>' : '') + '</button>';
+        }).join('') + '</div><div id="st-cont"></div>';
+      $$('[data-tab]', v).forEach(function (b) { b.onclick = function () { TAB = b.dataset.tab; vistaSitio(v, { tab: TAB }); }; });
+      var cont = $('#st-cont', v);
+      ({ solicitudes: tabSolicitudes, mensajes: tabMensajes, noticias: tabNoticias, eventos: tabEventos, galeria: tabGaleria, disciplinas: tabDisciplinas, directiva: tabDirectiva, textos: tabTextos })[TAB](cont);
+    }).catch(C.fallo);
+  }
+  function recargarTab() { if (C.S.vista === 'sitio') vistaSitio($('#vista'), { tab: TAB }); }
+
+  function tablaCard(titulo, boton, cabeceras, filas, vacio) {
+    return '<div class="card"><div class="card-cab"><h3>' + titulo + '</h3>' + (boton ? '<button class="btn prim solo-edita" data-nuevo>' + boton + '</button>' : '') + '</div>' +
+      (filas.length ? '<div class="tabla-wrap"><table class="t"><thead><tr>' + cabeceras.map(function (c) { return '<th' + (c === '' ? ' class="r"' : '') + '>' + c + '</th>'; }).join('') + '</tr></thead><tbody>' + filas.join('') + '</tbody></table></div>'
+        : '<div class="vacio">' + vacio + '</div>') + '</div>';
+  }
+  function acciones(hoja, r, nombre) {
+    return '<td class="r"><button class="btn chico solo-edita" data-editar="' + hoja + ':' + r.ID + '">Editar</button> <button class="btn chico peligro solo-edita" data-borrar="' + hoja + ':' + r.ID + '" data-nombre="' + esc(nombre) + '">Eliminar</button></td>';
+  }
+  function enlazar(cont, hoja, lista) {
+    var b = $('[data-nuevo]', cont); if (b) b.onclick = function () { formRegistro(hoja); };
+    $$('[data-editar]', cont).forEach(function (x) { x.onclick = function () { var id = +x.dataset.editar.split(':')[1]; formRegistro(hoja, lista.filter(function (r) { return r.ID === id; })[0]); }; });
+    $$('[data-borrar]', cont).forEach(function (x) { x.onclick = function () { eliminar(hoja, +x.dataset.borrar.split(':')[1], x.dataset.nombre); }; });
+  }
+
+  function tabNoticias(cont) {
+    cont.innerHTML = tablaCard('Noticias', '+ Nueva noticia', ['', 'Fecha', 'Título', 'Estado', ''], D.noticias.map(function (n) {
+      return '<tr><td>' + (n.FotoID ? '<img class="st-thumb" src="' + img(n.FotoID, 160) + '" alt="">' : '<div class="st-thumb"></div>') + '</td><td class="num">' + C.fechaCL(n.Fecha) + '</td><td><b>' + esc(n.Titulo) + '</b><div class="muted small">' + esc(String(n.Resumen || '').slice(0, 110)) + '</div></td><td>' +
+        badge(sino(n.Publicada), 'Publicada', 'Borrador') + (sino(n.Destacada) ? ' <span class="badge b-azul">Destacada</span>' : '') + (n.Fecha > C.S.datos.hoy ? ' <span class="badge b-parcial">Programada</span>' : '') + '</td>' + acciones('Noticias', n, n.Titulo) + '</tr>';
+    }), 'Aún no hay noticias.');
+    enlazar(cont, 'Noticias', D.noticias);
+  }
+  function tabEventos(cont) {
+    var cls = { Programado: 'b-azul', Realizado: 'b-ok', Suspendido: 'b-deuda' };
+    cont.innerHTML = tablaCard('Calendario de actividades', '+ Nueva actividad', ['Fecha', 'Actividad', 'Área', 'Estado', ''], D.eventos.map(function (e) {
+      return '<tr><td class="num">' + C.fechaCL(e.Fecha) + (e.Hora ? '<div class="muted small">' + esc(e.Hora) + ' h</div>' : '') + '</td><td><b>' + esc(e.Titulo) + '</b><div class="muted small">' + esc(e.Lugar) + '</div></td><td>' + esc(e.Area) + '</td><td><span class="badge ' + (cls[e.Estado] || 'b-azul') + '">' + esc(e.Estado || 'Programado') + '</span>' +
+        (e.Publicado === 'NO' ? ' <span class="badge b-ret">Oculta</span>' : '') + '</td>' + acciones('Eventos', e, e.Titulo) + '</tr>';
+    }), 'Aún no hay actividades en el calendario.');
+    enlazar(cont, 'Eventos', D.eventos);
+  }
+  function tabDisciplinas(cont) {
+    cont.innerHTML = tablaCard('Disciplinas y talleres', '+ Nueva disciplina', ['N°', 'Nombre', 'Área', 'Horario', 'Estado', ''], D.disciplinas.map(function (d) {
+      return '<tr><td class="num muted">' + d.Orden + '</td><td><b>' + esc(d.Nombre) + '</b><div class="muted small">' + esc(String(d.Descripcion || '').slice(0, 100)) + '</div></td><td>' + esc(d.Area) + '</td><td class="small">' + esc(d.Horario) + '<div class="muted">' + esc(d.Lugar) + '</div></td><td>' + badge(d.Activa !== 'NO', 'Visible', 'Oculta') + '</td>' + acciones('Disciplinas', d, d.Nombre) + '</tr>';
+    }), 'Sin disciplinas.');
+    enlazar(cont, 'Disciplinas', D.disciplinas);
+  }
+  function tabDirectiva(cont) {
+    cont.innerHTML = tablaCard('Directiva', '+ Agregar integrante', ['N°', 'Nombre', 'Cargo', 'Estado', ''], D.directiva.map(function (d) {
+      return '<tr><td class="num muted">' + d.Orden + '</td><td><b>' + esc(d.Nombre) + '</b>' + (d.Correo ? '<div class="muted small">' + esc(d.Correo) + '</div>' : '') + '</td><td>' + esc(d.Cargo) + '</td><td>' + badge(d.Activo !== 'NO', 'Visible', 'Oculto') + '</td>' + acciones('Directiva', d, d.Nombre) + '</tr>';
+    }), 'Sin integrantes.');
+    enlazar(cont, 'Directiva', D.directiva);
+  }
+
+  function tabGaleria(cont) {
+    cont.innerHTML = '<div class="card"><div class="card-cab"><div><h3>Álbumes de fotos</h3><div class="muted small">Las fotos se guardan en una carpeta de Google Drive del club y se reducen automáticamente.</div></div><button class="btn prim solo-edita" data-nuevo>+ Nuevo álbum</button></div>' +
+      (D.albumes.length ? '<div class="st-albums">' + D.albumes.map(function (a) {
+        var fs = D.fotos.filter(function (f) { return f.AlbumID === a.ID; });
+        var port = a.PortadaID || (fs[0] && fs[0].DriveID);
+        return '<div class="st-album" data-album="' + a.ID + '"><div class="port" style="' + (port ? 'background-image:url(' + img(port, 500) + ')' : '') + '">' + (port ? '' : 'Sin fotos') + '</div><div class="inf"><b>' + esc(a.Titulo) + '</b><div class="muted small">' + C.fechaCL(a.Fecha) + ' · ' + fs.length + ' foto(s) · ' + (sino(a.Publicado) ? 'Publicado' : 'Oculto') + '</div></div></div>';
+      }).join('') + '</div>' : '<div class="vacio">Crea el primer álbum y sube fotos de sus actividades.</div>') + '</div>';
+    $('[data-nuevo]', cont).onclick = function () { formRegistro('Albumes', null, function (r) { recargarTab(); setTimeout(function () { abrirAlbum(r.ID); }, 900); }); };
+    $$('[data-album]', cont).forEach(function (x) { x.onclick = function () { abrirAlbum(+x.dataset.album); }; });
+  }
+  function abrirAlbum(id) {
+    C.api('apiSitioDatos', C.S.token).then(function (datos) {
+      D = datos;
+      var a = D.albumes.filter(function (x) { return x.ID === id; })[0];
+      if (!a) return;
+      var fs = D.fotos.filter(function (f) { return f.AlbumID === id; }).sort(function (x, y) { return x.Orden - y.Orden; });
+      C.cerrarModales();
+      var m = C.modal('<h3>' + esc(a.Titulo) + '</h3><div class="muted small">' + C.fechaCL(a.Fecha) + ' · ' + fs.length + ' foto(s)</div>',
+        '<div class="btns solo-edita" style="margin-bottom:14px"><label class="btn prim" style="cursor:pointer">Subir fotos<input type="file" accept="image/*" multiple hidden id="al-subir"></label>' +
+        '<button class="btn" data-ed>Editar álbum</button><button class="btn peligro" data-del>Eliminar álbum</button><span class="muted small" id="al-prog" style="align-self:center"></span></div>' +
+        (fs.length ? '<div class="st-fotos">' + fs.map(function (f) {
+          return '<figure><img src="' + img(f.DriveID, 400) + '" alt=""><figcaption class="solo-edita">' +
+            (a.PortadaID === f.DriveID ? '<span class="badge b-ok">Portada</span>' : '<button class="btn chico" data-port="' + esc(f.DriveID) + '">Portada</button>') +
+            '<button class="btn chico peligro" data-bf="' + f.ID + '">Quitar</button></figcaption></figure>';
+        }).join('') + '</div>' : '<div class="vacio">Este álbum aún no tiene fotos.</div>'), null, { ancho: true });
+      $('[data-ed]', m).onclick = function () { formRegistro('Albumes', a, function () { abrirAlbum(id); recargarTab(); }); };
+      $('[data-del]', m).onclick = function () { eliminar('Albumes', id, a.Titulo); };
+      $('#al-subir', m).onchange = function (e) {
+        var files = Array.prototype.slice.call(e.target.files), hechos = 0, prog = $('#al-prog', m);
+        var sig = function () {
+          if (!files.length) { C.toast(hechos + ' foto(s) subidas.', 'ok'); abrirAlbum(id); recargarTab(); return; }
+          prog.textContent = 'Subiendo ' + (hechos + 1) + ' de ' + (hechos + files.length) + '…';
+          subirImagen(files.shift(), id).then(function () { hechos++; sig(); }).catch(function (err) { C.fallo(err); sig(); });
+        };
+        sig();
+      };
+      $$('[data-port]', m).forEach(function (b) {
+        b.onclick = function () { C.api('apiGuardarRegistro', C.S.token, 'Albumes', { ID: id, PortadaID: b.dataset.port }).then(function () { abrirAlbum(id); }).catch(C.fallo); };
+      });
+      $$('[data-bf]', m).forEach(function (b) {
+        b.onclick = function () { C.api('apiEliminarFoto', C.S.token, +b.dataset.bf).then(function (r) { C.toast(r.mensaje, 'ok'); abrirAlbum(id); }).catch(C.fallo); };
+      });
+    }).catch(C.fallo);
+  }
+
+  function tabSolicitudes(cont) {
+    var lista = D.solicitudes;
+    var cls = { Pendiente: 'b-parcial', Aprobada: 'b-ok', Rechazada: 'b-ret' };
+    cont.innerHTML = '<div class="card"><div class="card-cab"><div><h3>Solicitudes de incorporación</h3><div class="muted small">Llegan desde el formulario «Hazte socio» del sitio. También se avisa por correo al club.</div></div></div>' +
+      (lista.length ? lista.map(function (s) {
+        var tel = String(s.Telefono || '').replace(/\D/g, '');
+        if (tel.length === 9) tel = '56' + tel;
+        return '<div class="st-tarjeta"><div class="fila"><div><b>' + esc(C.capital(s.Nombres + ' ' + s.Apellidos)) + '</b> <span class="badge ' + (cls[s.Estado] || '') + '">' + esc(s.Estado) + '</span>' +
+          '<div class="datos"><span>RUT ' + esc(s.RUT) + '</span><span>' + esc(s.Correo) + '</span>' + (s.Telefono ? '<span>' + esc(s.Telefono) + '</span>' : '') + (s.LugarTrabajo ? '<span>' + esc(s.LugarTrabajo) + '</span>' : '') + '<span class="muted">Recibida ' + esc(s.Fecha) + '</span></div></div>' +
+          '<div class="btns">' + (s.Estado === 'Pendiente' ? '<button class="btn chico prim solo-edita" data-inc="' + s.ID + '">Incorporar como socio</button><button class="btn chico peligro solo-edita" data-rech="' + s.ID + '">Rechazar</button>' : '<button class="btn chico solo-edita" data-reab="' + s.ID + '">Volver a pendiente</button>') +
+          '<a class="btn chico" href="mailto:' + esc(s.Correo) + '?subject=' + encodeURIComponent('Tu solicitud al Club Deportivo JUNJI Araucanía') + '">Correo</a>' + (tel ? '<a class="btn chico wa" target="_blank" rel="noopener" href="https://wa.me/' + tel + '">WhatsApp</a>' : '') + '</div></div>' +
+          (s.Mensaje ? '<div class="msj">' + esc(s.Mensaje) + '</div>' : '') + (s.Observacion ? '<div class="muted small" style="margin-top:6px">Gestión: ' + esc(s.Observacion) + ' · ' + esc(s.GestionadoPor) + '</div>' : '') + '</div>';
+      }).join('') : '<div class="vacio">No hay solicitudes todavía.</div>') + '</div>';
+    var buscar = function (id) { return lista.filter(function (s) { return s.ID === id; })[0]; };
+    $$('[data-inc]', cont).forEach(function (b) {
+      b.onclick = function () {
+        var s = buscar(+b.dataset.inc), ap = String(s.Apellidos).split(/\s+/);
+        C.formSocio({ PrimerApellido: ap[0], SegundoApellido: ap.slice(1).join(' '), Nombres: s.Nombres, RUT: s.RUT, Telefono: s.Telefono, FechaIngreso: C.S.datos.hoy, Observaciones: 'Solicitud web N° ' + s.ID + ' · ' + s.Correo + (s.LugarTrabajo ? ' · ' + s.LugarTrabajo : '') }, function (r) {
+          C.api('apiGestionarSolicitud', C.S.token, s.ID, 'Aprobada', 'Incorporado como socio N° ' + r.ID).then(function () { recargarTab(); refrescarBadge(); }).catch(C.fallo);
+        });
+      };
+    });
+    $$('[data-rech]', cont).forEach(function (b) {
+      b.onclick = function () {
+        C.pedirTexto('Rechazar solicitud', 'Motivo (queda como registro interno)', 'Rechazar').then(function (mot) {
+          if (mot) C.api('apiGestionarSolicitud', C.S.token, +b.dataset.rech, 'Rechazada', mot).then(function (r) { C.toast(r.mensaje, 'ok'); recargarTab(); refrescarBadge(); }).catch(C.fallo);
+        });
+      };
+    });
+    $$('[data-reab]', cont).forEach(function (b) {
+      b.onclick = function () { C.api('apiGestionarSolicitud', C.S.token, +b.dataset.reab, 'Pendiente', '').then(function () { recargarTab(); refrescarBadge(); }).catch(C.fallo); };
+    });
+  }
+
+  function tabMensajes(cont) {
+    var lista = D.mensajes;
+    cont.innerHTML = '<div class="card"><div class="card-cab"><div><h3>Mensajes de contacto</h3><div class="muted small">También llegan al correo del club; puedes responder desde allí.</div></div></div>' +
+      (lista.length ? lista.map(function (s) {
+        var nuevo = s.Estado === 'Nuevo';
+        return '<div class="st-tarjeta" style="' + (nuevo ? 'border-color:#f2cf8f;background:#fffdf7' : '') + '"><div class="fila"><div><b>' + esc(s.Asunto) + '</b> <span class="badge ' + (nuevo ? 'b-parcial' : 'b-ok') + '">' + esc(s.Estado) + '</span>' +
+          '<div class="datos"><span>' + esc(s.Nombre) + '</span><span>' + esc(s.Correo) + '</span>' + (s.Telefono ? '<span>' + esc(s.Telefono) + '</span>' : '') + '<span class="muted">' + esc(s.Fecha) + '</span></div></div>' +
+          '<div class="btns"><a class="btn chico azul" href="mailto:' + esc(s.Correo) + '?subject=' + encodeURIComponent('Re: ' + s.Asunto) + '">Responder</a>' +
+          '<button class="btn chico solo-edita" data-est="' + s.ID + '" data-v="' + (nuevo ? 'Respondido' : 'Nuevo') + '">' + (nuevo ? 'Marcar respondido' : 'Marcar como nuevo') + '</button></div></div>' +
+          '<div class="msj">' + esc(s.Mensaje) + '</div></div>';
+      }).join('') : '<div class="vacio">No hay mensajes.</div>') + '</div>';
+    $$('[data-est]', cont).forEach(function (b) {
+      b.onclick = function () { C.api('apiGestionarMensaje', C.S.token, +b.dataset.est, b.dataset.v).then(function () { recargarTab(); refrescarBadge(); }).catch(C.fallo); };
+    });
+  }
+
+  function tabTextos(cont) {
+    cont.innerHTML = '<div class="card"><div class="card-cab"><div><h3>Textos del sitio</h3><div class="muted small">Borradores iniciales redactados para el club: revísalos y ajústalos. En los campos de lista, escribe un elemento por línea.</div></div><button class="btn prim solo-edita" data-guardar>Guardar textos</button></div>' +
+      '<form class="form" id="f-textos">' + D.textos.map(function (t) {
+        var largo = String(t.Valor || '').length > 90 || /\n/.test(t.Valor) || /NOSOTROS|MISION|VISION|VALORES|BENEFICIOS|REQUISITOS|SUBTITULO/.test(t.Clave);
+        return '<label class="campo"><span>' + esc(t.Descripcion || t.Clave) + ' <span class="muted" style="font-weight:400">· ' + esc(t.Clave) + '</span></span>' +
+          (largo ? '<textarea class="inp" name="' + esc(t.Clave) + '" style="min-height:' + (t.Clave === 'NOSOTROS' ? 200 : 90) + 'px">' + esc(t.Valor) + '</textarea>' : '<input class="inp" name="' + esc(t.Clave) + '" value="' + esc(t.Valor) + '">') + '</label>';
+      }).join('') + '</form><div class="btns solo-edita" style="margin-top:14px"><button class="btn prim" data-guardar>Guardar textos</button></div></div>';
+    $$('[data-guardar]', cont).forEach(function (b) {
+      b.onclick = function () {
+        var f = $('#f-textos', cont), vals = {};
+        D.textos.forEach(function (t) { vals[t.Clave] = f.elements[t.Clave].value; });
+        C.api('apiGuardarTextos', C.S.token, vals).then(function (r) { C.toast(r.mensaje, 'ok'); }).catch(C.fallo);
+      };
+    });
+  }
+
+  function actualizarBadge(n) {
+    var b = document.getElementById('badge-sitio');
+    if (!b) return;
+    b.textContent = n;
+    b.classList.toggle('oculto', !n);
+  }
+  function refrescarBadge() {
+    C.api('apiSitioPendientes', C.S.token).then(function (r) { actualizarBadge(r.solicitudes + r.mensajes); }).catch(function () { });
+  }
+
+  C.vistas.sitio = vistaSitio;
+  window.CLUB_SITIO = { alEntrar: refrescarBadge };
+})();
+</script>
+
+</body>
+</html>
