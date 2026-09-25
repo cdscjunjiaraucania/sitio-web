@@ -339,7 +339,7 @@
     var cont = function (m) {
       return { pagado: String(m.pagado).replace(/\B(?=(\d{3})+(?!\d))/g, '.'), adelantado: '✓', parcial: 'Abono', pendiente: 'Debe', nosocio: '—', exento: 'Exento', encurso: 'En curso', futuro: '' }[m.estado];
     };
-    var h = '<div class="estado-cuenta"><div class="estado-cab"><div><h3 style="margin:0">' + esc(capital(r.nombre)) + '</h3><div class="muted">RUT ' + esc(r.RUT) + ' · Socio(a) desde ' + fechaLarga(r.FechaIngreso) + '</div></div>' +
+    var h = '<div class="estado-cuenta"><div class="estado-cab"><div><h3 style="margin:0">' + esc(capital(r.nombre)) + '</h3><div class="muted">RUT ' + esc(r.RUT) + '</div></div>' +
       '<div style="text-align:right"><div class="muted" style="font-size:.85rem">' + (ok ? '¡Estás al día!' : 'Deuda al ' + fechaLarga(r.hoy)) + '</div><div class="monto-deuda ' + (ok ? 'ok' : 'mal') + '">' + pesos(r.deuda) + '</div>' +
       (ok ? '' : '<div class="muted" style="font-size:.85rem">' + r.mesesAdeudados + ' cuota(s) pendiente(s)</div>') + '</div></div><div class="matriz"><div></div>' + MES_C.map(function (m) { return '<div class="h">' + m + '</div>'; }).join('');
     Object.keys(anios).sort().forEach(function (a) {
