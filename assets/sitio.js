@@ -346,7 +346,7 @@
       h += '<div class="a">' + a + '</div>' + anios[a].map(function (m) { return '<div class="mes m-' + m.estado + '" data-m="' + MES_C[+m.p.slice(5, 7) - 1] + '" title="' + MESES[+m.p.slice(5, 7) - 1] + ' ' + a + '">' + cont(m) + '</div>'; }).join('');
     });
     h += '</div><div class="leyenda"><span><i class="m-pagado"></i>Pagado</span><span><i class="m-parcial"></i>Abono parcial</span><span><i class="m-pendiente"></i>Pendiente</span><span><i class="m-exento"></i>Exento</span><span><i class="m-nosocio"></i>No era socio</span></div>' +
-      '<div class="alerta info" style="margin-top:16px">Para pagar o aclarar tu estado, contacta a ' + esc(r.tesorero) + ', ' + esc(String(r.tesoreroCargo || '').toLowerCase()) + ' del club.</div></div>';
+      '<div class="alerta info" style="margin-top:16px">Para pagar o aclarar tu estado, contacta a ' + esc(r.tesorero) + ', ' + esc(String(r.tesoreroCargo || '').toLowerCase()) + ' del club al correo clubdeportivojunjiaraucania@gmail.com</div></div>';
     return h;
   }
 
