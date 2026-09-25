@@ -203,7 +203,7 @@
       '<img class="hero-logo" src="assets/img/logo-512.png" alt="Logo del club: araucaria, volcán, cóndor y lago" width="340" height="340"></div>' + paisaje() + '</section>' +
       '<section class="cifras" aria-label="El club en cifras"><div class="contenedor cifras-in">' +
       '<div class="cifra"><b class="num">' + d.stats.socios + '</b><span>socias y socios</span></div><div class="cifra"><b class="num">' + d.stats.disciplinas + '</b><span>disciplinas y talleres</span></div>' +
-      '<div class="cifra"><b class="num">' + d.stats.actividadesAnio + '</b><span>actividades en ' + hoy.slice(0, 4) + '</span></div><div class="cifra"><b class="num">' + pesos(d.cuota) + '</b><span>cuota mensual</span></div></div></section>' +
+      '<div class="cifra"><b class="num">' + (d.stats.actividadesAnio || 'Pronto') + '</b><span>' + (d.stats.actividadesAnio ? 'actividades en ' + hoy.slice(0, 4) : 'nuevas actividades') + '</span></div><div class="cifra"><b class="num">' + pesos(d.cuota) + '</b><span>cuota mensual</span></div></div></section>' +
       '<section class="seccion"><div class="contenedor"><div class="seccion-cab"><div><span class="antetitulo">Calendario</span><h2>Próximas actividades</h2></div><a class="enlace-flecha" href="actividades.html">Ver calendario ' + ico('flecha') + '</a></div>' +
       (prox.length ? prox.map(function (e) { return tarjetaEvento(e); }).join('') : vacio('Pronto publicaremos las próximas actividades. ¡Atento a las novedades!')) + '</div></section>' +
       '<section class="seccion gris"><div class="contenedor"><div class="seccion-cab"><div><span class="antetitulo">Novedades</span><h2>Noticias del club</h2></div><a class="enlace-flecha" href="noticias.html">Todas las noticias ' + ico('flecha') + '</a></div>' +
