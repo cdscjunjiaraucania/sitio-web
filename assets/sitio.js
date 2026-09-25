@@ -110,10 +110,15 @@
       document.head.appendChild(s);
     });
   }
-  function getApi(q) {
+  function getApi(q, intento) {
+    intento = intento || 1;
     var url = API + '?' + q;
     return fetch(url, { redirect: 'follow' }).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .catch(function () { return jsonp(url); })
+      .catch(function (e) {
+        if (intento < 3) return new Promise(function (res) { setTimeout(res, 800 * intento); }).then(function () { return getApi(q, intento + 1); });
+        throw new Error('No pudimos conectar con el sistema del club. Intenta nuevamente en unos segundos.');
+      })
       .then(function (r) { if (!r || !r.ok) throw new Error((r && r.error) || 'Error del servidor'); return r.data; });
   }
   function base() { return fetch('assets/contenido-base.json').then(function (r) { return r.json(); }); }
