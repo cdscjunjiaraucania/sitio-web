@@ -1,0 +1,106 @@
+{
+ "generado": "(contenido base)",
+ "hoy": "2026-09-25",
+ "club": "Club Deportivo, Social y Cultural JUNJI Araucanía",
+ "correo": "clubdeportivojunjiaraucania@gmail.com",
+ "cuota": 2000,
+ "textos": {
+  "SITIO_URL": "https://cdscjunjiaraucania.cl",
+  "HERO_TITULO": "Deporte, amistad y comunidad JUNJI",
+  "HERO_SUBTITULO": "Somos el club de las funcionarias y funcionarios de JUNJI Araucanía. Nos reunimos para hacer deporte, compartir en familia y cultivar la cultura, fuera de la jornada laboral.",
+  "NOSOTROS": "El Club Deportivo, Social y Cultural JUNJI Araucanía nace del interés de funcionarias y funcionarios de la Junta Nacional de Jardines Infantiles en la región por contar con un espacio propio de encuentro.\n\nOrganizamos actividades deportivas, recreativas, sociales y culturales que fortalecen los lazos entre compañeras y compañeros de trabajo y sus familias, promoviendo la vida sana y el buen clima laboral.\n\nEl club se financia principalmente con la cuota mensual de sus socias y socios, además de rifas, aportes a proyectos e iniciativas propias.",
+  "MISION": "Promover la actividad física, la recreación y la cultura entre las funcionarias y funcionarios de JUNJI Araucanía, generando espacios de encuentro que fortalezcan la convivencia y el bienestar.",
+  "VISION": "Ser un club activo, participativo y reconocido en la región, que integre a todas las unidades de JUNJI Araucanía en torno al deporte, la amistad y la cultura.",
+  "VALORES": "Compañerismo\nRespeto\nVida sana\nParticipación\nTransparencia",
+  "BENEFICIOS": "Participar en campeonatos y actividades deportivas del club\nActividades recreativas y celebraciones para socios y sus familias\nTalleres culturales y de bienestar\nPremios, sorteos y actividades de camaradería\nVoz y voto en las asambleas del club",
+  "REQUISITOS": "Ser funcionaria o funcionario de JUNJI Región de La Araucanía\nCompletar la solicitud de incorporación\nPagar la cuota social mensual",
+  "CONTACTO_CORREO": "clubdeportivojunjiaraucania@gmail.com",
+  "CONTACTO_TELEFONO": "",
+  "CONTACTO_WHATSAPP": "",
+  "CONTACTO_DIRECCION": "Temuco, Región de La Araucanía",
+  "FACEBOOK_URL": "",
+  "INSTAGRAM_URL": "",
+  "ESTATUTOS_URL": "",
+  "AVISO_PORTADA": ""
+ },
+ "directiva": [
+  {
+   "nombre": "Carlos Ignacio Vaccaro Vega",
+   "cargo": "Presidente",
+   "correo": "",
+   "foto": ""
+  },
+  {
+   "nombre": "Mirna Andrea Díaz Jaramillo",
+   "cargo": "Tesorera",
+   "correo": "",
+   "foto": ""
+  }
+ ],
+ "disciplinas": [
+  {
+   "id": 1,
+   "nombre": "Fútbol y baby fútbol",
+   "area": "Deportiva",
+   "descripcion": "Entrenamientos y participación en campeonatos con equipos del club.",
+   "horario": "Por confirmar",
+   "lugar": "Temuco",
+   "foto": ""
+  },
+  {
+   "id": 2,
+   "nombre": "Vóleibol",
+   "area": "Deportiva",
+   "descripcion": "Práctica recreativa y encuentros amistosos abiertos a todas las edades.",
+   "horario": "Por confirmar",
+   "lugar": "Temuco",
+   "foto": ""
+  },
+  {
+   "id": 3,
+   "nombre": "Actividad física y bienestar",
+   "area": "Deportiva",
+   "descripcion": "Caminatas, pausas activas y actividades al aire libre para una vida más sana.",
+   "horario": "Por confirmar",
+   "lugar": "Temuco",
+   "foto": ""
+  },
+  {
+   "id": 4,
+   "nombre": "Encuentros y celebraciones",
+   "area": "Social",
+   "descripcion": "Aniversario, fiestas patrias, fin de año y actividades para las familias de nuestros socios.",
+   "horario": "Según calendario",
+   "lugar": "Región de La Araucanía",
+   "foto": ""
+  },
+  {
+   "id": 5,
+   "nombre": "Talleres culturales",
+   "area": "Cultural",
+   "descripcion": "Talleres, salidas y actividades que rescatan la cultura y las tradiciones de La Araucanía.",
+   "horario": "Por confirmar",
+   "lugar": "Temuco",
+   "foto": ""
+  }
+ ],
+ "noticias": [
+  {
+   "id": 1,
+   "fecha": "2026-09-25",
+   "titulo": "Estrenamos nuestro sitio web",
+   "resumen": "Ahora puedes conocer las actividades del club, consultar el estado de tus cuotas e inscribirte como socia o socio desde cualquier dispositivo.",
+   "contenido": "Queridas socias y socios:\n\nEstrenamos el sitio web del Club Deportivo, Social y Cultural JUNJI Araucanía. Aquí publicaremos noticias, el calendario de actividades, resultados y fotos de nuestros encuentros.\n\nTambién puedes consultar el estado de tus cuotas ingresando tu RUT en la sección Socios, y si aún no eres parte del club, completar la solicitud de incorporación en línea.\n\n¡Te esperamos!",
+   "foto": "",
+   "area": "Club",
+   "destacada": true
+  }
+ ],
+ "eventos": [],
+ "albumes": [],
+ "stats": {
+  "socios": 75,
+  "actividadesAnio": 0,
+  "disciplinas": 5
+ }
+}
