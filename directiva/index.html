@@ -286,15 +286,17 @@ body:not(.rol-admin) .solo-admin{display:none!important}
 /* Conecta el panel con el sistema del club (Google Apps Script) usando la URL de assets/config.js */
 (function () {
   var API = (window.CDSC_CONFIG || {}).API_URL || '';
-  // Funciones que solo leen datos: si falla la conexión se reintentan solas (hasta 3 veces).
-  // Las que registran algo (pagos, socios, etc.) NO se reintentan, para no duplicar registros.
+  // Todas las llamadas se reintentan solas (hasta 4 intentos) si se corta la conexión.
+  // Cada llamada lleva un identificador único: si el sistema ya la ejecutó, devuelve el mismo resultado
+  // en vez de repetirla, así un pago o registro nunca se duplica.
   var LECTURA = /^api(Datos|Panel|SocioDetalle|Caja|SimularPago|SitioDatos|SitioPendientes|Usuarios|Exportar|Comprobante(Html|Pdf)|ConsultaSocio)$/;
-  function llamar(fn, args, ok, ko, intento) {
-    intento = intento || 1;
+  function nuevoId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
+  function llamar(fn, args, ok, ko, intento, rid) {
+    intento = intento || 1; rid = rid || nuevoId();
     if (!/^https?:\/\//.test(API) || /PEGAR/.test(API)) { if (ko) ko(new Error('Falta configurar API_URL en assets/config.js')); return; }
     var ctrl = window.AbortController ? new AbortController() : null;
-    var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, 45000);
-    fetch(API, { method: 'POST', body: JSON.stringify({ tipo: 'api', fn: fn, args: args }), redirect: 'follow', signal: ctrl ? ctrl.signal : undefined })
+    var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, 60000);
+    fetch(API, { method: 'POST', body: JSON.stringify({ tipo: 'api', fn: fn, args: args, rid: rid }), redirect: 'follow', credentials: 'omit', signal: ctrl ? ctrl.signal : undefined })
       .then(function (r) { return r.text(); })
       .then(function (txt) {
         clearTimeout(t);
@@ -304,7 +306,7 @@ body:not(.rol-admin) .solo-admin{display:none!important}
       })
       .catch(function () {
         clearTimeout(t);
-        if (LECTURA.test(fn) && intento < 3) { setTimeout(function () { llamar(fn, args, ok, ko, intento + 1); }, 800 * intento); return; }
+        if (intento < 4) { setTimeout(function () { llamar(fn, args, ok, ko, intento + 1, rid); }, 1000 * intento); return; }
         if (ko) ko(new Error(LECTURA.test(fn)
           ? 'No se pudo conectar con el sistema del club. Revisa tu conexión e intenta nuevamente.'
           : 'No se recibió confirmación del sistema. Antes de reintentar, revisa si el registro quedó guardado (por ejemplo, en la ficha del socio).'));
@@ -854,17 +856,18 @@ body:not(.rol-admin) .solo-admin{display:none!important}
     if (!puede()) { v.innerHTML = '<div class="vacio">Tu perfil es solo de consulta.</div>'; return; }
     var d = S.datos;
     S.pagoSocio = opc.socioId ? d.socios.filter(function (s) { return s.ID === opc.socioId; })[0] : null;
-    v.innerHTML = '<div class="cab-vista"><div><h2>Registrar pago de cuotas</h2><p>El monto se aplica primero a los meses adeudados más antiguos, luego al mes en curso y después a meses futuros (pago adelantado).</p></div></div>' +
+    v.innerHTML = '<div class="cab-vista"><div><h2>Registrar pago de cuotas</h2><p>Selecciona al socio, marca los meses que está pagando y confirma el monto.</p></div></div>' +
       '<div class="grid g2" style="align-items:start">' +
       '<div class="card"><h3 style="margin-bottom:10px">1. Socio</h3><div class="buscador"><input class="inp" id="p-buscar" placeholder="Escribe nombre o RUT…" autocomplete="off"><div class="sugerencias oculto" id="p-sug"></div></div><div id="p-socio" style="margin-top:14px"></div></div>' +
       '<div class="card"><h3 style="margin-bottom:10px">2. Pago</h3><form class="form f2" id="fp">' +
+      '<div class="full"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px"><b class="small">Meses a pagar</b>' +
+      '<span class="btns"><button type="button" class="btn chico" id="p-todos">Marcar meses adeudados</button><button type="button" class="btn chico" id="p-limpiar">Limpiar</button></span></div>' +
+      '<div id="p-meses"><div class="muted small">Primero selecciona al socio.</div></div></div>' +
       '<label class="campo full"><span>Monto recibido</span><input class="inp num" name="monto" type="number" min="1" step="1" placeholder="0" style="font-size:20px;font-weight:700"></label>' +
-      '<div class="chips full" id="p-rapidos"></div>' +
+      '<div class="ayuda full" style="margin-top:-6px">Se calcula al marcar los meses. Si es un abono parcial, puedes escribir un monto menor.</div>' +
       '<label class="campo"><span>Fecha de pago</span><input class="inp" type="date" name="fecha" value="' + d.hoy + '" max="' + d.hoy + '"></label>' +
       '<label class="campo"><span>Medio de pago</span><select class="inp" name="medio"><option>Efectivo</option><option>Transferencia</option><option>Depósito</option><option>Otro</option></select></label>' +
       '<label class="campo full"><span>Observación (opcional)</span><input class="inp" name="obs" placeholder="Ej: N° de transferencia"></label>' +
-      '<label class="full" style="display:flex;gap:8px;align-items:center;cursor:pointer"><input type="checkbox" id="p-manual"> Elegir los meses manualmente</label>' +
-      '<div class="full oculto" id="p-meses"></div>' +
       '</form><div id="p-prev" style="margin-top:14px"></div>' +
       '<button class="btn prim" id="p-ok" style="width:100%;margin-top:14px;padding:12px" disabled>Registrar pago</button></div></div>';
 
@@ -895,55 +898,41 @@ body:not(.rol-admin) .solo-admin{display:none!important}
       pintarSocio();
     }
     function pintarSocio() {
-      var s = S.pagoSocio;
-      if (!s) { $('#p-socio', v).innerHTML = '<div class="vacio">Busca y selecciona al socio que paga.</div>'; $('#p-rapidos', v).innerHTML = ''; return; }
+      var s = S.pagoSocio, box = $('#p-meses', v);
+      f.monto.value = '';
+      if (!s) { $('#p-socio', v).innerHTML = '<div class="vacio">Busca y selecciona al socio que paga.</div>'; box.innerHTML = '<div class="muted small">Primero selecciona al socio.</div>'; simular(); return; }
       $('#p-socio', v).innerHTML = '<div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px"><div><b>' + esc(capital(s.nombre)) + '</b><div class="muted small">RUT ' + esc(s.RUT) + '</div></div>' +
         '<div style="text-align:right"><div class="muted small">Deuda</div><div class="num" style="font-size:22px;font-weight:800;color:' + (s.deuda ? 'var(--rojo)' : 'var(--verde)') + '">' + pesos(s.deuda) + '</div></div></div>' +
         (s.mesesAdeudados ? '<div class="small muted" style="margin-bottom:10px">Adeuda: ' + esc(listaMeses(s.periodosAdeudados)) + '</div>' : '') + matrizHTML(s.meses, { leyenda: false, compacta: true });
-      var c = d.cuotaActual, rap = [];
-      if (s.deuda) rap.push(['Deuda total', s.deuda]);
-      [1, 3, 6, 12].forEach(function (n) { rap.push([n + ' cuota' + (n > 1 ? 's' : ''), n * c]); });
-      $('#p-rapidos', v).innerHTML = rap.map(function (r) { return '<button type="button" class="chip" data-m="' + r[1] + '">' + r[0] + ' · ' + pesos(r[1]) + '</button>'; }).join('');
-      $$('#p-rapidos .chip', v).forEach(function (b) { b.onclick = function () { f.monto.value = b.dataset.m; simular(); }; });
-      $('#p-manual', v).checked = false;
-      $('#p-meses', v).classList.add('oculto');
-      f.monto.value = s.deuda || '';
+      var libres = s.meses.filter(function (m) { return ['pendiente', 'parcial', 'encurso', 'futuro'].indexOf(m.estado) >= 0; })
+        .map(function (m) { return { p: m.p, pend: m.estado === 'pendiente' || m.estado === 'parcial', falta: m.cuota - m.pagado }; });
+      var ult = s.meses[s.meses.length - 1].p;
+      for (var i = 1; i <= 12; i++) libres.push({ p: sumarMes(ult, i), pend: false, falta: d.cuotaActual });
+      box.innerHTML = '<div class="check-meses">' + libres.map(function (x) {
+        return '<label class="' + (x.pend ? 'pend' : '') + '"><input type="checkbox" value="' + x.p + '" data-falta="' + x.falta + '"' + (x.pend ? ' data-pend="1"' : '') + '>' + cortoP(x.p) + ' <span class="muted small">' + miles(x.falta) + '</span></label>';
+      }).join('') + '</div><div class="ayuda">En rojo, los meses adeudados.</div>';
+      $$('input', box).forEach(function (c) { c.onchange = sumarMarcados; });
       simular();
     }
+    function sumarMarcados() {
+      f.monto.value = $$('#p-meses input:checked', v).reduce(function (t, x) { return t + Number(x.dataset.falta); }, 0) || '';
+      simular();
+    }
+    $('#p-todos', v).onclick = function () { $$('#p-meses input', v).forEach(function (c) { c.checked = !!c.dataset.pend; }); sumarMarcados(); };
+    $('#p-limpiar', v).onclick = function () { $$('#p-meses input', v).forEach(function (c) { c.checked = false; }); sumarMarcados(); };
     function periodosManual() {
-      if (!$('#p-manual', v).checked) return null;
       return $$('#p-meses input:checked', v).map(function (c) { return c.value; });
     }
-    $('#p-manual', v).onchange = function (e) {
-      var box = $('#p-meses', v);
-      if (!S.pagoSocio) { e.target.checked = false; return; }
-      box.classList.toggle('oculto', !e.target.checked);
-      if (e.target.checked) {
-        var libres = S.pagoSocio.meses.filter(function (m) { return ['pendiente', 'parcial', 'encurso', 'futuro'].indexOf(m.estado) >= 0; })
-          .map(function (m) { return { p: m.p, pend: m.estado === 'pendiente' || m.estado === 'parcial', falta: m.cuota - m.pagado }; });
-        var ult = S.pagoSocio.meses[S.pagoSocio.meses.length - 1].p;
-        for (var i = 1; i <= 12; i++) libres.push({ p: sumarMes(ult, i), pend: false, falta: d.cuotaActual });
-        box.innerHTML = '<div class="check-meses">' + libres.map(function (x) {
-          return '<label class="' + (x.pend ? 'pend' : '') + '"><input type="checkbox" value="' + x.p + '" data-falta="' + x.falta + '">' + cortoP(x.p) + ' <span class="muted small">' + miles(x.falta) + '</span></label>';
-        }).join('') + '</div><div class="ayuda">Al marcar meses, el monto se calcula solo (puedes ajustarlo para un abono parcial).</div>';
-        $$('input', box).forEach(function (c) {
-          c.onchange = function () {
-            f.monto.value = $$('input:checked', box).reduce(function (t, x) { return t + Number(x.dataset.falta); }, 0) || '';
-            simular();
-          };
-        });
-      }
-      simular();
-    };
     var tSim = null, ultimaSim = null;
     function simular() {
       clearTimeout(tSim);
       var btn = $('#p-ok', v), prev = $('#p-prev', v);
       btn.disabled = true; ultimaSim = null;
       var monto = Number(f.monto.value);
-      if (!S.pagoSocio || !(monto > 0)) { prev.innerHTML = ''; return; }
       var pm = periodosManual();
-      if (pm && !pm.length) { prev.innerHTML = '<div class="aviso">Marca al menos un mes.</div>'; return; }
+      if (!S.pagoSocio) { prev.innerHTML = ''; return; }
+      if (!pm.length) { prev.innerHTML = '<div class="muted small">Marca los meses que se están pagando.</div>'; return; }
+      if (!(monto > 0)) { prev.innerHTML = ''; return; }
       prev.innerHTML = '<div class="muted small">Calculando…</div>';
       tSim = setTimeout(function () {
         api('apiSimularPago', S.token, S.pagoSocio.ID, monto, pm).then(function (r) {
