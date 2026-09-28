@@ -188,6 +188,18 @@
       '</svg>';
   }
 
+  /** Banner de cuenta regresiva: acepta el código <iframe> completo o solo el enlace (https). */
+  function cuentaRegresiva(t) {
+    var cod = String(t.CUENTA_REGRESIVA || '').trim();
+    if (!cod) return '';
+    var m = cod.match(/src\s*=\s*["']?([^"'\s>]+)/i);
+    var url = m ? m[1] : cod;
+    if (!/^https:\/\/[^\s"'<>]+$/.test(url)) return '';
+    return '<section class="cuenta-regresiva" aria-label="Cuenta regresiva"><div class="contenedor cr-in"><div class="cr-txt"><span class="antetitulo">Cuenta regresiva</span>' +
+      (t.CUENTA_REGRESIVA_TITULO ? '<h2>' + esc(t.CUENTA_REGRESIVA_TITULO) + '</h2>' : '') + (t.CUENTA_REGRESIVA_TEXTO ? '<p>' + esc(t.CUENTA_REGRESIVA_TEXTO) + '</p>' : '') + '</div>' +
+      '<div class="cr-marco"><iframe src="' + esc(url) + '" width="300" height="154" title="' + esc(t.CUENTA_REGRESIVA_TITULO || 'Cuenta regresiva') + '" loading="lazy" referrerpolicy="no-referrer"></iframe></div></div></section>';
+  }
+
   // ───────────── Páginas ─────────────
   var PAGINAS = {};
 
@@ -201,6 +213,7 @@
       '<span class="antetitulo">' + esc(CLUB) + '</span><h1>' + esc(t.HERO_TITULO || 'Deporte, amistad y comunidad') + '</h1>' +
       '<p class="lead">' + esc(t.HERO_SUBTITULO || '') + '</p><div class="btns"><a class="btn btn-prim" href="socios.html#inscripcion">Hazte socio ' + ico('flecha') + '</a><a class="btn btn-borde" href="socios.html#consulta">Consulta tu cuota</a></div></div>' +
       '<img class="hero-logo" src="assets/img/logo-512.png" alt="Logo del club: araucaria, volcán, cóndor y lago" width="340" height="340"></div>' + paisaje() + '</section>' +
+      cuentaRegresiva(t) +
       '<section class="cifras" aria-label="El club en cifras"><div class="contenedor cifras-in">' +
       '<div class="cifra"><b class="num">' + d.stats.socios + '</b><span>socias y socios</span></div><div class="cifra"><b class="num">' + d.stats.disciplinas + '</b><span>disciplinas y talleres</span></div>' +
       '<div class="cifra"><b class="num">' + (d.stats.actividadesAnio || 'Pronto') + '</b><span>' + (d.stats.actividadesAnio ? 'actividades en ' + hoy.slice(0, 4) : 'nuevas actividades') + '</span></div><div class="cifra"><b class="num">' + pesos(d.cuota) + '</b><span>cuota mensual</span></div></div></section>' +
