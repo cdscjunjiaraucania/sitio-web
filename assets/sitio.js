@@ -188,16 +188,43 @@
       '</svg>';
   }
 
-  /** Banner de cuenta regresiva: acepta el código <iframe> completo o solo el enlace (https). */
+  /** Cuenta regresiva propia del club (fecha configurable desde el panel: Textos del sitio). */
+  function fechaEvento(t) {
+    var m = String(t.CUENTA_REGRESIVA_FECHA || '').trim().match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{1,2}):(\d{2}))?/);
+    return m ? new Date(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0)) : null;
+  }
   function cuentaRegresiva(t) {
-    var cod = String(t.CUENTA_REGRESIVA || '').trim();
-    if (!cod) return '';
-    var m = cod.match(/src\s*=\s*["']?([^"'\s>]+)/i);
-    var url = m ? m[1] : cod;
-    if (!/^https:\/\/[^\s"'<>]+$/.test(url)) return '';
-    return '<section class="cuenta-regresiva" aria-label="Cuenta regresiva"><div class="contenedor cr-in"><div class="cr-txt"><span class="antetitulo">Cuenta regresiva</span>' +
-      (t.CUENTA_REGRESIVA_TITULO ? '<h2>' + esc(t.CUENTA_REGRESIVA_TITULO) + '</h2>' : '') + (t.CUENTA_REGRESIVA_TEXTO ? '<p>' + esc(t.CUENTA_REGRESIVA_TEXTO) + '</p>' : '') + '</div>' +
-      '<div class="cr-marco"><iframe src="' + esc(url) + '" width="300" height="154" title="' + esc(t.CUENTA_REGRESIVA_TITULO || 'Cuenta regresiva') + '" loading="lazy" referrerpolicy="no-referrer"></iframe></div></div></section>';
+    var f = fechaEvento(t);
+    if (!f || Date.now() > f.getTime() + 5 * 864e5) return '';
+    var hora = f.getHours() || f.getMinutes() ? ' · ' + ('0' + f.getHours()).slice(-2) + ':' + ('0' + f.getMinutes()).slice(-2) + ' h' : '';
+    var caja = function (id, et) { return '<div class="cr-caja"><b id="cr-' + id + '">--</b><span>' + et + '</span></div>'; };
+    return '<section class="cuenta-regresiva" aria-label="Cuenta regresiva"><div class="contenedor cr-in">' +
+      '<div class="cr-txt"><span class="cr-ante">' + ico('trofeo') + ' Cuenta regresiva</span><h2>' + esc(t.CUENTA_REGRESIVA_TITULO || 'Próximo evento') + '</h2>' +
+      '<div class="cr-meta">' + ico('cal') + ' ' + capital(DIAS[f.getDay()]) + ' ' + f.getDate() + ' de ' + MESES[f.getMonth()] + ' de ' + f.getFullYear() + hora +
+      (t.CUENTA_REGRESIVA_LUGAR ? '<br>' + ico('pin') + ' ' + esc(t.CUENTA_REGRESIVA_LUGAR) : '') + '</div>' +
+      (t.CUENTA_REGRESIVA_TEXTO ? '<p>' + esc(t.CUENTA_REGRESIVA_TEXTO) + '</p>' : '') + '</div>' +
+      '<div class="cr-reloj" id="cr-reloj" data-fin="' + f.getTime() + '" role="timer" aria-live="off">' + caja('d', 'días') + caja('h', 'horas') + caja('m', 'minutos') + caja('s', 'segundos') + '</div>' +
+      '</div></section>';
+  }
+  var intervaloCR = null;
+  function activarCuentaRegresiva() {
+    clearInterval(intervaloCR);
+    var reloj = document.getElementById('cr-reloj');
+    if (!reloj) return;
+    var fin = Number(reloj.dataset.fin);
+    function tic() {
+      var r = fin - Date.now();
+      if (r <= 0) {
+        clearInterval(intervaloCR);
+        reloj.innerHTML = '<div class="cr-llego">¡Llegó el día! ¡Fuerza, delegación Araucanía!</div>';
+        return;
+      }
+      var s = Math.floor(r / 1000);
+      var v = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+      Object.keys(v).forEach(function (k) { var el = document.getElementById('cr-' + k); if (el) el.textContent = k === 'd' ? v[k] : ('0' + v[k]).slice(-2); });
+    }
+    tic();
+    intervaloCR = setInterval(tic, 1000);
   }
 
   // ───────────── Páginas ─────────────
@@ -228,7 +255,7 @@
       '<section class="seccion"><div class="contenedor"><div class="cta aparece"><div><h2>¿Trabajas en JUNJI Araucanía?</h2><p>Súmate al club por ' + pesos(d.cuota) + ' al mes y participa en campeonatos, celebraciones y talleres junto a tus compañeras y compañeros.</p></div>' +
       '<a class="btn btn-claro" href="socios.html#inscripcion">Quiero ser socio ' + ico('flecha') + '</a></div></div></section>';
   };
-  PAGINAS.inicio.despues = function (d) { if (d.albumes[0]) activarLightbox(d.albumes[0]); };
+  PAGINAS.inicio.despues = function (d) { if (d.albumes[0]) activarLightbox(d.albumes[0]); activarCuentaRegresiva(); };
 
   PAGINAS.nosotros = function (d) {
     var t = d.textos || {};
