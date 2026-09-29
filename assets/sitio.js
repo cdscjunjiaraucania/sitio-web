@@ -22,6 +22,7 @@
   function fechaLarga(f) { var d = fecha(f); return d ? d.getDate() + ' de ' + MESES[d.getMonth()] + ' de ' + d.getFullYear() : ''; }
   function fechaCorta(f) { var d = fecha(f); return d ? d.getDate() + ' ' + MES_C[d.getMonth()] + ' ' + d.getFullYear() : ''; }
   function hoyISO() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function url(u) { u = String(u || '').trim(); return /^https?:\/\//i.test(u) ? esc(u) : '#'; }
   function img(id, w) { return id ? 'https://lh3.googleusercontent.com/d/' + encodeURIComponent(id) + '=w' + (w || 1200) : ''; }
   function lineas(t) { return String(t || '').split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean); }
   function enlazar(t) { return t.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
@@ -68,7 +69,7 @@
   function cabecera() {
     var activo = PAGINA === 'noticia' ? 'noticias' : PAGINA;
     $('#cab').outerHTML = '<a class="saltar" href="#contenido">Saltar al contenido</a><header class="cab" id="cab"><div class="contenedor cab-in">' +
-      '<a class="marca" href="index.html" aria-label="Inicio"><img src="assets/img/logo.png" alt="Logo CDSC JUNJI Araucanía" width="46" height="46"><div><b>CDSC JUNJI</b><span>Araucanía</span></div></a>' +
+      '<a class="marca" href="index.html"><img src="assets/img/logo-96.webp" alt="" width="46" height="46"><div><b>CDSC JUNJI</b><span>Araucanía</span></div></a>' +
       '<button class="menu-btn" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>' +
       '<nav class="menu" id="menu" aria-label="Principal">' + NAV.map(function (n) { return '<a href="' + n[1] + '"' + (n[0] === activo ? ' class="activo" aria-current="page"' : '') + '>' + n[2] + '</a>'; }).join('') +
       '<a class="btn btn-prim" href="socios.html#inscripcion">Hazte socio</a></nav></div></header>';
@@ -81,17 +82,17 @@
   }
   function pie(d) {
     var t = d.textos || {};
-    var redes = (t.FACEBOOK_URL ? '<a href="' + esc(t.FACEBOOK_URL) + '" target="_blank" rel="noopener" aria-label="Facebook">' + marca('fb') + '</a>' : '') +
-      (t.INSTAGRAM_URL ? '<a href="' + esc(t.INSTAGRAM_URL) + '" target="_blank" rel="noopener" aria-label="Instagram">' + marca('ig') + '</a>' : '') +
+    var redes = (t.FACEBOOK_URL ? '<a href="' + url(t.FACEBOOK_URL) + '" target="_blank" rel="noopener" aria-label="Facebook">' + marca('fb') + '</a>' : '') +
+      (t.INSTAGRAM_URL ? '<a href="' + url(t.INSTAGRAM_URL) + '" target="_blank" rel="noopener" aria-label="Instagram">' + marca('ig') + '</a>' : '') +
       (t.CONTACTO_WHATSAPP ? '<a href="https://wa.me/' + esc(t.CONTACTO_WHATSAPP) + '" target="_blank" rel="noopener" aria-label="WhatsApp">' + marca('wa') + '</a>' : '');
     var correo = t.CONTACTO_CORREO || d.correo;
     $$('.wa-flotante').forEach(function (x) { x.remove(); });
     $('#pie').outerHTML = '<footer class="pie" id="pie"><div class="contenedor"><div class="pie-in">' +
-      '<div><a class="marca" href="index.html"><img src="assets/img/logo.png" alt="" width="46" height="46"><div><b>CDSC JUNJI</b><span>Araucanía</span></div></a>' +
+      '<div><a class="marca" href="index.html"><img src="assets/img/logo-96.webp" alt="" width="46" height="46" loading="lazy"><div><b>CDSC JUNJI</b><span>Araucanía</span></div></a>' +
       '<p style="margin-top:14px;font-size:.94rem;max-width:320px">' + esc(CLUB) + '. Deporte, amistad y comunidad para las funcionarias y funcionarios de JUNJI en La Araucanía.</p>' + (redes ? '<div class="redes">' + redes + '</div>' : '') + '</div>' +
-      '<div><h4>Club</h4><ul><li><a href="nosotros.html">Quiénes somos</a></li><li><a href="actividades.html">Actividades</a></li><li><a href="noticias.html">Noticias</a></li><li><a href="galeria.html">Galería</a></li></ul></div>' +
-      '<div><h4>Socios</h4><ul><li><a href="socios.html#inscripcion">Hazte socio</a></li><li><a href="socios.html#consulta">Consulta tu cuota</a></li>' + (SISTEMA ? '<li><a href="' + esc(SISTEMA) + '" target="_blank" rel="noopener">Acceso directiva</a></li>' : '') + (t.ESTATUTOS_URL ? '<li><a href="' + esc(t.ESTATUTOS_URL) + '" target="_blank" rel="noopener">Estatutos</a></li>' : '') + '</ul></div>' +
-      '<div><h4>Contacto</h4><ul>' + (correo ? '<li><a href="mailto:' + esc(correo) + '">' + esc(correo) + '</a></li>' : '') + (t.CONTACTO_TELEFONO ? '<li><a href="tel:' + esc(t.CONTACTO_TELEFONO.replace(/\s/g, '')) + '">' + esc(t.CONTACTO_TELEFONO) + '</a></li>' : '') +
+      '<div><h2 class="pie-tit">Club</h2><ul><li><a href="nosotros.html">Quiénes somos</a></li><li><a href="actividades.html">Actividades</a></li><li><a href="noticias.html">Noticias</a></li><li><a href="galeria.html">Galería</a></li></ul></div>' +
+      '<div><h2 class="pie-tit">Socios</h2><ul><li><a href="socios.html#inscripcion">Hazte socio</a></li><li><a href="socios.html#consulta">Consulta tu cuota</a></li>' + (SISTEMA ? '<li><a href="' + esc(SISTEMA) + '" target="_blank" rel="noopener">Acceso directiva</a></li>' : '') + (t.ESTATUTOS_URL ? '<li><a href="' + url(t.ESTATUTOS_URL) + '" target="_blank" rel="noopener">Estatutos</a></li>' : '') + '</ul></div>' +
+      '<div><h2 class="pie-tit">Contacto</h2><ul>' + (correo ? '<li><a href="mailto:' + esc(correo) + '">' + esc(correo) + '</a></li>' : '') + (t.CONTACTO_TELEFONO ? '<li><a href="tel:' + esc(t.CONTACTO_TELEFONO.replace(/\s/g, '')) + '">' + esc(t.CONTACTO_TELEFONO) + '</a></li>' : '') +
       '<li>' + esc(t.CONTACTO_DIRECCION || 'Temuco, La Araucanía') + '</li><li><a href="contacto.html">Escríbenos</a></li></ul></div></div>' +
       '<div class="pie-base"><span>© ' + new Date().getFullYear() + ' ' + esc(CLUB) + '</span><span>Temuco · Región de La Araucanía · Chile</span></div></div></footer>' +
       (t.CONTACTO_WHATSAPP ? '<a class="wa-flotante" href="https://wa.me/' + esc(t.CONTACTO_WHATSAPP) + '" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">' + marca('wa').replace('class="ico"', '') + '</a>' : '');
@@ -133,7 +134,13 @@
       });
       return Promise.resolve(cache.d);
     }
-    return fresco.then(function (d) { guardarLS('cdsc_sitio', { t: Date.now(), d: d }); return d; });
+    // Primera visita: se muestra al instante la copia publicada en GitHub y se actualiza apenas responde el sistema
+    var listo = false;
+    fresco = fresco.then(function (d) { guardarLS('cdsc_sitio', { t: Date.now(), d: d }); if (listo) alActualizar(d); return d; });
+    var copia = base().then(function (b) { b.hoy = hoyISO(); return b; });
+    return Promise.race([fresco, copia.then(function (b) { return new Promise(function (res) { setTimeout(function () { res(b); }, 250); }); })])
+      .then(function (d) { listo = true; return d; })
+      .catch(function () { listo = true; return fresco; });
   }
   function enviar(datos) {
     if (!API) return Promise.reject(new Error('El formulario todavía no está conectado al sistema del club. Escríbenos a ' + (CFG.CORREO || 'clubdeportivojunjiaraucania@gmail.com') + '.'));
@@ -145,7 +152,7 @@
   // ───────────── Componentes ─────────────
   function imagen(id, w, alt) {
     return id ? '<img src="' + img(id, w) + '" alt="' + esc(alt || '') + '" loading="lazy" onerror="this.onerror=null;this.src=\'https://drive.google.com/thumbnail?id=' + esc(id) + '&sz=w' + (w || 1200) + '\'">'
-      : '<div class="ph"><img src="assets/img/logo.png" alt=""></div>';
+      : '<div class="ph"><img src="assets/img/logo-96.webp" alt=""></div>';
   }
   function tarjetaNoticia(n) {
     return '<a class="tarjeta aparece" href="noticia.html?id=' + n.id + '"><div class="img">' + imagen(n.foto, 800, n.titulo) + '</div><div class="cuerpo">' +
@@ -157,7 +164,8 @@
     return '<article class="evento aparece' + (pasado ? ' pasado' : '') + '" data-area="' + esc(e.area) + '"><div class="fecha-caja" aria-hidden="true"><span class="d">' + d.getDate() + '</span><span class="m">' + MES_C[d.getMonth()] + '</span><span class="a">' + d.getFullYear() + '</span></div>' +
       '<div style="flex:1;min-width:0"><div class="meta"><span class="etiqueta ' + esc(e.area) + '">' + esc(e.area || 'Club') + '</span>' + (e.estado && e.estado !== 'Programado' ? '<span class="etiqueta ' + esc(e.estado) + '">' + esc(e.estado) + '</span>' : '') + '</div>' +
       '<h3>' + esc(e.titulo) + '</h3><div class="meta"><span>' + ico('cal') + capital(DIAS[d.getDay()]) + ' ' + fechaLarga(e.fecha) + '</span>' + (e.hora ? '<span>' + ico('reloj') + esc(e.hora) + ' h</span>' : '') + (e.lugar ? '<span>' + ico('pin') + esc(e.lugar) + '</span>' : '') + '</div>' +
-      (e.descripcion ? '<p>' + esc(e.descripcion) + '</p>' : '') + (e.resultado ? '<div class="resultado">' + ico('trofeo') + ' ' + esc(e.resultado) + '</div>' : '') + '</div></article>';
+      (e.descripcion ? '<p>' + esc(e.descripcion) + '</p>' : '') + (e.resultado ? '<div class="resultado">' + ico('trofeo') + ' ' + esc(e.resultado) + '</div>' : '') +
+      (e.foto ? '<a class="evento-img" href="' + img(e.foto, 1600) + '" target="_blank" rel="noopener" aria-label="Ver imagen de ' + esc(e.titulo) + '"><img src="' + img(e.foto, 700) + '" alt="' + esc(e.titulo) + '" loading="lazy"></a>' : '') + '</div></article>';
   }
   function tarjetaDisciplina(x) {
     return '<div class="disciplina aparece ' + esc(x.area) + '"><div class="icono">' + icoArea(x.area) + '</div><h3>' + esc(x.nombre) + '</h3><p>' + esc(x.descripcion) + '</p>' +
@@ -249,7 +257,7 @@
       (t.AVISO_PORTADA ? '<div class="aviso-portada">' + ico('alerta') + '<span>' + esc(t.AVISO_PORTADA) + '</span></div>' : '') +
       '<span class="antetitulo">' + esc(CLUB) + '</span><h1>' + esc(t.HERO_TITULO || 'Deporte, amistad y comunidad') + '</h1>' +
       '<p class="lead">' + esc(t.HERO_SUBTITULO || '') + '</p><div class="btns"><a class="btn btn-prim" href="socios.html#inscripcion">Hazte socio ' + ico('flecha') + '</a><a class="btn btn-borde" href="socios.html#consulta">Consulta tu cuota</a></div></div>' +
-      '<img class="hero-logo" src="assets/img/logo-512.png" alt="Logo del club: araucaria, volcán, cóndor y lago" width="340" height="340"></div>' + paisaje() + '</section>' +
+      '<img class="hero-logo" src="assets/img/logo-400.webp" fetchpriority="high" alt="Logo del club: araucaria, volcán, cóndor y lago" width="340" height="340"></div>' + paisaje() + '</section>' +
       cuentaRegresiva(t) +
       '<section class="seccion"><div class="contenedor"><div class="seccion-cab"><div><span class="antetitulo">Calendario</span><h2>Próximas actividades</h2></div><a class="enlace-flecha" href="actividades.html">Ver calendario ' + ico('flecha') + '</a></div>' +
       (prox.length ? prox.map(function (e) { return tarjetaEvento(e); }).join('') : vacio('Pronto publicaremos las próximas actividades. ¡Atento a las novedades!')) + '</div></section>' +
@@ -268,8 +276,8 @@
     var t = d.textos || {};
     return cabPagina('Quiénes somos', 'Conoce la historia, los propósitos y a las personas que dirigen el club.') +
       '<section class="seccion"><div class="contenedor"><div class="grid g2" style="align-items:center;gap:48px"><div><span class="antetitulo">Nuestra historia</span><h2>Un club hecho por y para funcionarios JUNJI</h2><div class="prosa">' + parrafos(t.NOSOTROS) + '</div>' +
-      (t.ESTATUTOS_URL ? '<a class="btn btn-borde" href="' + esc(t.ESTATUTOS_URL) + '" target="_blank" rel="noopener">' + ico('doc') + ' Ver estatutos</a>' : '') + '</div>' +
-      '<div style="display:flex;justify-content:center"><img src="assets/img/logo-512.png" alt="Logo del club" width="380" height="380" style="width:min(380px,100%);filter:drop-shadow(0 18px 40px rgba(20,60,40,.2))"></div></div></div></section>' +
+      (t.ESTATUTOS_URL ? '<a class="btn btn-borde" href="' + url(t.ESTATUTOS_URL) + '" target="_blank" rel="noopener">' + ico('doc') + ' Ver estatutos</a>' : '') + '</div>' +
+      '<div style="display:flex;justify-content:center"><img src="assets/img/logo-400.webp" alt="Logo del club" width="380" height="380" loading="lazy" style="width:min(380px,100%);filter:drop-shadow(0 18px 40px rgba(20,60,40,.2))"></div></div></div></section>' +
       '<section class="seccion gris"><div class="contenedor"><div class="grid g2"><div class="mv aparece"><div class="icono">' + ico('diana') + '</div><h3>Misión</h3><p>' + esc(t.MISION) + '</p></div>' +
       '<div class="mv aparece"><div class="icono">' + ico('ojo') + '</div><h3>Visión</h3><p>' + esc(t.VISION) + '</p></div></div>' +
       '<h3 style="margin:40px 0 16px">Nuestros valores</h3><div class="valores">' + lineas(t.VALORES).map(function (v) { return '<span>' + esc(v) + '</span>'; }).join('') + '</div></div></section>' +
@@ -295,7 +303,7 @@
     return cabPagina(n.titulo, fechaLarga(n.fecha) + (n.area ? ' · ' + esc(n.area) : ''), ' / <a href="noticias.html">Noticias</a>') +
       '<section class="seccion"><div class="contenedor"><article class="articulo">' + (n.foto ? '<figure class="portada">' + imagen(n.foto, 1600, n.titulo) + '</figure>' : '') +
       (n.resumen ? '<p style="font-size:1.2rem;font-weight:600;color:var(--tinta)">' + esc(n.resumen) + '</p>' : '') + '<div class="cuerpo">' + parrafos(n.contenido) + '</div>' +
-      '<div class="compartir"><b>Compartir:</b><a class="btn btn-wa" href="https://wa.me/?text=' + encodeURIComponent(txt) + '" target="_blank" rel="noopener">' + marca('wa') + ' WhatsApp</a>' +
+      '<div class="compartir"><b>Compartir:</b>' + (n.foto && navigator.share ? '<button type="button" class="btn btn-prim" id="compartir-foto" data-foto="' + esc(img(n.foto, 1200)) + '" data-titulo="' + esc(n.titulo) + '">' + ico('flecha') + ' Compartir con foto</button>' : '') + '<a class="btn btn-wa" href="https://wa.me/?text=' + encodeURIComponent(txt) + '" target="_blank" rel="noopener">' + marca('wa') + ' WhatsApp</a>' +
       '<a class="btn btn-lago" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '" target="_blank" rel="noopener">' + marca('fb') + ' Facebook</a></div></article>' +
       (otras.length ? '<div style="margin-top:60px"><h2>Otras noticias</h2><div class="grid g3">' + otras.map(tarjetaNoticia).join('') + '</div></div>' : '') + '</div></section>';
   };
@@ -413,8 +421,8 @@
       (t.CONTACTO_TELEFONO ? dato(ico('tel'), 'Teléfono', '<a href="tel:' + esc(t.CONTACTO_TELEFONO.replace(/\s/g, '')) + '">' + esc(t.CONTACTO_TELEFONO) + '</a>') : '') +
       (t.CONTACTO_WHATSAPP ? dato(marca('wa'), 'WhatsApp', '<a href="https://wa.me/' + esc(t.CONTACTO_WHATSAPP) + '" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>') : '') +
       dato(ico('pin'), 'Ubicación', '<div>' + esc(t.CONTACTO_DIRECCION || 'Temuco, La Araucanía') + '</div>') +
-      (t.FACEBOOK_URL ? dato(marca('fb'), 'Facebook', '<a href="' + esc(t.FACEBOOK_URL) + '" target="_blank" rel="noopener">Síguenos</a>') : '') +
-      (t.INSTAGRAM_URL ? dato(marca('ig'), 'Instagram', '<a href="' + esc(t.INSTAGRAM_URL) + '" target="_blank" rel="noopener">Síguenos</a>') : '') + '</div>' +
+      (t.FACEBOOK_URL ? dato(marca('fb'), 'Facebook', '<a href="' + url(t.FACEBOOK_URL) + '" target="_blank" rel="noopener">Síguenos</a>') : '') +
+      (t.INSTAGRAM_URL ? dato(marca('ig'), 'Instagram', '<a href="' + url(t.INSTAGRAM_URL) + '" target="_blank" rel="noopener">Síguenos</a>') : '') + '</div>' +
       '<form class="panel form f2" id="f-contacto" novalidate><label class="campo"><span>Nombre *</span><input class="inp" name="nombre" required autocomplete="name"></label>' +
       '<label class="campo"><span>Teléfono</span><input class="inp" name="telefono" type="tel" autocomplete="tel"></label>' +
       '<label class="campo full"><span>Correo electrónico *</span><input class="inp" name="correo" type="email" required autocomplete="email"></label>' +
@@ -469,6 +477,20 @@
       };
     });
   }
+
+  // Compartir noticia con la foto adjunta (WhatsApp, etc.). Si el teléfono no lo permite, comparte solo el enlace.
+  document.addEventListener('click', function (ev) {
+    var b = ev.target.closest && ev.target.closest('#compartir-foto');
+    if (!b) return;
+    var datos = { title: b.dataset.titulo, text: b.dataset.titulo + ' – ' + location.href, url: location.href };
+    b.disabled = true;
+    fetch(b.dataset.foto, { mode: 'cors' }).then(function (r) { if (!r.ok) throw 0; return r.blob(); }).then(function (bl) {
+      var f = new File([bl], 'noticia.jpg', { type: bl.type || 'image/jpeg' });
+      if (navigator.canShare && navigator.canShare({ files: [f] })) return navigator.share({ files: [f], title: datos.title, text: datos.text });
+      return navigator.share(datos);
+    }).catch(function (e) { if (!e || e.name !== 'AbortError') return navigator.share(datos).catch(function () { }); })
+      .then(function () { b.disabled = false; });
+  });
 
   // ───────────── Arranque ─────────────
   function animar() {

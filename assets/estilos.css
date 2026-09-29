@@ -297,10 +297,10 @@ textarea.inp{min-height:130px;resize:vertical}
 .pie-in{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px}
 @media (max-width:860px){.pie-in{grid-template-columns:1fr 1fr}}
 @media (max-width:520px){.pie-in{grid-template-columns:1fr}}
-.pie h4{color:#fff;font-size:.95rem;margin-bottom:12px}
+.pie h4,.pie .pie-tit{color:#fff;font-size:.95rem;font-weight:700;margin:0 0 12px;letter-spacing:-.01em}
 .pie a{color:#cfe0d4;text-decoration:none}
 .pie a:hover{color:#fff;text-decoration:underline}
-.pie ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.94rem}
+.pie ul{list-style:none;margin:0;padding:0;display:grid;gap:2px;font-size:.94rem}
 .pie .marca b{color:#fff}
 .pie .marca span{color:#9fb8a7}
 .pie .redes{display:flex;gap:10px;margin-top:14px}
@@ -313,3 +313,10 @@ textarea.inp{min-height:130px;resize:vertical}
 .aparece{opacity:0;transform:translateY(14px);transition:opacity .5s,transform .5s}
 .aparece.visible{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.aparece{opacity:1;transform:none;transition:none}}
+
+/* Enlaces del pie y migas más fáciles de tocar en celular (mín. 24 px) */
+.pie li a{display:inline-block;padding:4px 0;min-height:24px}
+.migas a{display:inline-block;padding:3px 0;min-height:24px}
+/* Imagen de actividad (afiche) */
+.evento-img{display:block;margin-top:12px;max-width:360px;border-radius:12px;overflow:hidden;border:1px solid var(--borde)}
+.evento-img img{display:block;width:100%;height:auto}
