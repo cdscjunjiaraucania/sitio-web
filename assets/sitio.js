@@ -94,7 +94,7 @@
       '<div><h2 class="pie-tit">Socios</h2><ul><li><a href="socios.html#inscripcion">Hazte socio</a></li><li><a href="socios.html#consulta">Consulta tu cuota</a></li>' + (SISTEMA ? '<li><a href="' + esc(SISTEMA) + '" target="_blank" rel="noopener">Acceso directiva</a></li>' : '') + (t.ESTATUTOS_URL ? '<li><a href="' + url(t.ESTATUTOS_URL) + '" target="_blank" rel="noopener">Estatutos</a></li>' : '') + '</ul></div>' +
       '<div><h2 class="pie-tit">Contacto</h2><ul>' + (correo ? '<li><a href="mailto:' + esc(correo) + '">' + esc(correo) + '</a></li>' : '') + (t.CONTACTO_TELEFONO ? '<li><a href="tel:' + esc(t.CONTACTO_TELEFONO.replace(/\s/g, '')) + '">' + esc(t.CONTACTO_TELEFONO) + '</a></li>' : '') +
       '<li>' + esc(t.CONTACTO_DIRECCION || 'Temuco, La Araucanía') + '</li><li><a href="contacto.html">Escríbenos</a></li></ul></div></div>' +
-      '<div class="pie-base"><span>© ' + new Date().getFullYear() + ' ' + esc(CLUB) + '</span><span>Temuco · Región de La Araucanía · Chile</span></div></div></footer>' +
+      '<div class="pie-base"><span>© 2022–' + new Date().getFullYear() + ' ' + esc(CLUB) + '. Todos los derechos reservados.</span><span><a href="privacidad.html">Política de privacidad</a> · Temuco · Región de La Araucanía · Chile</span></div></div></footer>' +
       (t.CONTACTO_WHATSAPP ? '<a class="wa-flotante" href="https://wa.me/' + esc(t.CONTACTO_WHATSAPP) + '" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">' + marca('wa').replace('class="ico"', '') + '</a>' : '');
   }
 
@@ -362,6 +362,7 @@
       '<label class="campo full"><span>Lugar de trabajo (jardín, programa o unidad)</span><input class="inp" name="lugarTrabajo"></label>' +
       '<label class="campo full"><span>Comentario (opcional)</span><textarea class="inp" name="mensaje" style="min-height:90px" placeholder="¿Qué actividades te interesan?"></textarea></label>' +
       '<label class="check full"><input type="checkbox" name="acepta" required> Me comprometo a pagar la cuota social mensual de ' + pesos(d.cuota) + ' y a respetar los estatutos del club.</label>' +
+      '<p class="full muted" style="margin:0;font-size:.86rem">Tus datos se usan solo para gestionar ' + 'tu incorporación y tus cuotas' + ' y no se comparten con terceros. Más información en nuestra <a href="privacidad.html">política de privacidad</a>.</p>' +
       '<input class="trampa" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
       '<div class="full" id="r-socio" aria-live="polite"></div><button class="btn btn-prim full" type="submit">Enviar solicitud</button></form></div></div></section>' +
       '<section class="seccion" id="consulta"><div class="contenedor"><div class="panel" style="max-width:920px;margin:0 auto"><span class="antetitulo">Socios</span><h2>Consulta tu cuota</h2>' +
@@ -412,6 +413,33 @@
     return h;
   }
 
+  PAGINAS.privacidad = function (d) {
+    var t = d.textos || {}, correo = esc(t.CONTACTO_CORREO || d.correo || 'clubdeportivojunjiaraucania@gmail.com');
+    var mail = '<a href="mailto:' + correo + '">' + correo + '</a>';
+    var sec = function (tit, html) { return '<h2>' + tit + '</h2>' + html; };
+    var lista = function (xs) { return '<ul>' + xs.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>'; };
+    return cabPagina('Política de privacidad', 'Cómo cuidamos los datos de nuestras socias, socios y visitantes.', '') +
+      '<section class="seccion"><div class="contenedor"><article class="articulo"><div class="cuerpo">' +
+      '<p><b>Última actualización:</b> 30 de septiembre de 2026.</p>' +
+      sec('1. Responsable', '<p>El responsable de los datos es el ' + esc(CLUB) + ', con domicilio en Temuco, Región de La Araucanía. Para cualquier consulta sobre tus datos, escríbenos a ' + mail + '.</p>') +
+      sec('2. Qué datos recopilamos', lista([
+        '<b>Solicitud de incorporación:</b> nombres, apellidos, RUT, correo electrónico, teléfono, lugar de trabajo y el comentario que quieras agregar.',
+        '<b>Formulario de contacto:</b> nombre, correo electrónico, teléfono (opcional), asunto y mensaje.',
+        '<b>Socias y socios:</b> datos de registro, fecha de ingreso y el historial de cuotas, pagos y exenciones.'])) +
+      sec('3. Para qué los usamos', lista([
+        'Evaluar tu solicitud de incorporación y mantener el registro de socias y socios.',
+        'Llevar el control de cuotas y pagos, y emitir comprobantes.',
+        'Informarte sobre actividades, avisos y el estado de tus cuotas.',
+        'Responder tus consultas.']) + '<p>No usamos tus datos con fines comerciales ni los vendemos, arrendamos o cedemos a terceros.</p>') +
+      sec('4. Dónde se guardan y quién accede', '<p>Los datos se almacenan en servicios de Google (Google Sheets y Google Drive) administrados por el club. Solo acceden integrantes de la directiva y personas encargadas, con usuario y clave personal, y únicamente para las gestiones del club.</p>') +
+      sec('5. Consulta de cuotas por RUT', '<p>La consulta pública de cuotas muestra solo las iniciales del nombre (dos letras del primer nombre y del primer apellido), los primeros dígitos del RUT y el estado de las cuotas. No muestra teléfono, correo, fecha de ingreso ni otros datos personales. Para evitar búsquedas masivas, el sistema limita las consultas con RUT que no corresponden a socios.</p>') +
+      sec('6. Fotografías', '<p>En el sitio publicamos fotos de nuestras actividades. Si apareces en una imagen y prefieres que la retiremos, escríbenos a ' + mail + ' y la quitaremos a la brevedad.</p>') +
+      sec('7. Tus derechos', '<p>Puedes solicitar en cualquier momento el acceso, la rectificación, la eliminación o la oposición al tratamiento de tus datos, escribiendo a ' + mail + '. Responderemos a la brevedad. Si dejas de ser socia o socio, puedes pedir que eliminemos tus datos de contacto; conservaremos solo el registro de pagos que sea necesario para la rendición de cuentas del club.</p>') +
+      sec('8. Cookies y almacenamiento', '<p>Este sitio no usa cookies de publicidad ni de seguimiento. Para cargar más rápido, guarda en tu navegador una copia del contenido público del sitio. Las tipografías se cargan desde Google Fonts. Si eres de la directiva, el panel guarda tu sesión en este navegador hasta que presiones «Salir».</p>') +
+      sec('9. Normativa', '<p>Tratamos los datos de acuerdo con la Ley N° 19.628 sobre protección de la vida privada y, desde su entrada en vigencia, la Ley N° 21.719 sobre protección y tratamiento de datos personales. Podemos actualizar esta política; la fecha de la última versión aparece al inicio.</p>') +
+      '</div></article></div></section>';
+  };
+
   PAGINAS.contacto = function (d) {
     var t = d.textos || {}, correo = t.CONTACTO_CORREO || d.correo;
     var dato = function (icono, et, val) { return '<div class="dato-contacto"><div class="icono">' + icono + '</div><div><b>' + et + '</b>' + val + '</div></div>'; };
@@ -428,6 +456,7 @@
       '<label class="campo full"><span>Correo electrónico *</span><input class="inp" name="correo" type="email" required autocomplete="email"></label>' +
       '<label class="campo full"><span>Asunto</span><select class="inp" name="asunto"><option>Consulta general</option><option>Actividades y campeonatos</option><option>Cuotas y pagos</option><option>Propuesta o sugerencia</option><option>Otro</option></select></label>' +
       '<label class="campo full"><span>Mensaje *</span><textarea class="inp" name="mensaje" required minlength="10"></textarea></label>' +
+      '<p class="full muted" style="margin:0;font-size:.86rem">Tus datos se usan solo para gestionar ' + 'tu consulta' + ' y no se comparten con terceros. Más información en nuestra <a href="privacidad.html">política de privacidad</a>.</p>' +
       '<input class="trampa" name="web" tabindex="-1" autocomplete="off" aria-hidden="true"><div class="full" id="r-contacto" aria-live="polite"></div>' +
       '<button class="btn btn-prim full" type="submit">Enviar mensaje</button></form></div></div></section>';
   };
