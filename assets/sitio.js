@@ -189,9 +189,19 @@
   }
 
   /** Cuenta regresiva propia del club (fecha configurable desde el panel: Textos del sitio). */
+  // Valores por defecto: se usan si el servidor aún no tiene la clave (Sitio.gs sin actualizar)
+  var CR_BASE = { fecha: '2026-11-20 09:00', titulo: 'Olimpiadas JUNJI Biobío 2026', texto: '¡Nuestra delegación ya se prepara! Súmate y apoya al club.' };
   function fechaEvento(t) {
-    var m = String(t.CUENTA_REGRESIVA_FECHA || '').trim().match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{1,2}):(\d{2}))?/);
-    return m ? new Date(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0)) : null;
+    var v = t.CUENTA_REGRESIVA_FECHA === undefined ? CR_BASE.fecha : String(t.CUENTA_REGRESIVA_FECHA || '').trim();
+    if (!v) return null;
+    var hm = v.match(/(\d{1,2})[:.](\d{2})(?!\d)/) || [];            // hora: 09:00, 9:00, 09.00
+    var sinHora = hm[0] ? v.replace(hm[0], ' ') : v;
+    var a, mes, d, m;
+    if ((m = sinHora.match(/(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/))) { a = m[1]; mes = m[2]; d = m[3]; }        // 2026-11-20
+    else if ((m = sinHora.match(/(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/))) { d = m[1]; mes = m[2]; a = m[3]; } // 20-11-2026 o 20/11/2026
+    else { var x = new Date(v); return isNaN(x) ? null : x; }
+    var f = new Date(+a, +mes - 1, +d, +(hm[1] || 0), +(hm[2] || 0));
+    return isNaN(f) || f.getMonth() !== +mes - 1 ? null : f;
   }
   function cuentaRegresiva(t) {
     var f = fechaEvento(t);
@@ -199,10 +209,10 @@
     var hora = f.getHours() || f.getMinutes() ? ' · ' + ('0' + f.getHours()).slice(-2) + ':' + ('0' + f.getMinutes()).slice(-2) + ' h' : '';
     var caja = function (id, et) { return '<div class="cr-caja"><b id="cr-' + id + '">--</b><span>' + et + '</span></div>'; };
     return '<section class="cuenta-regresiva" aria-label="Cuenta regresiva"><div class="contenedor cr-in">' +
-      '<div class="cr-txt"><span class="cr-ante">' + ico('trofeo') + ' Cuenta regresiva</span><h2>' + esc(t.CUENTA_REGRESIVA_TITULO || 'Próximo evento') + '</h2>' +
+      '<div class="cr-txt"><span class="cr-ante">' + ico('trofeo') + ' Cuenta regresiva</span><h2>' + esc(t.CUENTA_REGRESIVA_TITULO || (t.CUENTA_REGRESIVA_FECHA === undefined ? CR_BASE.titulo : 'Próximo evento')) + '</h2>' +
       '<div class="cr-meta">' + ico('cal') + ' ' + capital(DIAS[f.getDay()]) + ' ' + f.getDate() + ' de ' + MESES[f.getMonth()] + ' de ' + f.getFullYear() + hora +
       (t.CUENTA_REGRESIVA_LUGAR ? '<br>' + ico('pin') + ' ' + esc(t.CUENTA_REGRESIVA_LUGAR) : '') + '</div>' +
-      (t.CUENTA_REGRESIVA_TEXTO ? '<p>' + esc(t.CUENTA_REGRESIVA_TEXTO) + '</p>' : '') + '</div>' +
+      ((t.CUENTA_REGRESIVA_FECHA === undefined ? CR_BASE.texto : t.CUENTA_REGRESIVA_TEXTO) ? '<p>' + esc(t.CUENTA_REGRESIVA_FECHA === undefined ? CR_BASE.texto : t.CUENTA_REGRESIVA_TEXTO) + '</p>' : '') + '</div>' +
       '<div class="cr-reloj" id="cr-reloj" data-fin="' + f.getTime() + '" role="timer" aria-live="off">' + caja('d', 'días') + caja('h', 'horas') + caja('m', 'minutos') + caja('s', 'segundos') + '</div>' +
       '</div></section>';
   }
@@ -241,9 +251,6 @@
       '<p class="lead">' + esc(t.HERO_SUBTITULO || '') + '</p><div class="btns"><a class="btn btn-prim" href="socios.html#inscripcion">Hazte socio ' + ico('flecha') + '</a><a class="btn btn-borde" href="socios.html#consulta">Consulta tu cuota</a></div></div>' +
       '<img class="hero-logo" src="assets/img/logo-512.png" alt="Logo del club: araucaria, volcán, cóndor y lago" width="340" height="340"></div>' + paisaje() + '</section>' +
       cuentaRegresiva(t) +
-      '<section class="cifras" aria-label="El club en cifras"><div class="contenedor cifras-in">' +
-      '<div class="cifra"><b class="num">' + d.stats.socios + '</b><span>socias y socios</span></div><div class="cifra"><b class="num">' + d.stats.disciplinas + '</b><span>disciplinas y talleres</span></div>' +
-      '<div class="cifra"><b class="num">' + (d.stats.actividadesAnio || 'Pronto') + '</b><span>' + (d.stats.actividadesAnio ? 'actividades en ' + hoy.slice(0, 4) : 'nuevas actividades') + '</span></div><div class="cifra"><b class="num">' + pesos(d.cuota) + '</b><span>cuota mensual</span></div></div></section>' +
       '<section class="seccion"><div class="contenedor"><div class="seccion-cab"><div><span class="antetitulo">Calendario</span><h2>Próximas actividades</h2></div><a class="enlace-flecha" href="actividades.html">Ver calendario ' + ico('flecha') + '</a></div>' +
       (prox.length ? prox.map(function (e) { return tarjetaEvento(e); }).join('') : vacio('Pronto publicaremos las próximas actividades. ¡Atento a las novedades!')) + '</div></section>' +
       '<section class="seccion gris"><div class="contenedor"><div class="seccion-cab"><div><span class="antetitulo">Novedades</span><h2>Noticias del club</h2></div><a class="enlace-flecha" href="noticias.html">Todas las noticias ' + ico('flecha') + '</a></div>' +
