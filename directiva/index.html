@@ -289,7 +289,7 @@ body:not(.rol-admin) .solo-admin{display:none!important}
   // Todas las llamadas se reintentan solas (hasta 4 intentos) si se corta la conexión.
   // Cada llamada lleva un identificador único: si el sistema ya la ejecutó, devuelve el mismo resultado
   // en vez de repetirla, así un pago o registro nunca se duplica.
-  var LECTURA = /^api(Datos|Panel|SocioDetalle|Caja|SimularPago|SitioDatos|SitioPendientes|Usuarios|Exportar|Comprobante(Html|Pdf)|ConsultaSocio)$/;
+  var LECTURA = /^api(Ingresar|Inicio|Datos|Panel|SocioDetalle|Caja|SimularPago|SitioDatos|SitioPendientes|Usuarios|Exportar|Comprobante(Html|Pdf)|ConsultaSocio)$/;
   function nuevoId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
   function llamar(fn, args, ok, ko, intento, rid) {
     intento = intento || 1; rid = rid || nuevoId();
@@ -320,6 +320,10 @@ body:not(.rol-admin) .solo-admin{display:none!important}
     } });
   }
   window.google = { script: { run: crear(null, null) } };
+  // Despierta el sistema apenas se abre la página: mientras se escribe la clave, Google ya deja todo listo
+  if (/^https?:\/\//.test(API) && !/PEGAR/.test(API)) {
+    try { fetch(API + (API.indexOf('?') < 0 ? '?' : '&') + 'api=ping&pre=1', { credentials: 'omit' }).catch(function () { }); } catch (e) { }
+  }
 })();
 </script>
 <script>
@@ -349,8 +353,8 @@ body:not(.rol-admin) .solo-admin{display:none!important}
     return r.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '-' + r.slice(-1);
   }
   function sinTildes(t) { return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
-  function guardar(k, v) { try { if (v == null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) { } }
-  function leer(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  function guardar(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { } }
+  function leer(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   var puede = function () { return S.datos && S.datos.sesion.rol !== 'consulta'; };
 
   /** Agrupa meses consecutivos: "ene a ago 2026, mar 2025" */
@@ -548,27 +552,33 @@ body:not(.rol-admin) .solo-admin{display:none!important}
   }
   $('#f-login').onsubmit = function (e) {
     e.preventDefault();
-    var f = e.target;
-    api('apiLogin', f.usuario.value, f.clave.value).then(function (ses) {
-      S.token = ses.token;
-      S.clavePorDefecto = ses.clavePorDefecto;
-      guardar('club_token', ses.token);
+    var f = e.target, btn = f.querySelector('button[type=submit]'), txt = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Ingresando…'; }
+    var fin = function () { if (btn) { btn.disabled = false; btn.innerHTML = txt; } };
+    // Una sola llamada: valida la clave y trae todos los datos del panel
+    api('apiIngresar', f.usuario.value, f.clave.value).then(function (r) {
+      S.token = r.sesion.token;
+      S.clavePorDefecto = r.sesion.clavePorDefecto;
+      guardar('club_token', r.sesion.token);
       f.clave.value = '';
-      entrar();
-    }).catch(fallo);
+      fin();
+      mostrarApp(r);
+    }).catch(function (err) { fin(); fallo(err); });
   };
 
   function entrar() {
-    return api('apiDatos', S.token).then(function (d) {
-      S.datos = d;
-      document.body.className = 'rol-' + d.sesion.rol;
-      $('#u-nombre').textContent = d.sesion.nombre;
-      $('#u-rol').textContent = d.sesion.rolNombre;
-      if (window.CLUB_SITIO) window.CLUB_SITIO.alEntrar();
-      $('#portada').classList.add('oculto');
-      $('#app').classList.remove('oculto');
-      irA(S.vista || 'panel');
-    });
+    return api('apiInicio', S.token).then(mostrarApp);
+  }
+  function mostrarApp(r) {
+    S.datos = r.datos;
+    S.panelListo = r.panel || null;
+    document.body.className = 'rol-' + r.datos.sesion.rol;
+    $('#u-nombre').textContent = r.datos.sesion.nombre;
+    $('#u-rol').textContent = r.datos.sesion.rolNombre;
+    if (window.CLUB_SITIO) window.CLUB_SITIO.alEntrar();
+    $('#portada').classList.add('oculto');
+    $('#app').classList.remove('oculto');
+    irA(S.vista || 'panel');
   }
   function salir(silencioso) {
     if (S.token && !silencioso) api('apiLogout', S.token).catch(function () { });
@@ -598,7 +608,9 @@ body:not(.rol-admin) .solo-admin{display:none!important}
 
   // ════════════════ PANEL ════════════════
   function vistaPanel(v) {
-    api('apiPanel', S.token).then(function (p) {
+    // Al ingresar, el resumen ya viene incluido: se muestra sin volver a consultar al servidor
+    var listo = S.panelListo; S.panelListo = null;
+    (listo ? Promise.resolve(listo) : api('apiPanel', S.token)).then(function (p) {
       var pct = p.activos ? Math.round(p.alDia * 100 / p.activos) : 0;
       var h = '<div class="cab-vista"><div><h2>Panel del club</h2><p>Situación al ' + fechaCL(p.hoy) + '. La deuda considera solo meses cerrados (hasta ' + nomP(sumarMes(p.actual, -1)) + ').</p></div></div>';
       if (S.clavePorDefecto) h += '<div class="aviso">Estás usando la clave provisoria. Cámbiala en <a href="#" id="ir-clave">Configuración › Mi clave</a>.</div>';
