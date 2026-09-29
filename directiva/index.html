@@ -1477,7 +1477,19 @@ body:not(.rol-admin) .solo-admin{display:none!important}
         var largo = String(t.Valor || '').length > 90 || /\n/.test(t.Valor) || /NOSOTROS|MISION|VISION|VALORES|BENEFICIOS|REQUISITOS|SUBTITULO/.test(t.Clave);
         return '<label class="campo"><span>' + esc(t.Descripcion || t.Clave) + ' <span class="muted" style="font-weight:400">· ' + esc(t.Clave) + '</span></span>' +
           (largo ? '<textarea class="inp" name="' + esc(t.Clave) + '" style="min-height:' + (t.Clave === 'NOSOTROS' ? 200 : 90) + 'px">' + esc(t.Valor) + '</textarea>' : '<input class="inp" name="' + esc(t.Clave) + '" value="' + esc(t.Valor) + '">') + '</label>';
-      }).join('') + '</form><div class="btns solo-edita" style="margin-top:14px"><button class="btn prim" data-guardar>Guardar textos</button></div></div>';
+      }).join('') + '</form><div class="btns solo-edita" style="margin-top:14px"><button class="btn prim" data-guardar>Guardar textos</button></div></div>' +
+      '<div class="card"><div class="card-cab"><div><h3>Copia de respaldo del sitio</h3><div class="muted small">Es lo que ven al instante quienes entran por primera vez (y lo que se muestra si Google no responde). ' +
+      'Descárgala cuando hagas cambios importantes y súbela a GitHub en la carpeta <b>assets</b>, reemplazando <b>contenido-base.json</b>.</div></div>' +
+      '<button class="btn" id="btn-respaldo">Descargar contenido-base.json</button></div></div>';
+    $('#btn-respaldo', cont).onclick = function () {
+      C.api('apiRespaldoSitio', C.S.token).then(function (d) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], { type: 'application/json' }));
+        a.download = 'contenido-base.json';
+        document.body.appendChild(a); a.click(); a.remove();
+        C.toast('Copia descargada. Súbela a GitHub en la carpeta assets.', 'ok');
+      }).catch(C.fallo);
+    };
     $$('[data-guardar]', cont).forEach(function (b) {
       b.onclick = function () {
         var f = $('#f-textos', cont), vals = {};
