@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Acceso directiva · CDSC JUNJI Araucanía</title>
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
-  <script src="../assets/config.js"></script>
+  <script src="../assets/config.js?v=20261001c"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -286,6 +286,8 @@ body:not(.rol-admin) .solo-admin{display:none!important}
 /* Conecta el panel con el sistema del club (Google Apps Script) usando la URL de assets/config.js */
 (function () {
   var API = (window.CDSC_CONFIG || {}).API_URL || '';
+  // Si config.js viniera vacío o dañado, se usa la dirección de respaldo del sistema del club
+  if (!/^https?:\/\//.test(API) || /PEGAR/.test(API)) API = 'https://script.google.com/macros/s/AKfycbz-yW-vBhn3dmulxr57b6ATrCYFwamZXlxDA-1Y2QbErhnZTZAF98Hh5_XS-UYQV31fTA/exec';
   // Todas las llamadas se reintentan solas (hasta 4 intentos) si se corta la conexión.
   // Cada llamada lleva un identificador único: si el sistema ya la ejecutó, devuelve el mismo resultado
   // en vez de repetirla, así un pago o registro nunca se duplica.
