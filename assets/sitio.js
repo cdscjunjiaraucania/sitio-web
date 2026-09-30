@@ -153,7 +153,7 @@
       .catch(function () { listo = true; return fresco; });
   }
   function enviar(datos) {
-    if (!API) return Promise.reject(new Error('El formulario todavía no está conectado al sistema del club. Escríbenos a ' + (CFG.CORREO || 'clubdeportivojunjiaraucania@gmail.com') + '.'));
+    if (!API) return Promise.reject(new Error('El formulario todavía no está conectado al sistema del club. Escríbenos a ' + (CFG.CORREO || 'contacto@cdscjunjiaraucania.cl') + '.'));
     return fetch(API, { method: 'POST', body: JSON.stringify(datos), redirect: 'follow' })
       .then(function (r) { return r.json(); })
       .then(function (r) { if (!r.ok) throw new Error(r.error || 'No se pudo enviar.'); return r.mensaje; });
@@ -257,6 +257,7 @@
 
   // ───────────── Páginas ─────────────
   var PAGINAS = {};
+  var CORREO_SITIO = CFG.CORREO || 'contacto@cdscjunjiaraucania.cl';
 
   PAGINAS.inicio = function (d) {
     var t = d.textos || {}, hoy = d.hoy || hoyISO();
@@ -441,12 +442,12 @@
       h += '<div class="a">' + a + '</div>' + anios[a].map(function (m) { return '<div class="mes m-' + m.estado + '" data-m="' + MES_C[+m.p.slice(5, 7) - 1] + '" title="' + MESES[+m.p.slice(5, 7) - 1] + ' ' + a + '">' + cont(m) + '</div>'; }).join('');
     });
     h += '</div><div class="leyenda"><span><i class="m-pagado"></i>Pagado</span><span><i class="m-parcial"></i>Abono parcial</span><span><i class="m-pendiente"></i>Pendiente</span><span><i class="m-exento"></i>Exento</span><span><i class="m-nosocio"></i>No era socio</span></div>' +
-      '<div class="alerta info" style="margin-top:16px">Para pagar o aclarar tu estado, contacta a ' + esc(r.tesorero) + ', ' + esc(String(r.tesoreroCargo || '').toLowerCase()) + ' del club al correo clubdeportivojunjiaraucania@gmail.com</div></div>';
+      '<div class="alerta info" style="margin-top:16px">Para pagar o aclarar tu estado, contacta a ' + esc(r.tesorero) + ', ' + esc(String(r.tesoreroCargo || '').toLowerCase()) + ' del club al correo <a href="mailto:' + esc(CORREO_SITIO) + '">' + esc(CORREO_SITIO) + '</a></div></div>';
     return h;
   }
 
   PAGINAS.privacidad = function (d) {
-    var t = d.textos || {}, correo = esc(t.CONTACTO_CORREO || d.correo || 'clubdeportivojunjiaraucania@gmail.com');
+    var t = d.textos || {}, correo = esc(t.CONTACTO_CORREO || d.correo || 'contacto@cdscjunjiaraucania.cl');
     var mail = '<a href="mailto:' + correo + '">' + correo + '</a>';
     var sec = function (tit, html) { return '<h2>' + tit + '</h2>' + html; };
     var lista = function (xs) { return '<ul>' + xs.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>'; };
@@ -561,6 +562,7 @@
     els.forEach(function (e) { io.observe(e); });
   }
   function pintar(d) {
+    CORREO_SITIO = (d.textos && d.textos.CONTACTO_CORREO) || d.correo || CORREO_SITIO;
     var main = $('#contenido');
     if (!PAGINAS[PAGINA]) return;
     main.innerHTML = PAGINAS[PAGINA](d);

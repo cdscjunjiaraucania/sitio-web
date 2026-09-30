@@ -5,7 +5,7 @@
             Debe terminar en /exec
    ═══════════════════════════════════════════════════════════════ */
 window.CDSC_CONFIG = {
-  API_URL: 'https://script.google.com/macros/s/AKfycbz-yW-vBhn3dmulxr57b6ATrCYFwamZXlxDA-1Y2QbErhnZTZAF98Hh5_XS-UYQV31fTA/exec',
-  SISTEMA_URL: '',   // opcional: si se deja vacío usa la misma API_URL (acceso directiva)
-  CORREO: 'clubdeportivojunjiaraucania@gmail.com'
+  API_URL: 'PEGAR_AQUI_LA_URL_QUE_TERMINA_EN_/exec',
+  SISTEMA_URL: '',   // opcional: dirección del acceso directiva (vacío = /directiva del mismo sitio)
+  CORREO: 'contacto@cdscjunjiaraucania.cl'
 };
