@@ -546,7 +546,7 @@ body:not(.rol-admin) .solo-admin{display:none!important}
       '<div class="monto ' + (ok ? 'ok' : 'mal') + '">' + pesos(r.deuda) + '</div>' +
       (ok ? '' : '<div class="small muted">' + r.mesesAdeudados + ' cuota(s): ' + esc(listaMeses(r.periodosAdeudados)) + '</div>') + '</div></div></div>' +
       '<div class="card"><div class="card-cab"><h3>Mis cuotas</h3><span class="muted small">Cuota mensual: ' + pesos(r.cuotaActual) + '</span></div>' + matrizHTML(r.meses) +
-      '<div class="aviso info" style="margin:14px 0 0">Para pagar o aclarar tu estado, contacta a ' + esc(r.tesorero) + ', ' + esc(String(r.tesoreroCargo || '').toLowerCase()) + ' del club al correo clubdeportivojunjiaraucania@gmail.com. ' +
+      '<div class="aviso info" style="margin:14px 0 0">Para pagar o aclarar tu estado, contacta a ' + esc(r.tesorero) + ', ' + esc(String(r.tesoreroCargo || '').toLowerCase()) + ' del club al correo contacto@cdscjunjiaraucania.cl. ' +
       'Solo cuentan como deuda los meses ya terminados.</div></div>';
     $('#resultado-consulta').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
