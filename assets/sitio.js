@@ -29,6 +29,14 @@
   function parrafos(t) { return String(t || '').split(/\n\s*\n/).map(function (p) { return p.trim() ? '<p>' + enlazar(esc(p.trim())).replace(/\n/g, '<br>') + '</p>' : ''; }).join(''); }
   function iniciales(n) { var p = String(n || '').trim().split(/\s+/); return ((p[0] || '')[0] || '') + ((p.length > 2 ? p[p.length - 2] : p[1] || '')[0] || ''); }
   function capital(t) { return String(t || '').toLowerCase().replace(/(^|\s)\S/g, function (x) { return x.toUpperCase(); }); }
+  function rutValido(v) {
+    var r = normRut(v);
+    if (!/^\d{7,8}[0-9K]$/.test(r)) return false;
+    var s = 0, m = 2, c = r.slice(0, -1);
+    for (var i = c.length - 1; i >= 0; i--) { s += +c[i] * m; m = m === 7 ? 2 : m + 1; }
+    var dv = 11 - s % 11;
+    return (dv === 11 ? '0' : dv === 10 ? 'K' : String(dv)) === r.slice(-1);
+  }
   function normRut(r) { return String(r || '').replace(/[^0-9kK]/g, '').toUpperCase(); }
   function formatoRut(v) { var r = normRut(v); return r.length < 2 ? r : r.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '-' + r.slice(-1); }
   function param(n) { var m = new RegExp('[?&]' + n + '=([^&#]*)').exec(location.search); return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; }
@@ -103,7 +111,7 @@
     return new Promise(function (ok, ko) {
       var cb = 'cdsc_cb_' + Date.now() + Math.floor(Math.random() * 1000);
       var s = document.createElement('script');
-      var t = setTimeout(function () { limpiar(); ko(new Error('Tiempo de espera agotado')); }, 15000);
+      var t = setTimeout(function () { limpiar(); ko(new Error('Tiempo de espera agotado')); }, 10000);
       function limpiar() { clearTimeout(t); try { delete window[cb]; } catch (e) { window[cb] = undefined; } s.remove(); }
       window[cb] = function (r) { limpiar(); ok(r); };
       s.onerror = function () { limpiar(); ko(new Error('No se pudo conectar')); };
@@ -114,7 +122,9 @@
   function getApi(q, intento) {
     intento = intento || 1;
     var url = API + '?' + q;
-    return fetch(url, { redirect: 'follow' }).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var reloj = ctrl ? setTimeout(function () { ctrl.abort(); }, 9000) : null;
+    return fetch(url, { redirect: 'follow', signal: ctrl ? ctrl.signal : undefined }).then(function (r) { clearTimeout(reloj); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .catch(function () { return jsonp(url); })
       .catch(function (e) {
         if (intento < 3) return new Promise(function (res) { setTimeout(res, 800 * intento); }).then(function () { return getApi(q, intento + 1); });
@@ -383,16 +393,38 @@
       var datos = { tipo: 'solicitud', nombres: f.nombres.value, apellidos: f.apellidos.value, rut: f.rut.value, telefono: f.telefono.value, correo: f.correo.value, lugarTrabajo: f.lugarTrabajo.value, mensaje: f.mensaje.value, acepta: f.acepta.checked, web: f.web.value };
       enviarForm(f, r, datos, function () { f.reset(); });
     };
-    var fc = $('#f-consulta');
-    $('#c-rut').addEventListener('input', function (e) { e.target.value = formatoRut(e.target.value); });
+    var fc = $('#f-consulta'), inRut = $('#c-rut');
+    // Consulta anticipada: apenas el RUT está completo y es válido, se consulta en segundo plano.
+    // Al presionar «Consultar» el resultado ya suele estar listo.
+    var previa = { rut: '', p: null }, pausa = null, ultimoPing = Date.now();
+    function consultar(rut) {
+      if (previa.rut !== rut || !previa.p) {
+        previa = { rut: rut, p: getApi('api=deuda&rut=' + encodeURIComponent(rut)) };
+        previa.p.catch(function () { previa.p = null; }); // si falla, se reintenta al presionar
+      }
+      return previa.p;
+    }
+    inRut.addEventListener('input', function (e) {
+      e.target.value = formatoRut(e.target.value);
+      clearTimeout(pausa);
+      var rut = normRut(e.target.value);
+      if (API && rutValido(rut)) pausa = setTimeout(function () { consultar(rut); }, 600);
+    });
+    inRut.addEventListener('focus', function () {
+      // si la página lleva rato abierta, se «despierta» de nuevo el sistema
+      if (API && Date.now() - ultimoPing > 5 * 60000) { ultimoPing = Date.now(); fetch(API + '?api=ping').catch(function () { }); }
+    });
     fc.onsubmit = function (e) {
       e.preventDefault();
-      var r = $('#r-consulta'), b = $('button', fc);
+      var r = $('#r-consulta'), b = $('button', fc), rut = normRut(inRut.value);
       if (!API) { r.innerHTML = '<div class="alerta error" style="margin-top:16px">La consulta aún no está conectada al sistema del club.</div>'; return; }
+      if (!rutValido(rut)) { r.innerHTML = '<div class="alerta error" style="margin-top:16px">El RUT ingresado no es válido. Revisa el dígito verificador.</div>'; inRut.focus(); return; }
+      clearTimeout(pausa);
       b.disabled = true; b.textContent = 'Consultando…';
-      getApi('api=deuda&rut=' + encodeURIComponent($('#c-rut').value)).then(function (x) { r.innerHTML = estadoCuenta(x); })
-        .catch(function (err) { r.innerHTML = '<div class="alerta error" style="margin-top:16px">' + esc(err.message) + '</div>'; })
-        .then(function () { b.disabled = false; b.textContent = 'Consultar'; });
+      var aviso = setTimeout(function () { r.innerHTML = '<div class="muted" style="margin-top:16px">Conectando con el sistema del club, un momento…</div>'; }, 2500);
+      consultar(rut).then(function (x) { r.innerHTML = estadoCuenta(x); })
+        .catch(function (err) { previa.p = null; r.innerHTML = '<div class="alerta error" style="margin-top:16px">' + esc(err.message) + '</div>'; })
+        .then(function () { clearTimeout(aviso); b.disabled = false; b.textContent = 'Consultar'; });
     };
   };
   function estadoCuenta(r) {
