@@ -5,7 +5,9 @@
   'use strict';
 
   var CFG = window.CDSC_CONFIG || {};
-  var API = /^https:\/\/script\.google(usercontent)?\.com\//.test(CFG.API_URL || '') || /^http:\/\/localhost/.test(CFG.API_URL || '') ? CFG.API_URL : '';
+  // Dirección del sistema del club. Si config.js viniera vacío o dañado, se usa esta de respaldo.
+  var API_RESPALDO = 'https://script.google.com/macros/s/AKfycbz-yW-vBhn3dmulxr57b6ATrCYFwamZXlxDA-1Y2QbErhnZTZAF98Hh5_XS-UYQV31fTA/exec';
+  var API = /^https:\/\/script\.google(usercontent)?\.com\//.test(CFG.API_URL || '') || /^http:\/\/localhost/.test(CFG.API_URL || '') ? CFG.API_URL : API_RESPALDO;
   var SISTEMA = CFG.SISTEMA_URL || 'directiva/';
   var PAGINA = document.body.getAttribute('data-pagina') || 'inicio';
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -409,7 +411,7 @@
       e.target.value = formatoRut(e.target.value);
       clearTimeout(pausa);
       var rut = normRut(e.target.value);
-      if (API && rutValido(rut)) pausa = setTimeout(function () { consultar(rut); }, 600);
+      if (API && rutValido(rut)) pausa = setTimeout(function () { consultar(rut); }, 900);
     });
     inRut.addEventListener('focus', function () {
       // si la página lleva rato abierta, se «despierta» de nuevo el sistema
@@ -419,7 +421,7 @@
       e.preventDefault();
       var r = $('#r-consulta'), b = $('button', fc), rut = normRut(inRut.value);
       if (!API) { r.innerHTML = '<div class="alerta error" style="margin-top:16px">La consulta aún no está conectada al sistema del club.</div>'; return; }
-      if (!rutValido(rut)) { r.innerHTML = '<div class="alerta error" style="margin-top:16px">El RUT ingresado no es válido. Revisa el dígito verificador.</div>'; inRut.focus(); return; }
+      if (rut.length < 7) { r.innerHTML = '<div class="alerta error" style="margin-top:16px">Ingresa tu RUT completo, con dígito verificador.</div>'; inRut.focus(); return; }
       clearTimeout(pausa);
       b.disabled = true; b.textContent = 'Consultando…';
       var aviso = setTimeout(function () { r.innerHTML = '<div class="muted" style="margin-top:16px">Conectando con el sistema del club, un momento…</div>'; }, 2500);
