@@ -260,7 +260,7 @@
   /* ───────── reverso ───────── */
   function drawBack(d) {
     var g = cB.getContext('2d'); base(g);
-    var ex = Math.max(0, H - 1920), sQ = ex * 0.1, sP = ex * 0.35, sC = ex * 0.55, sS = ex;
+    var ex = Math.max(0, H - 1920), sQ = ex * 0.15, sP = ex * 0.5, sC = ex * 0.85;
     var gris = d.vigente ? null : '#59615c';
     guilloche(g, 0, 300, W, H - 300 - STRIP, 'rgba(30,123,52,0.085)');
     header(g, 300, 9, gris);
@@ -290,17 +290,7 @@
     g.font = '700 34px Inter, sans-serif';
     wrap(g, contacto, 900).slice(0, 2).forEach(function (ln, i) { T(g, ln, 540, yC + 50 + i * 44, '700 34px Inter, sans-serif', C.ink, 'center'); });
 
-    var yS = 1740 + sS, f = d.firmas || {};
-    g.strokeStyle = 'rgba(21,36,26,.55)'; g.lineWidth = 3;
-    [[90, 490], [590, 990]].forEach(function (p) { g.beginPath(); g.moveTo(p[0], yS); g.lineTo(p[1], yS); g.stroke(); });
-    function sig(name, rol, cx) {
-      g.font = fitFont(g, name || ' ', '700 {s}px Inter, sans-serif', 30, 390, 18); T(g, name || '', cx, yS + 38, g.font, C.ink, 'center');
-      T(g, rol || '', cx, yS + 72, '500 25px Inter, sans-serif', C.ink3, 'center');
-    }
-    sig(f.pres, f.presRol, 290); sig(f.tes, f.tesRol, 790);
-
     strip(g, 'Socio N° ' + d.n + '  ·  Verificada ' + fmtMarca(d.ts).slice(0, 5) + ' ' + fmtMarca(d.ts).slice(11), gris);
-    stamp(g, 540, yS - 84, 96, 0.2, 23);
     if (!d.vigente) marcaNoVigente(g);
     g.restore();
   }

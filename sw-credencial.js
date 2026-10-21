@@ -1,6 +1,6 @@
 /* Permite abrir la credencial sin conexión: guarda la página y sus archivos en el celular. Los datos personales
  * NO pasan por aquí (se guardan aparte, en el almacenamiento del navegador, tras cada verificación). */
-var VERSION = 'cred-v1';
+var VERSION = 'cred-v2';
 var NUCLEO = ['credencial.html', 'assets/credencial.css', 'assets/credencial.js', 'assets/config.js', 'assets/img/logo.png', 'assets/img/favicon.png', 'manifest-credencial.webmanifest'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return Promise.all(NUCLEO.map(function (u) { return c.add(u).catch(function () { }); })); }).then(function () { return self.skipWaiting(); }));
