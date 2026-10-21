@@ -272,6 +272,7 @@ body:not(.rol-admin) .solo-admin{display:none!important}
       <button data-vista="pago" class="solo-edita">Registrar pago</button>
       <button data-vista="caja">Caja</button>
       <button data-vista="reportes">Reportes y avisos</button>
+      <button data-vista="credenciales">Credenciales</button>
       <button data-vista="sitio">Sitio web <span class="nav-badge oculto" id="badge-sitio"></span></button>
       <button data-vista="config">Configuración</button>
     </div></nav>
@@ -292,7 +293,7 @@ body:not(.rol-admin) .solo-admin{display:none!important}
   // Todas las llamadas se reintentan solas (hasta 4 intentos) si se corta la conexión.
   // Cada llamada lleva un identificador único: si el sistema ya la ejecutó, devuelve el mismo resultado
   // en vez de repetirla, así un pago o registro nunca se duplica.
-  var LECTURA = /^api(Ingresar|Inicio|Datos|Panel|SocioDetalle|Caja|SimularPago|SitioDatos|SitioPendientes|Usuarios|Exportar|Comprobante(Html|Pdf)|ConsultaSocio)$/;
+  var LECTURA = /^api(Ingresar|Inicio|Datos|Panel|SocioDetalle|Caja|SimularPago|SitioDatos|SitioPendientes|CredencialesDatos|CredencialFoto|Usuarios|Exportar|Comprobante(Html|Pdf)|ConsultaSocio)$/;
   function nuevoId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
   function llamar(fn, args, ok, ko, intento, rid) {
     intento = intento || 1; rid = rid || nuevoId();
@@ -1514,6 +1515,164 @@ body:not(.rol-admin) .solo-admin{display:none!important}
 
   C.vistas.sitio = vistaSitio;
   window.CLUB_SITIO = { alEntrar: refrescarBadge };
+})();
+</script>
+
+<style>
+.cr-foto{width:34px;height:45px;border-radius:6px;background:var(--gris-bg);object-fit:cover;display:block}
+.cr-enc{display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:start}
+.cr-enc canvas{width:240px;height:320px;border-radius:12px;border:1px solid var(--borde);background:var(--gris-bg);display:block;touch-action:none}
+.cr-link{word-break:break-all;background:var(--gris-bg);border:1px solid var(--borde);border-radius:8px;padding:10px 12px;font-size:13px;user-select:all}
+@media (max-width:640px){.cr-enc{grid-template-columns:1fr}.cr-enc canvas{margin:0 auto}}
+</style>
+<script>
+(function () {
+  'use strict';
+  var C = window.CLUB;
+  if (!C) return;
+  var $ = C.$, $$ = C.$$, esc = C.esc;
+  var D = null, FILTRO = 'todos', Q = '';
+
+  function sin(t) { return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function badge(ok, si, no) { return '<span class="badge ' + (ok ? 'b-ok' : 'b-ret') + '">' + (ok ? si : no) + '</span>'; }
+  function primerNombre(s) { var t = String(s.nombre || '').split(' ')[0]; return t.charAt(0) + t.slice(1).toLowerCase(); }
+
+  function vistaCredenciales(v) {
+    C.api('apiCredencialesDatos', C.S.token).then(function (d) {
+      D = d;
+      var activos = d.socios.filter(function (s) { return s.Estado !== 'Retirado'; });
+      var sinFoto = activos.filter(function (s) { return !s.tieneFoto; }).length;
+      var sinEnlace = activos.filter(function (s) { return !s.activa; }).length;
+      v.innerHTML = '<div class="cab-vista"><div><h2>Credenciales digitales</h2><p>Cada socio recibe un enlace personal para abrir su credencial en el celular, con sus datos reales del sistema. ' +
+        'Si un socio se retira, su credencial queda «NO VIGENTE» automáticamente.</p></div>' +
+        '<div class="btns"><button class="btn prim solo-edita" id="cr-todas">Crear enlaces faltantes</button></div></div>' +
+        '<div class="grid g4" style="margin-bottom:16px">' +
+        '<div class="card kpi"><div class="et">Socios activos</div><div class="val">' + activos.length + '</div><div class="det">Con derecho a credencial</div></div>' +
+        '<div class="card kpi ' + (sinFoto ? 'alerta' : 'ok') + '"><div class="et">Sin foto</div><div class="val">' + sinFoto + '</div><div class="det">Necesitan fotografía</div></div>' +
+        '<div class="card kpi ' + (sinEnlace ? 'alerta' : 'ok') + '"><div class="et">Sin enlace</div><div class="val">' + sinEnlace + '</div><div class="det">Aún no pueden abrirla</div></div>' +
+        '<div class="card kpi"><div class="et">Listas</div><div class="val">' + activos.filter(function (s) { return s.activa && s.tieneFoto; }).length + '</div><div class="det">Con foto y enlace</div></div></div>' +
+        '<div class="card"><div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px">' +
+        '<input class="inp" id="cr-buscar" placeholder="Buscar por nombre o RUT…" style="max-width:340px" value="' + esc(Q) + '">' +
+        '<div class="chips">' + [['todos', 'Todos'], ['sinfoto', 'Sin foto'], ['sinenlace', 'Sin enlace'], ['listas', 'Listas']].map(function (c) {
+          return '<button class="chip ' + (FILTRO === c[0] ? 'activo' : '') + '" data-f="' + c[0] + '">' + c[1] + '</button>';
+        }).join('') + '</div></div>' +
+        '<div class="tabla-wrap"><table class="t"><thead><tr><th>Socio</th><th>Foto</th><th>Enlace</th><th>Código</th><th></th></tr></thead><tbody id="cr-tb"></tbody></table></div>' +
+        '<div class="ayuda" style="margin-top:12px">El enlace es personal y secreto: quien lo tenga puede ver la credencial. Envíalo solo al socio. Si se filtra, genera uno nuevo y el anterior deja de funcionar. ' +
+        'Las fotos se guardan en una carpeta privada del club.</div></div>';
+      $('#cr-buscar', v).oninput = function (e) { Q = e.target.value; filas(v); };
+      $$('[data-f]', v).forEach(function (b) { b.onclick = function () { FILTRO = b.dataset.f; $$('[data-f]', v).forEach(function (x) { x.classList.toggle('activo', x === b); }); filas(v); }; });
+      $('#cr-todas', v).onclick = function () {
+        C.api('apiCredencialEmitirTodas', C.S.token).then(function (r) { C.toast(r.mensaje, 'ok'); vistaCredenciales(v); }).catch(C.fallo);
+      };
+      filas(v);
+    }).catch(C.fallo);
+  }
+
+  function filas(v) {
+    var q = sin(Q.trim()), qr = Q.replace(/[^0-9kK]/g, '').toUpperCase();
+    var lista = D.socios.filter(function (s) {
+      if (s.Estado === 'Retirado') return false;
+      if (FILTRO === 'sinfoto' && s.tieneFoto) return false;
+      if (FILTRO === 'sinenlace' && s.activa) return false;
+      if (FILTRO === 'listas' && !(s.activa && s.tieneFoto)) return false;
+      if (!q) return true;
+      return sin(s.nombre).indexOf(q) >= 0 || (qr.length >= 3 && String(s.RUT).replace(/[^0-9kK]/g, '').toUpperCase().indexOf(qr) >= 0);
+    });
+    $('#cr-tb', v).innerHTML = lista.length ? lista.map(function (s) {
+      return '<tr><td><b>' + esc(C.capital(s.nombre)) + '</b><div class="muted small">' + esc(s.RUT) + '</div></td><td>' + badge(s.tieneFoto, 'Con foto', 'Falta') + '</td>' +
+        '<td>' + badge(s.activa, 'Activo', s.emitida ? 'Desactivado' : 'Sin crear') + '</td><td class="num muted">' + esc(s.codigo || '—') + '</td>' +
+        '<td class="r" style="white-space:nowrap"><button class="btn chico solo-edita" data-foto="' + s.ID + '">' + (s.tieneFoto ? 'Cambiar foto' : 'Subir foto') + '</button> ' +
+        '<button class="btn chico prim solo-edita" data-enl="' + s.ID + '">Enlace</button></td></tr>';
+    }).join('') : '<tr><td colspan="5"><div class="vacio">No hay socios que coincidan.</div></td></tr>';
+    $$('[data-foto]', v).forEach(function (b) { b.onclick = function () { formFoto(v, +b.dataset.foto); }; });
+    $$('[data-enl]', v).forEach(function (b) { b.onclick = function () { formEnlace(v, +b.dataset.enl); }; });
+  }
+
+  function socio(id) { return D.socios.filter(function (s) { return s.ID === id; })[0]; }
+
+  // ─── Foto: encuadre 3:4 con zoom y desplazamiento, resultado 720×960 JPEG ───
+  function formFoto(v, id) {
+    var s = socio(id), img = null, z = 1, ox = 0, oy = 0;
+    var m = C.modal('<h3>Foto de ' + esc(C.capital(s.nombre)) + '</h3>',
+      '<div class="cr-enc"><canvas id="cr-cv" width="240" height="320"></canvas><div>' +
+      '<label class="campo"><span>Foto (rostro de frente, fondo liso si es posible)</span><input class="inp" type="file" id="cr-file" accept="image/*"></label>' +
+      '<label class="campo" style="margin-top:12px"><span>Acercar</span><input type="range" id="cr-z" min="100" max="300" value="100"></label>' +
+      '<div class="ayuda">Arrastra la imagen para encuadrar el rostro. Se guarda en una carpeta privada del club.</div></div></div>',
+      '<button class="btn" data-no>Cancelar</button><button class="btn prim" data-ok disabled>Guardar foto</button>');
+    var cv = $('#cr-cv', m), g = cv.getContext('2d');
+    function pintar(destino, W, H) {
+      var c = destino || g, w = W || 240, h = H || 320;
+      c.fillStyle = '#e6ece8'; c.fillRect(0, 0, w, h);
+      if (!img) { c.fillStyle = '#8a978f'; c.font = '14px sans-serif'; c.textAlign = 'center'; c.fillText('Elige una foto', w / 2, h / 2); return; }
+      var base = Math.max(w / img.width, h / img.height) * z, dw = img.width * base, dh = img.height * base;
+      var mx = (dw - w) / 2, my = (dh - h) / 2;
+      var x = w / 2 - dw / 2 + clamp(ox, -1, 1) * mx, y = h / 2 - dh / 2 + clamp(oy, -1, 1) * my;
+      c.drawImage(img, x, y, dw, dh);
+    }
+    function clamp(a, b, c) { return Math.max(b, Math.min(c, a)); }
+    pintar();
+    $('#cr-file', m).onchange = function (e) {
+      var f = e.target.files && e.target.files[0]; if (!f) return;
+      var fr = new FileReader();
+      fr.onload = function () { var im = new Image(); im.onload = function () { img = im; z = 1; ox = 0; oy = -0.2; $('#cr-z', m).value = 100; $('[data-ok]', m).disabled = false; pintar(); }; im.onerror = function () { C.toast('No se pudo leer la imagen. Usa JPG o PNG.', 'error'); }; im.src = fr.result; };
+      fr.readAsDataURL(f);
+    };
+    $('#cr-z', m).oninput = function (e) { z = e.target.value / 100; pintar(); };
+    var arr = null;
+    cv.onpointerdown = function (e) { if (!img) return; arr = { x: e.clientX, y: e.clientY, ox: ox, oy: oy }; cv.setPointerCapture(e.pointerId); };
+    cv.onpointermove = function (e) {
+      if (!arr) return;
+      var base = Math.max(240 / img.width, 320 / img.height) * z, mx = (img.width * base - 240) / 2, my = (img.height * base - 320) / 2;
+      // arrastrar a la derecha mueve la imagen a la derecha
+      ox = mx > 0 ? clamp(arr.ox + (e.clientX - arr.x) / mx, -1, 1) : 0;
+      oy = my > 0 ? clamp(arr.oy + (e.clientY - arr.y) / my, -1, 1) : 0;
+      pintar();
+    };
+    cv.onpointerup = cv.onpointercancel = function () { arr = null; };
+    $('[data-no]', m).onclick = m.cerrar;
+    $('[data-ok]', m).onclick = function () {
+      var out = document.createElement('canvas'); out.width = 720; out.height = 960;
+      pintar(out.getContext('2d'), 720, 960);
+      var b64 = out.toDataURL('image/jpeg', 0.86).split(',')[1];
+      this.disabled = true;
+      C.api('apiCredencialSubirFoto', C.S.token, id, { base64: b64, mime: 'image/jpeg' }).then(function (r) {
+        C.toast(r.mensaje, 'ok'); m.cerrar(); vistaCredenciales(v);
+      }).catch(function (e) { $('[data-ok]', m).disabled = false; C.fallo(e); });
+    };
+  }
+
+  // ─── Enlace personal ───
+  function formEnlace(v, id) {
+    var s = socio(id);
+    function mostrar(enlace, codigo) {
+      var texto = 'Hola ' + primerNombre(s) + ', esta es tu credencial digital del Club Deportivo, Social y Cultural JUNJI Araucanía: ' + enlace +
+        '\n\nÁbrela en tu celular y agrégala a la pantalla de inicio para tenerla siempre a mano. Es personal: no compartas este enlace.';
+      var m = C.modal('<h3>Credencial de ' + esc(C.capital(s.nombre)) + '</h3>',
+        (s.tieneFoto ? '' : '<div class="aviso">Este socio aún no tiene foto: súbela antes de enviarle el enlace.</div>') +
+        '<p class="muted" style="margin-top:0">Enlace personal (envíalo solo al socio):</p><div class="cr-link">' + esc(enlace) + '</div>' +
+        '<div class="muted small" style="margin-top:8px">Código de verificación: <b class="num">' + esc(codigo) + '</b></div>',
+        '<button class="btn peligro" data-reg>Generar enlace nuevo</button><button class="btn" data-off>Desactivar</button><button class="btn" data-cop>Copiar enlace</button>' +
+        (s.whatsapp ? '<a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/' + esc(s.whatsapp) + '?text=' + encodeURIComponent(texto) + '">Enviar por WhatsApp</a>' : '') +
+        '<a class="btn azul" target="_blank" rel="noopener" href="' + esc(enlace) + '">Ver credencial</a>');
+      $('[data-cop]', m).onclick = function () {
+        (navigator.clipboard ? navigator.clipboard.writeText(enlace) : Promise.reject()).then(function () { C.toast('Enlace copiado.', 'ok'); }).catch(function () { C.toast('Selecciona el enlace y cópialo manualmente.', 'error'); });
+      };
+      $('[data-reg]', m).onclick = function () {
+        C.confirmar('Generar enlace nuevo', 'El enlace anterior dejará de funcionar y el socio deberá usar el nuevo. ¿Continuar?', 'Generar', true).then(function (ok) {
+          if (ok) C.api('apiCredencialEmitir', C.S.token, id, true).then(function (r) { C.toast(r.mensaje, 'ok'); m.cerrar(); s.enlace = r.enlace; s.codigo = r.codigo; mostrar(r.enlace, r.codigo); vistaCredenciales(v); }).catch(C.fallo);
+        });
+      };
+      $('[data-off]', m).onclick = function () {
+        C.confirmar('Desactivar credencial', 'El enlace dejará de funcionar y la verificación del QR mostrará «NO VIGENTE». Puedes volver a activarla después.', 'Desactivar', true).then(function (ok) {
+          if (ok) C.api('apiCredencialRevocar', C.S.token, id).then(function (r) { C.toast(r.mensaje, 'ok'); m.cerrar(); vistaCredenciales(v); }).catch(C.fallo);
+        });
+      };
+    }
+    if (s.enlace && s.activa) return mostrar(s.enlace, s.codigo);
+    C.api('apiCredencialEmitir', C.S.token, id, false).then(function (r) { mostrar(r.enlace, r.codigo); vistaCredenciales(v); }).catch(C.fallo);
+  }
+
+  C.vistas.credenciales = vistaCredenciales;
 })();
 </script>
 

@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /directiva/
+Disallow: /credencial.html
+Disallow: /verificar.html
 
 Sitemap: https://cdscjunjiaraucania.cl/sitemap.xml

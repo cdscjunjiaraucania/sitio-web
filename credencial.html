@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mi credencial · CDSC JUNJI Araucanía</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#145a25">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Credencial">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest-credencial.webmanifest">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="assets/credencial.css?v=20261020">
+</head>
+<body>
+  <main class="visor" id="visor" hidden>
+    <div class="flip" id="flip" role="button" tabindex="0" aria-label="Credencial digital. Toca para girarla">
+      <div class="inner">
+        <div class="face front"><canvas id="cFront" width="1080" height="2340" role="img" aria-label="Frente de la credencial"></canvas><div class="sheen"></div><div class="clock"><i></i><span class="ck">--:--:--</span></div></div>
+        <div class="face back"><canvas id="cBack" width="1080" height="2340" role="img" aria-label="Reverso de la credencial"></canvas><div class="sheen"></div><div class="clock"><i></i><span class="ck">--:--:--</span></div></div>
+      </div>
+    </div>
+    <div class="aviso-red" id="aviso" hidden></div>
+    <button class="btn-info" id="btnInfo" type="button" aria-label="Opciones">i</button>
+    <div class="pista" id="pista">Toca la credencial para girarla</div>
+  </main>
+
+  <section class="msg" id="msg" hidden>
+    <img src="assets/img/logo.png" alt="Logo del Club" width="96" height="96">
+    <h1 id="msgTit">Mi credencial</h1>
+    <p id="msgTxt"></p>
+    <div class="msg-acc"><button class="boton" id="msgReint" type="button" hidden>Reintentar</button><a class="boton sec" href="socios.html#consulta">Ir al sitio del club</a></div>
+  </section>
+
+  <div class="hoja-fondo" id="hojaFondo" hidden></div>
+  <section class="hoja" id="hoja" role="dialog" aria-modal="true" aria-label="Opciones de la credencial" hidden>
+    <h2>Tu credencial digital</h2>
+    <p class="ult" id="ult"></p>
+    <div class="hoja-acc">
+      <button class="boton" id="btnAct" type="button">Actualizar ahora</button>
+      <button class="boton sec" id="btnGuia" type="button">Cómo tenerla en mi pantalla de inicio</button>
+    </div>
+    <div class="guia" id="guia" hidden>
+      <p><b>iPhone (Safari):</b> toca el botón Compartir y elige «Agregar a inicio».</p>
+      <p><b>Android (Chrome):</b> toca los tres puntos y elige «Instalar aplicación» o «Agregar a la pantalla principal».</p>
+      <p>Una vez abierta, la credencial queda guardada y también se muestra <b>sin conexión</b>; se actualiza sola cuando tengas internet.</p>
+    </div>
+    <p class="nota">Es personal e intransferible. No compartas este enlace: quien lo tenga puede ver tu credencial. Si lo perdiste o se filtró, pide uno nuevo a la directiva.</p>
+    <button class="boton sec" id="btnCerrar" type="button">Cerrar</button>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script src="assets/config.js?v=20261001c"></script>
+  <script src="assets/credencial.js?v=20261020"></script>
+</body>
+</html>

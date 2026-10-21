@@ -1,0 +1,70 @@
+/* Credencial digital: ocupa toda la pantalla del celular */
+:root{--fondo:#050806;--verde:#1e7b34;--verde-os:#145a25;--lago:#1f63c6}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--fondo);color:#fff;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  -webkit-text-size-adjust:100%;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+body{overflow:hidden;user-select:none;-webkit-user-select:none}
+[hidden]{display:none!important}
+
+.visor{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--fondo)}
+.flip{--ar:.4615;--sh:.0359;perspective:1800px;height:100%;aspect-ratio:var(--ar);max-width:100%;max-height:100%;position:relative;cursor:pointer;outline:none}
+.inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.flip.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;container-type:inline-size}
+.face.back{transform:rotateY(180deg)}
+.face canvas{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.sheen{position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;opacity:.85;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%);background-size:300% 100%;animation:brillo 5s linear infinite}
+@keyframes brillo{from{background-position:150% 0}to{background-position:-50% 0}}
+.clock{position:absolute;left:0;right:0;bottom:0;height:calc(var(--sh) * 100%);display:flex;align-items:center;justify-content:flex-end;
+  padding-right:4.4cqw;font-size:2.7cqw;font-weight:600;color:#cfe0d4;font-variant-numeric:tabular-nums;pointer-events:none}
+.clock i{display:inline-block;width:1.6cqw;height:1.6cqw;border-radius:50%;background:#6be28a;margin-right:1.4cqw;animation:pulso 1.6s ease-in-out infinite}
+@keyframes pulso{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.sheen,.clock i{animation:none}.inner{transition:none}}
+/* En pantallas anchas (computador) se muestra como tarjeta con esquinas redondeadas */
+@media (min-aspect-ratio:1/1){.face{border-radius:28px}.flip{max-height:96%}}
+
+.btn-info{position:fixed;z-index:5;top:calc(10px + env(safe-area-inset-top,0px));right:calc(10px + env(safe-area-inset-right,0px));width:40px;height:40px;border-radius:50%;
+  border:0;background:rgba(0,0,0,.4);color:#fff;font:italic 700 20px Georgia,serif;cursor:pointer;opacity:.75}
+.btn-info:focus-visible,.boton:focus-visible,.flip:focus-visible{outline:3px solid #f2b705;outline-offset:2px}
+.pista{position:fixed;z-index:5;left:50%;transform:translateX(-50%);bottom:calc(120px + env(safe-area-inset-bottom,0px));background:rgba(0,0,0,.6);
+  color:#fff;font-size:14px;font-weight:600;padding:8px 14px;border-radius:99px;transition:opacity .6s;pointer-events:none;white-space:nowrap}
+.aviso-red{position:fixed;z-index:5;left:12px;right:12px;bottom:calc(104px + env(safe-area-inset-bottom,0px));background:#7a4a00;color:#fff3dd;font-size:13px;font-weight:600;
+  line-height:1.3;padding:8px 12px;border-radius:10px;pointer-events:none}
+
+/* Mensajes (sin enlace, error, cargando) */
+.msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:6px;
+  background:linear-gradient(160deg,#0b1a12,#10301c)}
+.msg img{border-radius:50%;background:#fff;padding:4px;margin-bottom:8px}
+.msg h1{font-family:Montserrat,system-ui,sans-serif;font-weight:800;font-size:24px;margin:0}
+.msg p{max-width:34ch;margin:6px 0 14px;color:#cfe0d4;line-height:1.5}
+.msg-acc{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.boton{font:inherit;font-weight:600;border:0;border-radius:12px;background:var(--verde);color:#fff;padding:12px 18px;min-height:46px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.boton.sec{background:rgba(255,255,255,.12)}
+
+/* Hoja de opciones */
+.hoja-fondo{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55)}
+.hoja{position:fixed;z-index:21;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;background:#14201a;border-radius:22px 22px 0 0;
+  padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));max-height:85vh;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.hoja h2{font-family:Montserrat,system-ui,sans-serif;font-size:18px;margin:0}
+.hoja .ult{margin:0;color:#9db0a3;font-size:14px}
+.hoja-acc{display:flex;flex-direction:column;gap:10px}
+.guia{background:rgba(255,255,255,.06);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.5;color:#dbe7df}
+.guia p{margin:0 0 8px}.guia p:last-child{margin:0}
+.nota{margin:0;color:#9db0a3;font-size:12.5px;line-height:1.45}
+
+/* Página de verificación */
+.ver{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;background:linear-gradient(160deg,#0b1a12,#10301c);overflow:auto}
+.ver-card{width:min(100%,420px);background:#fff;color:#15241a;border-radius:24px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.45);user-select:text;-webkit-user-select:text}
+.ver-top{padding:18px 20px;color:#fff;text-align:center;font-family:Montserrat,system-ui,sans-serif;font-weight:800;letter-spacing:.02em}
+.ver-top small{display:block;font-weight:600;opacity:.9;letter-spacing:.12em;font-size:11px;margin-top:2px}
+.ver-ok .ver-top{background:linear-gradient(90deg,#145a25,#1e7b34 55%,#1f63c6)}
+.ver-no .ver-top{background:#b3261e}
+.ver-cuerpo{padding:20px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.ver-foto{width:170px;height:226px;border-radius:16px;object-fit:cover;background:#e3efe6;border:4px solid #1e7b34}
+.ver-no .ver-foto{border-color:#b3261e;filter:grayscale(.6)}
+.ver-estado{font-family:Montserrat,system-ui,sans-serif;font-weight:800;font-size:30px;margin:10px 0 0;color:#1d6b31}
+.ver-no .ver-estado{color:#b3261e}
+.ver-nombre{font-family:Montserrat,system-ui,sans-serif;font-weight:800;font-size:20px;line-height:1.2;margin:2px 0 0}
+.ver-dato{color:#56635a;font-size:14px;margin:0}
+.ver-pie{padding:12px 20px 18px;color:#6b766f;font-size:12px;text-align:center;line-height:1.4}

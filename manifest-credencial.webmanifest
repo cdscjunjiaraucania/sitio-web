@@ -1,0 +1,23 @@
+{
+  "name": "Credencial CDSC JUNJI Araucanía",
+  "short_name": "Credencial",
+  "description": "Credencial digital de socio del Club Deportivo, Social y Cultural JUNJI Araucanía",
+  "start_url": "credencial.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050806",
+  "theme_color": "#145a25",
+  "icons": [
+    {
+      "src": "assets/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/img/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
