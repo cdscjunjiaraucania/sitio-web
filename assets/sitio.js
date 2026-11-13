@@ -571,7 +571,7 @@
       $$('.vivo-panel').forEach(function (p) { p.classList.toggle('oculto', p.id !== 'vp-' + id); });
       if (id === 'feed') marcarVistos();
     }
-    $$('[data-vtab]').forEach(function (b) { b.onclick = function () { verTab(b.dataset.vtab); }; });
+    $$('[data-vtab]').forEach(function (b) { b.onclick = function () { V.tabElegida = true; verTab(b.dataset.vtab); }; });
     $('.vivo-tabs').addEventListener('keydown', function (e) {
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
       var ids = ['feed', 'programa'], i = ids.indexOf(V.tab) + (e.key === 'ArrowRight' ? 1 : -1);
@@ -646,7 +646,7 @@
       if (fs === 'antes') {
         var ini = fechaEvento({ CUENTA_REGRESIVA_FECHA: dv.inicio || dv.desde || '' });
         var caja = function (id, et) { return '<div class="cr-caja"><b id="vcr-' + id + '">--</b><span>' + et + '</span></div>'; };
-        p.innerHTML = '<div class="vp-aviso"><span class="pill-vivo apagado"><span class="punto-vivo"></span>Próximamente</span><h2>La transmisión comienza ' + (ini ? 'el ' + DIAS[ini.getDay()] + ' ' + ini.getDate() + ' de ' + MESES[ini.getMonth()] + (ini.getHours() ? ' a las ' + dos(ini.getHours()) + ':' + dos(ini.getMinutes()) : '') : 'pronto') + '</h2>' +
+        p.innerHTML = '<div class="vp-aviso"><h2>La transmisión comienza ' + (ini ? 'el ' + DIAS[ini.getDay()] + ' ' + ini.getDate() + ' de ' + MESES[ini.getMonth()] + (ini.getHours() ? ' a las ' + dos(ini.getHours()) + ':' + dos(ini.getMinutes()) : '') : 'pronto') + '</h2>' +
           (ini ? '<div class="cr-reloj">' + caja('d', 'días') + caja('h', 'horas') + caja('m', 'min') + caja('s', 'seg') + '</div>' : '') +
           '<div class="btns" style="justify-content:center">' + (ini ? '<a class="btn btn-claro" href="' + esc(recordatorio(dv, ini)) + '" target="_blank" rel="noopener">' + ico('campana') + ' Agendar recordatorio</a>' : '') + '</div></div>';
         if (ini) {
@@ -662,7 +662,7 @@
       }
       if (fs === 'fin') { p.innerHTML = '<div class="vp-aviso"><div class="vp-icono">' + ico('trofeo') + '</div><h2>¡Gracias por acompañarnos!</h2><p>Revisa abajo los resultados de nuestra delegación.</p></div>'; return; }
       var prox = proximo(dv);
-      p.innerHTML = '<div class="vp-aviso"><span class="pill-vivo apagado"><span class="punto-vivo"></span>Fuera del aire</span><h2>' + esc(dv.mensaje || 'Volvemos en unos minutos') + '</h2>' +
+      p.innerHTML = '<div class="vp-aviso"><h2>' + esc(dv.mensaje || 'Volvemos en unos minutos') + '</h2>' +
         (prox ? '<p class="vp-prox">Próximo: <b>' + esc(prox.hora ? prox.hora + ' h' : diaCorto(prox.fecha)) + ' · ' + esc(prox.disciplina) + '</b>' + (prox.detalle ? ' ' + esc(prox.detalle) : '') + '</p>' : '<p>Esta página se actualiza sola: cuando volvamos al aire, el video aparecerá aquí.</p>') +
         (f ? '<button type="button" class="btn btn-borde blanco" id="v-ultimo">' + ico('play') + ' Ver lo último transmitido</button>' : '') + '</div>';
       var b = $('#v-ultimo'); if (b) b.onclick = function () { incrustar(f); };
@@ -731,6 +731,8 @@
       $$('[data-dia]', cont).forEach(function (b) { b.onclick = function () { V.dia = b.dataset.dia; pintarPrograma(V.datos); }; });
     }
     function pintar(dv) {
+      // Mientras no haya publicaciones, se abre el programa (más útil antes del evento); luego manda lo que elija el visitante
+      if (!V.tabElegida && !V.datos && !dv.novedades.length) verTab('programa');
       V.datos = dv;
       pintarCabecera(dv); pintarPlayer(dv); pintarAhora(dv); pintarFeed(dv); pintarPrograma(dv);
       var ahora = new Date();

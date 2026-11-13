@@ -390,7 +390,10 @@ a.cr-llego span{display:block;font-size:1rem;margin-top:6px;opacity:.9;text-deco
 .vp-aviso .cr-caja{min-width:70px;padding:10px 6px 8px}
 .vp-aviso .cr-caja b{font-size:2rem}
 .vp-prox b{color:#fff3c4}
-@media (max-width:560px){.vp-aviso{gap:8px;padding:14px}.vp-aviso p{font-size:.9rem}.vp-aviso .cr-caja{min-width:54px}.vp-aviso .cr-caja b{font-size:1.4rem}.vp-aviso .btn{padding:9px 14px;font-size:.88rem}}
+/* Con aviso (cuenta regresiva, pausa) el recuadro crece si el contenido no cabe en 16:9 (celulares) */
+.vivo-player:has(.vp-aviso){aspect-ratio:auto}
+.vivo-player .vp-aviso{position:relative;inset:auto;aspect-ratio:16/9;min-height:100%}
+@media (max-width:560px){.vp-aviso{gap:8px;padding:22px 14px}.vp-aviso p{font-size:.9rem}.vp-aviso .cr-caja{min-width:54px}.vp-aviso .cr-caja b{font-size:1.4rem}.vp-aviso .btn{padding:9px 14px;font-size:.88rem}}
 .vivo-bajo{margin:10px 4px 0;font-size:.9rem;min-height:1.4em}
 .vivo-bajo a{font-weight:650;color:var(--verde);display:inline-flex;align-items:center;gap:4px}
 
