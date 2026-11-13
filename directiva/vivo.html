@@ -8,7 +8,7 @@
 <title>Control en vivo · CDSC JUNJI Araucanía</title>
 <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
-<script src="../assets/config.js?v=20261113a"></script>
+<script src="../assets/config.js?v=20261113b"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -135,7 +135,7 @@ textarea.inp{min-height:92px;resize:vertical}
 
 /* Barra inferior */
 .barra{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(15,23,18,.97);backdrop-filter:blur(10px);border-top:1px solid var(--borde);padding-bottom:env(safe-area-inset-bottom)}
-.barra-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.barra-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
 .barra button{background:none;border:0;color:var(--tinta-3);padding:9px 2px 8px;font-size:11px;font-weight:650;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
 .barra button svg{width:22px;height:22px}
 .barra button.activo{color:#fff}
@@ -151,11 +151,6 @@ textarea.inp{min-height:92px;resize:vertical}
 .modal .pie{display:flex;gap:8px;margin-top:16px}
 .modal .pie .btn{flex:1}
 
-/* Lectura al aire */
-.lectura{position:fixed;inset:0;z-index:60;background:#000;color:#fff;display:flex;flex-direction:column;justify-content:center;padding:28px;text-align:center}
-.lectura p{font-size:clamp(26px,7vw,54px);font-weight:800;line-height:1.2;margin:0 0 20px}
-.lectura span{font-size:clamp(18px,4.5vw,28px);color:#f2b705;font-weight:700}
-.lectura small{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;color:#888;font-size:13px}
 
 /* Toast y carga */
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom));z-index:70;display:flex;flex-direction:column;gap:8px;align-items:center;width:calc(100% - 28px);max-width:460px;pointer-events:none}
@@ -199,7 +194,6 @@ textarea.inp{min-height:92px;resize:vertical}
     <button data-v="marcador"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 5v14M7 10v4M15.5 10h2v4h-2z"/></svg>Marcador</button>
     <button data-v="publicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Publicar</button>
     <button data-v="programa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Programa</button>
-    <button data-v="saludos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Saludos<span class="bdg oculto" id="bdg-saludos"></span></button>
   </div></nav>
 </div>
 <div id="modales"></div>
@@ -289,7 +283,7 @@ textarea.inp{min-height:92px;resize:vertical}
   }
 
   // ════════════ Estado ════════════
-  var S = { token: leer('club_token'), d: null, vista: leer('vivo_vista') || 'aire', tipo: 'Aviso', foto: '', borrador: '', reloj: null, editando: false, sucio: false, envios: {} };
+  var S = { token: leer('club_token'), d: null, vista: /^(aire|marcador|publicar|programa)$/.test(leer('vivo_vista') || '') ? leer('vivo_vista') : 'aire', tipo: 'Aviso', foto: '', borrador: '', reloj: null, editando: false, sucio: false, envios: {} };
   var TIPOS = [['Aviso', '📣'], ['Punto', '🔥'], ['Resultado', '🏁'], ['Medalla', '🏅'], ['Foto', '📸'], ['Ambiente', '🎉']];
   var PLANTILLAS = {
     Aviso: ['En instantes comenzamos 🎬', 'Volvemos en 5 minutos ⏱️', '¡Gracias por acompañarnos!'],
@@ -323,7 +317,7 @@ textarea.inp{min-height:92px;resize:vertical}
       $('#u-nombre').textContent = d.sesion.nombre + (puede() ? '' : ' · solo lectura');
       pintarEstado(); ir(S.vista);
       clearInterval(S.reloj);
-      // Mantiene saludos y datos al día (cada 20 s, solo con la pantalla encendida y sin formularios abiertos)
+      // Mantiene los datos al día (cada 20 s, solo con la pantalla encendida y sin formularios abiertos)
       S.reloj = setInterval(function () { if (document.visibilityState === 'visible') refrescar(true); }, 20000);
     });
   }
@@ -340,8 +334,6 @@ textarea.inp{min-height:92px;resize:vertical}
     var aire = S.d.textos.VIVO_ACTIVO === 'SI', e = $('#estado');
     e.className = 'estado' + (aire ? ' aire' : '');
     e.lastChild.textContent = aire ? 'Al aire' : 'Fuera del aire';
-    var pend = S.d.saludos.filter(function (s) { return s.estado === 'Pendiente'; }).length, b = $('#bdg-saludos');
-    b.textContent = pend > 99 ? '99+' : pend; b.classList.toggle('oculto', !pend);
   }
 
   // ════════════ Navegación ════════════
@@ -350,7 +342,7 @@ textarea.inp{min-height:92px;resize:vertical}
     S.vista = v; guardar('vivo_vista', v); S.sucio = false;
     $$('.barra [data-v]').forEach(function (b) { b.classList.toggle('activo', b.dataset.v === v); });
     var y = window.scrollY;
-    ({ aire: vAire, marcador: vMarcador, publicar: vPublicar, programa: vPrograma, saludos: vSaludos })[v]($('#vista'));
+    ({ aire: vAire, marcador: vMarcador, publicar: vPublicar, programa: vPrograma })[v]($('#vista'));
     if (conservarScroll) window.scrollTo(0, y);
   }
 
@@ -653,43 +645,6 @@ textarea.inp{min-height:92px;resize:vertical}
         if (ok) api('apiVivoEliminarAgenda', S.token, a.id).then(function (r) { m.cerrar(); toast(r.mensaje, 'ok'); refrescar(); }).catch(fallo);
       });
     };
-  }
-
-  // ════════════ SALUDOS ════════════
-  function vSaludos(v) {
-    var pend = S.d.saludos.filter(function (s) { return s.estado === 'Pendiente'; });
-    var apr = S.d.saludos.filter(function (s) { return s.estado === 'Aprobado'; });
-    var fila = function (s, acciones) {
-      return '<div class="item"><div class="cuerpo"><b>' + esc(s.nombre) + '</b>' + (s.unidad ? ' <span class="muted small">· ' + esc(s.unidad) + '</span>' : '') + ' <span class="muted small">' + esc(hora(s.hora)) + '</span><p>' + esc(s.mensaje) + '</p>' +
-        '<div class="btns" style="margin-top:8px">' + acciones + '</div></div></div>';
-    };
-    v.innerHTML = '<div class="card"><div class="card-cab"><h2>Por revisar (' + pend.length + ')</h2><button class="btn chico" id="s-act">Actualizar</button></div>' +
-      (pend.length ? pend.map(function (s) {
-        return fila(s, puede() ? '<button class="btn chico prim" data-s="' + s.id + ':Aprobado">✓ Publicar</button><button class="btn chico" data-s="' + s.id + ':Rechazado">Descartar</button><button class="btn chico" data-leer="' + s.id + '">Leer al aire</button>' : '');
-      }).join('') : '<div class="vacio">No hay saludos nuevos. Llegan desde la pestaña «Saludos» de la página en vivo.</div>') + '</div>' +
-      '<div class="card"><h2>Publicados (' + apr.length + ')</h2>' + (apr.length ? apr.map(function (s) {
-        return fila(s, '<button class="btn chico" data-leer="' + s.id + '">Leer al aire</button>' + (puede() ? '<button class="btn chico" data-s="' + s.id + ':Rechazado">Quitar</button>' : ''));
-      }).join('') : '<div class="vacio">Aún no hay saludos publicados.</div>') + '</div>';
-    $('#s-act').onclick = function () { refrescar(); };
-    $$('[data-s]', v).forEach(function (b) {
-      b.onclick = function () {
-        var p = b.dataset.s.split(':');
-        b.disabled = true;
-        api('apiVivoGestionarSaludo', S.token, +p[0], p[1]).then(function (r) {
-          S.d.saludos.forEach(function (s) { if (s.id === +p[0]) s.estado = p[1]; });
-          toast(r.mensaje, 'ok'); pintarEstado(); ir('saludos', true);
-        }).catch(function (e) { b.disabled = false; fallo(e); });
-      };
-    });
-    $$('[data-leer]', v).forEach(function (b) {
-      b.onclick = function () {
-        var s = S.d.saludos.filter(function (x) { return x.id === +b.dataset.leer; })[0];
-        var l = document.createElement('div'); l.className = 'lectura';
-        l.innerHTML = '<p>“' + esc(s.mensaje) + '”</p><span>' + esc(s.nombre) + (s.unidad ? ' · ' + esc(s.unidad) : '') + '</span><small>Toca para cerrar</small>';
-        l.onclick = function () { l.remove(); };
-        document.body.appendChild(l);
-      };
-    });
   }
 
   // ════════════ Arranque ════════════
