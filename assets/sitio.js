@@ -531,18 +531,10 @@
       '<section class="vivo-sec"><div class="contenedor vivo-grid">' +
       '<div class="vivo-principal"><div class="vivo-player" id="v-player"><div class="vp-carga"><span class="girando"></span>Conectando con la transmisión…</div></div>' +
       '<div class="vivo-bajo" id="v-bajo"></div><div id="v-ahora"></div><div id="v-medallero"></div></div>' +
-      '<aside class="vivo-lateral" aria-label="Minuto a minuto, programa y saludos"><div class="vivo-tabs" role="tablist">' +
-      tab('feed', 'Minuto a minuto', true) + tab('programa', 'Programa') + tab('saludos', 'Saludos') + '</div>' +
+      '<aside class="vivo-lateral" aria-label="Minuto a minuto y programa"><div class="vivo-tabs" role="tablist">' +
+      tab('feed', 'Minuto a minuto', true) + tab('programa', 'Programa') + '</div>' +
       '<div class="vivo-panel" id="vp-feed" role="tabpanel" aria-labelledby="tab-feed"><div class="vacio">Cargando…</div></div>' +
       '<div class="vivo-panel oculto" id="vp-programa" role="tabpanel" aria-labelledby="tab-programa"></div>' +
-      '<div class="vivo-panel oculto" id="vp-saludos" role="tabpanel" aria-labelledby="tab-saludos">' +
-      '<form class="saludo-form" id="f-saludo" novalidate><b>Envía tu saludo a la delegación</b><p class="muted">Lo revisamos y lo publicamos aquí. ¡Puede que lo lean en la transmisión!</p>' +
-      '<div class="sf-fila"><label class="sr" for="s-nombre">Tu nombre</label><input class="inp" id="s-nombre" name="nombre" maxlength="40" placeholder="Tu nombre" required autocomplete="given-name">' +
-      '<label class="sr" for="s-unidad">Jardín o unidad</label><input class="inp" id="s-unidad" name="unidad" maxlength="60" placeholder="Jardín o unidad (opcional)"></div>' +
-      '<label class="sr" for="s-msj">Mensaje</label><textarea class="inp" id="s-msj" name="mensaje" maxlength="200" required placeholder="¡Vamos Araucanía! …"></textarea>' +
-      '<input class="trampa" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
-      '<div class="sf-pie"><span class="muted" id="s-cuenta">0/200</span><button class="btn btn-prim" type="submit">Enviar saludo</button></div><div id="r-saludo" aria-live="polite"></div></form>' +
-      '<div id="v-saludos"></div></div>' +
       '<div class="vivo-act" id="v-act" aria-live="off"></div></aside>' +
       '</div></section>';
   };
@@ -582,19 +574,10 @@
     $$('[data-vtab]').forEach(function (b) { b.onclick = function () { verTab(b.dataset.vtab); }; });
     $('.vivo-tabs').addEventListener('keydown', function (e) {
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-      var ids = ['feed', 'programa', 'saludos'], i = ids.indexOf(V.tab) + (e.key === 'ArrowRight' ? 1 : -1);
-      verTab(ids[(i + 3) % 3]); $('#tab-' + V.tab).focus();
+      var ids = ['feed', 'programa'], i = ids.indexOf(V.tab) + (e.key === 'ArrowRight' ? 1 : -1);
+      verTab(ids[(i + 2) % 2]); $('#tab-' + V.tab).focus();
     });
 
-    // Saludos
-    var fs = $('#f-saludo');
-    fs.mensaje.addEventListener('input', function () { $('#s-cuenta').textContent = fs.mensaje.value.length + '/200'; });
-    fs.onsubmit = function (e) {
-      e.preventDefault();
-      var r = $('#r-saludo');
-      if (fs.nombre.value.trim().length < 2 || fs.mensaje.value.trim().length < 3) { r.innerHTML = '<div class="alerta error">Escribe tu nombre y tu saludo.</div>'; return; }
-      enviarForm(fs, r, { tipo: 'saludo', nombre: fs.nombre.value, unidad: fs.unidad.value, mensaje: fs.mensaje.value, web: fs.web.value }, function () { fs.mensaje.value = ''; $('#s-cuenta').textContent = '0/200'; });
-    };
 
     // Reproductor
     var ytApi = null;
@@ -747,14 +730,9 @@
         }).join('') + '</ol>';
       $$('[data-dia]', cont).forEach(function (b) { b.onclick = function () { V.dia = b.dataset.dia; pintarPrograma(V.datos); }; });
     }
-    function pintarSaludos(dv) {
-      $('#v-saludos').innerHTML = dv.saludos.length ? '<ul class="saludos">' + dv.saludos.map(function (s) {
-        return '<li><p>“' + esc(s.mensaje) + '”</p><span><b>' + esc(s.nombre) + '</b>' + (s.unidad ? ' · ' + esc(s.unidad) : '') + ' <span class="muted">' + esc(horaDe(s.hora)) + '</span></span></li>';
-      }).join('') + '</ul>' : '';
-    }
     function pintar(dv) {
       V.datos = dv;
-      pintarCabecera(dv); pintarPlayer(dv); pintarAhora(dv); pintarFeed(dv); pintarPrograma(dv); pintarSaludos(dv);
+      pintarCabecera(dv); pintarPlayer(dv); pintarAhora(dv); pintarFeed(dv); pintarPrograma(dv);
       var ahora = new Date();
       $('#v-act').innerHTML = '<span class="punto-ok"></span>Se actualiza sola · ' + dos(ahora.getHours()) + ':' + dos(ahora.getMinutes()) + ':' + dos(ahora.getSeconds());
     }

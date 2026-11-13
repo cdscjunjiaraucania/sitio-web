@@ -430,7 +430,7 @@ a.cr-llego span{display:block;font-size:1rem;margin-top:6px;opacity:.9;text-deco
 /* Columna lateral */
 .vivo-lateral{background:#fff;border:1px solid var(--borde);border-radius:18px;box-shadow:0 20px 50px rgba(0,0,0,.18);overflow:hidden;position:sticky;top:86px;display:flex;flex-direction:column;max-height:calc(100vh - 104px)}
 @media (max-width:1020px){.vivo-lateral{position:static;max-height:none}}
-.vivo-tabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--borde);background:var(--fondo-2)}
+.vivo-tabs{display:grid;grid-template-columns:repeat(2,1fr);border-bottom:1px solid var(--borde);background:var(--fondo-2)}
 .vivo-tabs button{background:none;border:0;padding:14px 6px 12px;font-weight:700;font-size:.9rem;color:var(--tinta-3);border-bottom:3px solid transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
 .vivo-tabs button[aria-selected=true]{color:var(--verde-os);border-bottom-color:var(--verde);background:#fff}
 .nuevas{background:#d92d20;color:#fff;font-size:.7rem;font-weight:800;border-radius:99px;padding:1px 7px;min-width:20px}
@@ -472,16 +472,3 @@ a.cr-llego span{display:block;font-size:1rem;margin-top:6px;opacity:.9;text-deco
 .pg-item.en-juego{background:linear-gradient(90deg,#fff1ef,transparent);margin:0 -16px;padding-left:16px;padding-right:16px}
 .pg-item .marcador{margin-top:4px}
 
-/* Saludos */
-.saludo-form{background:var(--fondo-2);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
-.saludo-form p{margin:0;font-size:.85rem}
-.sf-fila{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-@media (max-width:420px){.sf-fila{grid-template-columns:1fr}}
-.saludo-form textarea.inp{min-height:76px}
-.saludo-form .inp{min-height:42px;padding:9px 12px;font-size:.95rem}
-.sf-pie{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.sf-pie .btn{padding:9px 18px;font-size:.92rem}
-.saludos{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
-.saludos li{background:#fff;border:1px solid var(--borde);border-radius:14px 14px 14px 4px;padding:10px 13px}
-.saludos p{margin:0 0 4px;font-size:.96rem}
-.saludos span{font-size:.82rem}
