@@ -62,7 +62,12 @@
     ojo: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
     doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
     candado: '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
-    alerta: '<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>'
+    alerta: '<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>',
+    play: '<path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/>',
+    video: '<rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5"/>',
+    compartir: '<circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.7l7.4-4.3M8.3 13.3l7.4 4.3"/>',
+    enlace: '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L12 5.6"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/>',
+    campana: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>'
   };
   var MARCAS = {
     wa: '<path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4a.5.5 0 0 0 0-.4l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.6-.3z"/>',
@@ -210,7 +215,7 @@
 
   /** Cuenta regresiva propia del club (fecha configurable desde el panel: Textos del sitio). */
   // Valores por defecto: se usan si el servidor aún no tiene la clave (Sitio.gs sin actualizar)
-  var CR_BASE = { fecha: '2026-11-20 09:00', titulo: 'Olimpiadas JUNJI Biobío 2026', texto: '¡Nuestra delegación ya se prepara! Súmate y apoya al club.' };
+  var CR_BASE = { fecha: '2026-11-20 08:30', titulo: 'Olimpiadas JUNJI Biobío 2026', texto: '¡Nuestra delegación ya se prepara! Súmate y apoya al club.' };
   function fechaEvento(t) {
     var v = t.CUENTA_REGRESIVA_FECHA === undefined ? CR_BASE.fecha : String(t.CUENTA_REGRESIVA_FECHA || '').trim();
     if (!v) return null;
@@ -232,7 +237,8 @@
       '<div class="cr-txt"><span class="cr-ante">' + ico('trofeo') + ' Cuenta regresiva</span><h2>' + esc(t.CUENTA_REGRESIVA_TITULO || (t.CUENTA_REGRESIVA_FECHA === undefined ? CR_BASE.titulo : 'Próximo evento')) + '</h2>' +
       '<div class="cr-meta">' + ico('cal') + ' ' + capital(DIAS[f.getDay()]) + ' ' + f.getDate() + ' de ' + MESES[f.getMonth()] + ' de ' + f.getFullYear() + hora +
       (t.CUENTA_REGRESIVA_LUGAR ? '<br>' + ico('pin') + ' ' + esc(t.CUENTA_REGRESIVA_LUGAR) : '') + '</div>' +
-      ((t.CUENTA_REGRESIVA_FECHA === undefined ? CR_BASE.texto : t.CUENTA_REGRESIVA_TEXTO) ? '<p>' + esc(t.CUENTA_REGRESIVA_FECHA === undefined ? CR_BASE.texto : t.CUENTA_REGRESIVA_TEXTO) + '</p>' : '') + '</div>' +
+      ((t.CUENTA_REGRESIVA_FECHA === undefined ? CR_BASE.texto : t.CUENTA_REGRESIVA_TEXTO) ? '<p>' + esc(t.CUENTA_REGRESIVA_FECHA === undefined ? CR_BASE.texto : t.CUENTA_REGRESIVA_TEXTO) + '</p>' : '') +
+      (t.VIVO_DESDE ? '<a class="btn btn-claro cr-btn" href="envivo.html">' + ico('video') + ' Síguelo en vivo aquí</a>' : '') + '</div>' +
       '<div class="cr-reloj" id="cr-reloj" data-fin="' + f.getTime() + '" role="timer" aria-live="off">' + caja('d', 'días') + caja('h', 'horas') + caja('m', 'minutos') + caja('s', 'segundos') + '</div>' +
       '</div></section>';
   }
@@ -246,7 +252,7 @@
       var r = fin - Date.now();
       if (r <= 0) {
         clearInterval(intervaloCR);
-        reloj.innerHTML = '<div class="cr-llego">¡Llegó el día! ¡Fuerza, delegación Araucanía!</div>';
+        reloj.innerHTML = '<a class="cr-llego" href="envivo.html">¡Llegó el día! ¡Fuerza, delegación Araucanía! <span>Ver en vivo →</span></a>';
         return;
       }
       var s = Math.floor(r / 1000);
@@ -271,7 +277,7 @@
       '<span class="antetitulo">' + esc(CLUB) + '</span><h1>' + esc(t.HERO_TITULO || 'Deporte, amistad y comunidad') + '</h1>' +
       '<p class="lead">' + esc(t.HERO_SUBTITULO || '') + '</p><div class="btns"><a class="btn btn-prim" href="socios.html#inscripcion">Hazte socio ' + ico('flecha') + '</a><a class="btn btn-borde" href="socios.html#consulta">Consulta tu cuota</a></div></div>' +
       '<img class="hero-logo" src="assets/img/logo-400.webp" fetchpriority="high" alt="Logo del club: araucaria, volcán, cóndor y lago" width="340" height="340"></div>' + paisaje() + '</section>' +
-      cuentaRegresiva(t) +
+      (vivoInfo(t).activo ? bloqueVivo(t) : cuentaRegresiva(t)) +
       '<section class="seccion"><div class="contenedor"><div class="seccion-cab"><div><span class="antetitulo">Calendario</span><h2>Próximas actividades</h2></div><a class="enlace-flecha" href="actividades.html">Ver calendario ' + ico('flecha') + '</a></div>' +
       (prox.length ? prox.map(function (e) { return tarjetaEvento(e); }).join('') : vacio('Pronto publicaremos las próximas actividades. ¡Atento a las novedades!')) + '</div></section>' +
       '<section class="seccion gris"><div class="contenedor"><div class="seccion-cab"><div><span class="antetitulo">Novedades</span><h2>Noticias del club</h2></div><a class="enlace-flecha" href="noticias.html">Todas las noticias ' + ico('flecha') + '</a></div>' +
@@ -451,6 +457,331 @@
     return h;
   }
 
+  // ───────────── Transmisión en vivo ─────────────
+  // Estado de la señal (VIVO_*) viene en los textos del sitio; la página envivo.html consulta ?api=vivo cada 30 s.
+  function dos(n) { return ('0' + n).slice(-2); }
+  function isoDe(d) { return d.getFullYear() + '-' + dos(d.getMonth() + 1) + '-' + dos(d.getDate()); }
+  function sumarDias(iso, n) { var d = fecha(iso); if (!d) return iso; d.setDate(d.getDate() + n); return isoDe(d); }
+  function vivoInfo(t) {
+    t = t || {};
+    var hoy = hoyISO(), desde = String(t.VIVO_DESDE || '').slice(0, 10), hasta = String(t.VIVO_HASTA || desde).slice(0, 10);
+    var activo = String(t.VIVO_ACTIVO || '').toUpperCase() === 'SI';
+    return {
+      activo: activo, desde: desde, hasta: hasta, lugar: t.VIVO_LUGAR || '',
+      ventana: !!fecha(desde) && hoy >= sumarDias(desde, -3) && hoy <= sumarDias(hasta, 2),
+      titulo: t.VIVO_TITULO || 'Transmisión en vivo'
+    };
+  }
+  function ciudad(l) { return String(l || '').split(',')[0].trim(); }
+  function bloqueVivo(t) {
+    var v = vivoInfo(t);
+    return '<section class="vivo-portada"><div class="contenedor vp-in"><div><span class="pill-vivo"><span class="punto-vivo"></span>En vivo ahora</span>' +
+      '<h2>' + esc(v.titulo) + '</h2><p>' + (v.lugar ? 'Transmitiendo desde ' + esc(v.lugar) + '. ' : '') + 'Video, resultados y el minuto a minuto de nuestra delegación.</p></div>' +
+      '<a class="btn btn-claro" href="envivo.html">' + ico('play') + ' Ver transmisión</a></div></section>';
+  }
+  /** Agrega «En vivo» al menú durante la cobertura y una barra roja en todas las páginas mientras estamos en el aire. */
+  function decorarVivo(d) {
+    var v = vivoInfo(d.textos), menu = $('#menu'), cab = $('#cab');
+    var link = $('#nav-vivo');
+    if (v.activo || v.ventana || PAGINA === 'envivo') {
+      if (!link && menu) { link = document.createElement('a'); link.id = 'nav-vivo'; link.href = 'envivo.html'; menu.insertBefore(link, $('.btn', menu)); }
+      if (link) {
+        link.className = 'nav-vivo' + (v.activo ? ' al-aire' : '') + (PAGINA === 'envivo' ? ' activo' : '');
+        link.innerHTML = '<i aria-hidden="true"></i>En vivo';
+        if (PAGINA === 'envivo') link.setAttribute('aria-current', 'page');
+      }
+    } else if (link) link.remove();
+    var barra = $('#barra-vivo');
+    var mostrar = v.activo && PAGINA !== 'envivo';
+    document.body.classList.toggle('con-vivo', mostrar);
+    if (mostrar && cab) {
+      if (!barra) { barra = document.createElement('a'); barra.id = 'barra-vivo'; barra.className = 'barra-vivo'; barra.href = 'envivo.html'; cab.insertBefore(barra, cab.firstChild); }
+      barra.innerHTML = '<span class="punto-vivo"></span><b>EN VIVO</b><span class="bv-txt">' + esc(v.titulo) + (v.lugar ? ' · desde ' + esc(ciudad(v.lugar)) : '') + '</span><span class="bv-ver">Ver ahora ' + ico('flecha') + '</span>';
+    } else if (barra) barra.remove();
+  }
+
+  var TIPOS_VIVO = { 'Aviso': '📣', 'Punto': '🔥', 'Resultado': '🏁', 'Medalla': '🏅', 'Foto': '📸', 'Ambiente': '🎉', 'En vivo': '🔴' };
+  var MED_COLOR = { Oro: 'oro', Plata: 'plata', Bronce: 'bronce' };
+  function fuenteVideo(url) {
+    url = String(url || '').trim(); var m;
+    if ((m = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|live\/|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/))) return { tipo: 'yt', id: m[1], url: url };
+    if ((m = url.match(/youtube\.com\/channel\/(UC[\w-]{22})/))) return { tipo: 'ytcanal', id: m[1], url: url };
+    if (/^https:\/\/([\w-]+\.)*(facebook\.com|fb\.watch)\//i.test(url)) return { tipo: 'fb', url: url };
+    return /^https:\/\//i.test(url) ? { tipo: 'link', url: url } : null;
+  }
+  function horaDe(fh) { var m = String(fh || '').match(/(\d{1,2}):(\d{2})/); return m ? dos(m[1]) + ':' + m[2] : ''; }
+  function diaCorto(iso) { var d = fecha(iso); return d ? capital(DIAS[d.getDay()]).slice(0, 3) + ' ' + d.getDate() : iso; }
+  function rivalDe(det) { var m = String(det || '').match(/^\s*vs\.?\s+([^·|,–\-]+)/i); return m ? m[1].trim() : 'Rival'; }
+  function hayMarcador(a) { return a.club !== '' || a.rival !== ''; }
+  function marcadorHtml(a, grande) {
+    return '<div class="marcador' + (grande ? ' grande' : '') + '"><span class="eq">Araucanía</span><b class="num">' + esc(a.club || 0) + '</b><span class="sep">–</span><b class="num">' + esc(a.rival || 0) + '</b><span class="eq">' + esc(rivalDe(a.detalle)) + '</span></div>';
+  }
+  function medallaHtml(m) { return MED_COLOR[m] ? '<span class="medalla ' + MED_COLOR[m] + '" title="Medalla de ' + esc(m.toLowerCase()) + '">' + esc(m) + '</span>' : ''; }
+
+  PAGINAS.envivo = function (d) {
+    var v = vivoInfo(d.textos);
+    document.title = 'En vivo · ' + v.titulo + ' · CDSC JUNJI Araucanía';
+    var tab = function (id, txt, sel) { return '<button type="button" role="tab" id="tab-' + id + '" aria-controls="vp-' + id + '" aria-selected="' + !!sel + '" data-vtab="' + id + '">' + txt + '<span class="nuevas oculto"></span></button>'; };
+    return '<section class="vivo-cab"><div class="contenedor"><div class="migas"><a href="index.html">Inicio</a> / En vivo</div>' +
+      '<div class="vc-fila"><div class="vc-txt"><span id="v-pill" class="pill-vivo apagado"><span class="punto-vivo"></span><span>Conectando…</span></span>' +
+      '<h1 id="v-titulo">' + esc(v.titulo) + '</h1><div class="vc-meta" id="v-meta">' + (v.lugar ? '<span>' + ico('pin') + ' ' + esc(v.lugar) + '</span>' : '') +
+      (v.desde ? '<span>' + ico('cal') + ' ' + rangoFechas(v.desde, v.hasta) + '</span>' : '') + '</div></div>' +
+      '<div class="vc-compartir"><a class="btn btn-wa" id="v-wa" target="_blank" rel="noopener">' + marca('wa') + ' Compartir</a>' +
+      '<button type="button" class="btn btn-borde blanco" id="v-copiar">' + ico('enlace') + ' Copiar enlace</button></div></div></div></section>' +
+      '<section class="vivo-sec"><div class="contenedor vivo-grid">' +
+      '<div class="vivo-principal"><div class="vivo-player" id="v-player"><div class="vp-carga"><span class="girando"></span>Conectando con la transmisión…</div></div>' +
+      '<div class="vivo-bajo" id="v-bajo"></div><div id="v-ahora"></div><div id="v-medallero"></div></div>' +
+      '<aside class="vivo-lateral" aria-label="Minuto a minuto, programa y saludos"><div class="vivo-tabs" role="tablist">' +
+      tab('feed', 'Minuto a minuto', true) + tab('programa', 'Programa') + tab('saludos', 'Saludos') + '</div>' +
+      '<div class="vivo-panel" id="vp-feed" role="tabpanel" aria-labelledby="tab-feed"><div class="vacio">Cargando…</div></div>' +
+      '<div class="vivo-panel oculto" id="vp-programa" role="tabpanel" aria-labelledby="tab-programa"></div>' +
+      '<div class="vivo-panel oculto" id="vp-saludos" role="tabpanel" aria-labelledby="tab-saludos">' +
+      '<form class="saludo-form" id="f-saludo" novalidate><b>Envía tu saludo a la delegación</b><p class="muted">Lo revisamos y lo publicamos aquí. ¡Puede que lo lean en la transmisión!</p>' +
+      '<div class="sf-fila"><label class="sr" for="s-nombre">Tu nombre</label><input class="inp" id="s-nombre" name="nombre" maxlength="40" placeholder="Tu nombre" required autocomplete="given-name">' +
+      '<label class="sr" for="s-unidad">Jardín o unidad</label><input class="inp" id="s-unidad" name="unidad" maxlength="60" placeholder="Jardín o unidad (opcional)"></div>' +
+      '<label class="sr" for="s-msj">Mensaje</label><textarea class="inp" id="s-msj" name="mensaje" maxlength="200" required placeholder="¡Vamos Araucanía! …"></textarea>' +
+      '<input class="trampa" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+      '<div class="sf-pie"><span class="muted" id="s-cuenta">0/200</span><button class="btn btn-prim" type="submit">Enviar saludo</button></div><div id="r-saludo" aria-live="polite"></div></form>' +
+      '<div id="v-saludos"></div></div>' +
+      '<div class="vivo-act" id="v-act" aria-live="off"></div></aside>' +
+      '</div></section>';
+  };
+  function rangoFechas(a, b) {
+    var x = fecha(a), y = fecha(b);
+    if (!x) return '';
+    if (!y || a === b) return capital(DIAS[x.getDay()]) + ' ' + fechaLarga(a);
+    return x.getMonth() === y.getMonth() ? x.getDate() + ' y ' + y.getDate() + ' de ' + MESES[y.getMonth()] + ' de ' + y.getFullYear() : fechaLarga(a) + ' al ' + fechaLarga(b);
+  }
+
+  PAGINAS.envivo.despues = function (d) {
+    // Si llega contenido nuevo del sitio la página se vuelve a pintar: se detiene la actualización anterior.
+    if (PAGINAS.envivo.detener) PAGINAS.envivo.detener();
+    var V = { datos: null, clavePlayer: '', ultimoVisto: Number(leerLS('cdsc_vivo_visto')) || 0, maxFeed: 0, tab: 'feed', dia: '', fallos: 0, reloj: null, crInt: null };
+    var enlace = location.origin + location.pathname;
+    function textoCompartir() {
+      var t = V.datos || {}, enAire = t.activo;
+      return (enAire ? '🔴 ¡Estamos EN VIVO' + (t.lugar ? ' desde ' + ciudad(t.lugar) : '') + '! ' : '📺 ') + 'Sigue a la delegación del Club JUNJI Araucanía en ' + (t.titulo || 'la transmisión') + ': ' + enlace;
+    }
+    function actualizarCompartir() { var a = $('#v-wa'); if (a) a.href = 'https://wa.me/?text=' + encodeURIComponent(textoCompartir()); }
+    actualizarCompartir();
+    $('#v-copiar').onclick = function () {
+      var b = this;
+      var listo = function () { b.innerHTML = ico('enlace') + ' ¡Copiado!'; setTimeout(function () { b.innerHTML = ico('enlace') + ' Copiar enlace'; }, 2200); };
+      if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) { navigator.share({ title: document.title, text: textoCompartir().replace(enlace, '').trim(), url: enlace }).catch(function () { }); return; }
+      if (navigator.clipboard) navigator.clipboard.writeText(enlace).then(listo, function () { prompt('Copia el enlace:', enlace); });
+      else prompt('Copia el enlace:', enlace);
+    };
+
+    // Pestañas
+    function verTab(id) {
+      V.tab = id;
+      $$('[data-vtab]').forEach(function (b) { var s = b.dataset.vtab === id; b.setAttribute('aria-selected', s); if (s) { var n = $('.nuevas', b); n.classList.add('oculto'); } });
+      $$('.vivo-panel').forEach(function (p) { p.classList.toggle('oculto', p.id !== 'vp-' + id); });
+      if (id === 'feed') marcarVistos();
+    }
+    $$('[data-vtab]').forEach(function (b) { b.onclick = function () { verTab(b.dataset.vtab); }; });
+    $('.vivo-tabs').addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var ids = ['feed', 'programa', 'saludos'], i = ids.indexOf(V.tab) + (e.key === 'ArrowRight' ? 1 : -1);
+      verTab(ids[(i + 3) % 3]); $('#tab-' + V.tab).focus();
+    });
+
+    // Saludos
+    var fs = $('#f-saludo');
+    fs.mensaje.addEventListener('input', function () { $('#s-cuenta').textContent = fs.mensaje.value.length + '/200'; });
+    fs.onsubmit = function (e) {
+      e.preventDefault();
+      var r = $('#r-saludo');
+      if (fs.nombre.value.trim().length < 2 || fs.mensaje.value.trim().length < 3) { r.innerHTML = '<div class="alerta error">Escribe tu nombre y tu saludo.</div>'; return; }
+      enviarForm(fs, r, { tipo: 'saludo', nombre: fs.nombre.value, unidad: fs.unidad.value, mensaje: fs.mensaje.value, web: fs.web.value }, function () { fs.mensaje.value = ''; $('#s-cuenta').textContent = '0/200'; });
+    };
+
+    // Reproductor
+    var ytApi = null;
+    function cargarYT() {
+      if (ytApi) return ytApi;
+      ytApi = new Promise(function (ok) {
+        if (window.YT && window.YT.Player) return ok();
+        var previo = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = function () { if (previo) previo(); ok(); };
+        var s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; s.onerror = function () { ytApi = null; ok(); };
+        document.head.appendChild(s);
+      });
+      return ytApi;
+    }
+    function sinEmbed(f, motivo) {
+      $('#v-player').innerHTML = '<div class="vp-aviso"><div class="vp-icono">' + ico('video') + '</div><h2>' + (motivo || 'Mira la transmisión en ' + (f.tipo === 'fb' ? 'Facebook' : 'YouTube')) + '</h2>' +
+        '<p>Se abrirá en una pestaña nueva. Vuelve aquí para seguir el minuto a minuto y los resultados.</p><a class="btn btn-claro" href="' + url(f.url) + '" target="_blank" rel="noopener">' + ico('play') + ' Abrir transmisión</a></div>';
+    }
+    function incrustar(f) {
+      var p = $('#v-player');
+      if (f.tipo === 'yt') {
+        p.innerHTML = '<div id="v-yt"></div>';
+        cargarYT().then(function () {
+          if (!window.YT || !window.YT.Player) { p.innerHTML = '<iframe src="https://www.youtube.com/embed/' + f.id + '?autoplay=1&mute=1&playsinline=1&rel=0" title="Transmisión en vivo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'; return; }
+          new window.YT.Player('v-yt', {
+            videoId: f.id, host: 'https://www.youtube.com',
+            playerVars: { autoplay: 1, mute: 1, playsinline: 1, rel: 0, modestbranding: 1 },
+            events: { onError: function (e) { if (e.data === 101 || e.data === 150 || e.data === 100) sinEmbed(f, e.data === 100 ? 'El video aún no está disponible aquí' : null); } }
+          });
+        });
+      } else if (f.tipo === 'ytcanal') {
+        p.innerHTML = '<iframe src="https://www.youtube.com/embed/live_stream?channel=' + f.id + '&autoplay=1&mute=1&playsinline=1" title="Transmisión en vivo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+      } else if (f.tipo === 'fb') {
+        p.innerHTML = '<iframe src="https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(f.url) + '&show_text=false&autoplay=true&mute=true&width=1280" title="Transmisión en vivo" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>';
+      } else sinEmbed(f, 'La transmisión está en otra página');
+    }
+    function fase(dv) {
+      var hoy = String(dv.ahora || '').slice(0, 10) || hoyISO();
+      if (dv.activo) return 'vivo';
+      if (dv.hasta && hoy > dv.hasta) return 'fin';
+      if (dv.desde && hoy < dv.desde) return 'antes';
+      var ini = fechaEvento({ CUENTA_REGRESIVA_FECHA: dv.inicio || '' });
+      if (ini && Date.now() < ini.getTime()) return 'antes';
+      return 'pausa';
+    }
+    function proximo(dv) {
+      var ahora = String(dv.ahora || '').replace(' ', 'T');
+      return dv.agenda.filter(function (a) { return a.estado === 'Programado' && (a.fecha + 'T' + (a.hora || '23:59')) >= ahora; })[0];
+    }
+    function recordatorio(dv, ini) {
+      if (!ini) return '';
+      var z = function (d) { return d.toISOString().replace(/[-:]|\.\d{3}/g, ''); };
+      var fin = new Date(ini.getTime() + 2 * 3600000);
+      return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('En vivo: ' + (dv.titulo || 'Club JUNJI Araucanía')) +
+        '&dates=' + z(ini) + '/' + z(fin) + '&details=' + encodeURIComponent('Transmisión del Club Deportivo JUNJI Araucanía: ' + enlace) + '&location=' + encodeURIComponent(dv.lugar || '');
+    }
+    function pintarPlayer(dv) {
+      var f = fuenteVideo(dv.url), fs = fase(dv);
+      var clave = fs + '|' + (f ? f.url : '') + '|' + (fs === 'pausa' ? dv.mensaje : '');
+      if (clave === V.clavePlayer) return;
+      V.clavePlayer = clave;
+      clearInterval(V.crInt);
+      var p = $('#v-player');
+      if (fs === 'vivo' && f) return incrustar(f);
+      if (fs === 'fin' && f) return incrustar(f);
+      if (fs === 'antes') {
+        var ini = fechaEvento({ CUENTA_REGRESIVA_FECHA: dv.inicio || dv.desde || '' });
+        var caja = function (id, et) { return '<div class="cr-caja"><b id="vcr-' + id + '">--</b><span>' + et + '</span></div>'; };
+        p.innerHTML = '<div class="vp-aviso"><span class="pill-vivo apagado"><span class="punto-vivo"></span>Próximamente</span><h2>La transmisión comienza ' + (ini ? 'el ' + DIAS[ini.getDay()] + ' ' + ini.getDate() + ' de ' + MESES[ini.getMonth()] + (ini.getHours() ? ' a las ' + dos(ini.getHours()) + ':' + dos(ini.getMinutes()) : '') : 'pronto') + '</h2>' +
+          (ini ? '<div class="cr-reloj">' + caja('d', 'días') + caja('h', 'horas') + caja('m', 'min') + caja('s', 'seg') + '</div>' : '') +
+          '<div class="btns" style="justify-content:center">' + (ini ? '<a class="btn btn-claro" href="' + esc(recordatorio(dv, ini)) + '" target="_blank" rel="noopener">' + ico('campana') + ' Agendar recordatorio</a>' : '') + '</div></div>';
+        if (ini) {
+          var tic = function () {
+            var r = ini.getTime() - Date.now();
+            if (r <= 0) { clearInterval(V.crInt); V.clavePlayer = ''; return cargar(); }
+            var s = Math.floor(r / 1000), x = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+            Object.keys(x).forEach(function (k) { var el = document.getElementById('vcr-' + k); if (el) el.textContent = k === 'd' ? x[k] : dos(x[k]); });
+          };
+          tic(); V.crInt = setInterval(tic, 1000);
+        }
+        return;
+      }
+      if (fs === 'fin') { p.innerHTML = '<div class="vp-aviso"><div class="vp-icono">' + ico('trofeo') + '</div><h2>¡Gracias por acompañarnos!</h2><p>Revisa abajo los resultados de nuestra delegación.</p></div>'; return; }
+      var prox = proximo(dv);
+      p.innerHTML = '<div class="vp-aviso"><span class="pill-vivo apagado"><span class="punto-vivo"></span>Fuera del aire</span><h2>' + esc(dv.mensaje || 'Volvemos en unos minutos') + '</h2>' +
+        (prox ? '<p class="vp-prox">Próximo: <b>' + esc(prox.hora ? prox.hora + ' h' : diaCorto(prox.fecha)) + ' · ' + esc(prox.disciplina) + '</b>' + (prox.detalle ? ' ' + esc(prox.detalle) : '') + '</p>' : '<p>Esta página se actualiza sola: cuando volvamos al aire, el video aparecerá aquí.</p>') +
+        (f ? '<button type="button" class="btn btn-borde blanco" id="v-ultimo">' + ico('play') + ' Ver lo último transmitido</button>' : '') + '</div>';
+      var b = $('#v-ultimo'); if (b) b.onclick = function () { incrustar(f); };
+    }
+
+    function pintarCabecera(dv) {
+      var fs = fase(dv), pill = $('#v-pill');
+      var txt = { vivo: 'En vivo', antes: 'Próximamente', pausa: 'Fuera del aire', fin: 'Transmisión finalizada' }[fs];
+      pill.className = 'pill-vivo' + (fs === 'vivo' ? '' : ' apagado');
+      pill.lastChild.textContent = txt;
+      $('#v-titulo').textContent = dv.titulo || 'Transmisión en vivo';
+      var f = fuenteVideo(dv.url);
+      $('#v-bajo').innerHTML = f && (fs === 'vivo' || fs === 'fin') ? '<span class="muted">' + (fs === 'fin' ? 'Revive la transmisión completa. ' : '¿No se ve el video? ') + '</span><a href="' + url(f.url) + '" target="_blank" rel="noopener">Abrir en ' + (f.tipo === 'fb' ? 'Facebook' : 'YouTube') + ' ' + ico('flecha') + '</a>' : '';
+      document.title = (fs === 'vivo' ? '🔴 ' : '') + 'En vivo · ' + (dv.titulo || '') + ' · CDSC JUNJI Araucanía';
+      actualizarCompartir();
+    }
+    function pintarAhora(dv) {
+      var enJuego = dv.agenda.filter(function (a) { return a.estado === 'En juego'; });
+      var h = '';
+      if (enJuego.length) {
+        h = '<div class="ahora-cab"><span class="punto-vivo"></span>Ahora en competencia</div><div class="ahora-grid">' + enJuego.map(function (a) {
+          return '<div class="ahora-card"><div class="ac-dis">' + esc(a.disciplina) + (a.transmite ? ' <span class="cam" title="Se transmite en video">' + ico('video') + '</span>' : '') + '</div>' +
+            (a.detalle ? '<div class="muted ac-det">' + esc(a.detalle) + '</div>' : '') + (hayMarcador(a) ? marcadorHtml(a, true) : '<div class="ac-sin">En curso</div>') + '</div>';
+        }).join('') + '</div>';
+      } else {
+        var prox = fase(dv) !== 'fin' && proximo(dv);
+        if (prox) h = '<div class="ahora-prox">' + ico('reloj') + ' <span>Próxima competencia: <b>' + esc(diaCorto(prox.fecha)) + (prox.hora ? ', ' + esc(prox.hora) + ' h' : '') + ' · ' + esc(prox.disciplina) + '</b>' + (prox.detalle ? ' ' + esc(prox.detalle) : '') + (prox.lugar ? ' <span class="muted">· ' + esc(prox.lugar) + '</span>' : '') + '</span></div>';
+      }
+      $('#v-ahora').innerHTML = h;
+      var m = dv.medallero || {}, total = (m.oro || 0) + (m.plata || 0) + (m.bronce || 0);
+      var fin = dv.agenda.filter(function (a) { return a.estado === 'Finalizado'; }).length;
+      $('#v-medallero').innerHTML = total || fin ? '<div class="medallero"><div class="md-tit">' + ico('trofeo') + ' Medallero Araucanía</div>' +
+        [['oro', 'Oro'], ['plata', 'Plata'], ['bronce', 'Bronce']].map(function (x) { return '<div class="md-item"><span class="medalla-dot ' + x[0] + '"></span><b class="num">' + (m[x[0]] || 0) + '</b><span>' + x[1] + '</span></div>'; }).join('') +
+        '<div class="md-item md-fin"><b class="num">' + fin + '</b><span>competencias finalizadas</span></div></div>' : '';
+    }
+    function marcarVistos() { if (V.maxFeed > V.ultimoVisto) { V.ultimoVisto = V.maxFeed; guardarLS('cdsc_vivo_visto', V.maxFeed); } }
+    function pintarFeed(dv) {
+      var cont = $('#vp-feed'), previo = V.maxFeed;
+      V.maxFeed = dv.novedades.reduce(function (m, n) { return Math.max(m, n.id); }, 0);
+      if (!dv.novedades.length) { cont.innerHTML = '<div class="vacio">Aquí irán apareciendo los resultados, fotos y momentos de la delegación. ¡Atento!</div>'; return; }
+      cont.innerHTML = '<ol class="feed">' + dv.novedades.map(function (n) {
+        var nueva = previo && n.id > previo;
+        return '<li class="feed-item t-' + esc(String(n.tipo).replace(/\s/g, '')) + (nueva ? ' nueva' : '') + '"><div class="fi-hora">' + esc(horaDe(n.hora)) + '</div><div class="fi-cuerpo">' +
+          '<div class="fi-tipo"><span aria-hidden="true">' + (TIPOS_VIVO[n.tipo] || '📣') + '</span> ' + esc(n.tipo) + '</div>' + (n.texto ? '<p>' + enlazar(esc(n.texto)) + '</p>' : '') +
+          (n.foto ? '<a class="fi-foto" href="' + img(n.foto, 1920) + '" target="_blank" rel="noopener"><img src="' + img(n.foto, 900) + '" alt="' + esc(n.texto || 'Foto de la delegación') + '" loading="lazy"></a>' : '') + '</div></li>';
+      }).join('') + '</ol>';
+      var sinVer = dv.novedades.filter(function (n) { return n.id > V.ultimoVisto; }).length;
+      var badge = $('#tab-feed .nuevas');
+      if (V.tab === 'feed' && document.visibilityState === 'visible') { marcarVistos(); badge.classList.add('oculto'); }
+      else if (sinVer) { badge.textContent = sinVer > 9 ? '9+' : sinVer; badge.classList.remove('oculto'); }
+    }
+    function pintarPrograma(dv) {
+      var cont = $('#vp-programa');
+      if (!dv.agenda.length) { cont.innerHTML = '<div class="vacio">Muy pronto publicaremos el programa de competencias.</div>'; return; }
+      var dias = dv.agenda.map(function (a) { return a.fecha; }).filter(function (x, i, arr) { return arr.indexOf(x) === i; });
+      var hoy = String(dv.ahora || '').slice(0, 10);
+      if (dias.indexOf(V.dia) < 0) V.dia = dias.indexOf(hoy) >= 0 ? hoy : dias[0];
+      cont.innerHTML = (dias.length > 1 ? '<div class="chips dias" role="group" aria-label="Día">' + dias.map(function (x) { return '<button type="button" class="chip' + (x === V.dia ? ' activo' : '') + '" data-dia="' + esc(x) + '">' + esc(diaCorto(x)) + '</button>'; }).join('') + '</div>' : '') +
+        '<ol class="programa">' + dv.agenda.filter(function (a) { return a.fecha === V.dia; }).map(function (a) {
+          var est = a.estado === 'En juego' ? 'en-juego' : a.estado === 'Finalizado' ? 'final' : a.estado === 'Suspendido' ? 'susp' : '';
+          return '<li class="pg-item ' + est + '"><div class="pg-hora num">' + esc(a.hora || '—') + '</div><div class="pg-cuerpo"><div class="pg-tit"><b>' + esc(a.disciplina) + '</b>' + medallaHtml(a.medalla) + (a.transmite ? '<span class="cam" title="Se transmite en video">' + ico('video') + '</span>' : '') + '</div>' +
+            (a.detalle ? '<div class="pg-det">' + esc(a.detalle) + '</div>' : '') + (a.lugar ? '<div class="pg-lugar muted">' + ico('pin') + ' ' + esc(a.lugar) + '</div>' : '') +
+            ((a.estado !== 'Programado' && hayMarcador(a)) ? marcadorHtml(a) : '') + (a.resultado ? '<div class="pg-res">' + esc(a.resultado) + '</div>' : '') +
+            '</div><span class="pg-est">' + (a.estado === 'En juego' ? '<span class="punto-vivo"></span>' : '') + esc(a.estado) + '</span></li>';
+        }).join('') + '</ol>';
+      $$('[data-dia]', cont).forEach(function (b) { b.onclick = function () { V.dia = b.dataset.dia; pintarPrograma(V.datos); }; });
+    }
+    function pintarSaludos(dv) {
+      $('#v-saludos').innerHTML = dv.saludos.length ? '<ul class="saludos">' + dv.saludos.map(function (s) {
+        return '<li><p>“' + esc(s.mensaje) + '”</p><span><b>' + esc(s.nombre) + '</b>' + (s.unidad ? ' · ' + esc(s.unidad) : '') + ' <span class="muted">' + esc(horaDe(s.hora)) + '</span></span></li>';
+      }).join('') + '</ul>' : '';
+    }
+    function pintar(dv) {
+      V.datos = dv;
+      pintarCabecera(dv); pintarPlayer(dv); pintarAhora(dv); pintarFeed(dv); pintarPrograma(dv); pintarSaludos(dv);
+      var ahora = new Date();
+      $('#v-act').innerHTML = '<span class="punto-ok"></span>Se actualiza sola · ' + dos(ahora.getHours()) + ':' + dos(ahora.getMinutes()) + ':' + dos(ahora.getSeconds());
+    }
+    var cargando = false;
+    function cargar() {
+      if (cargando) return; cargando = true;
+      getApi('api=vivo').then(function (dv) { V.fallos = 0; pintar(dv); })
+        .catch(function (e) {
+          V.fallos++;
+          if (!V.datos) {
+            var t = d.textos || {}, f = fuenteVideo(t.VIVO_URL);
+            $('#v-player').innerHTML = '';
+            if (f && String(t.VIVO_ACTIVO).toUpperCase() === 'SI') incrustar(f);
+            else $('#v-player').innerHTML = '<div class="vp-aviso"><h2>No pudimos conectar con el sistema del club</h2><p>Reintentando automáticamente…</p></div>';
+            $('#vp-feed').innerHTML = '<div class="vacio">Reintentando…</div>';
+          }
+          $('#v-act').innerHTML = '<span class="punto-error"></span>Reconectando…';
+        })
+        .then(function () { cargando = false; });
+    }
+    function alVolver() { if (document.visibilityState === 'visible') { cargar(); if (V.tab === 'feed') marcarVistos(); } }
+    cargar();
+    V.reloj = setInterval(function () { if (document.visibilityState === 'visible') cargar(); }, 30000);
+    document.addEventListener('visibilitychange', alVolver);
+    PAGINAS.envivo.detener = function () { clearInterval(V.reloj); clearInterval(V.crInt); document.removeEventListener('visibilitychange', alVolver); };
+  };
+
   PAGINAS.privacidad = function (d) {
     var t = d.textos || {}, correo = esc(t.CONTACTO_CORREO || d.correo || 'contacto@cdscjunjiaraucania.cl');
     var mail = '<a href="mailto:' + correo + '">' + correo + '</a>';
@@ -573,6 +904,7 @@
     main.innerHTML = PAGINAS[PAGINA](d);
     if (PAGINAS[PAGINA].despues) PAGINAS[PAGINA].despues(d);
     pie(d);
+    decorarVivo(d);
     animar();
     if (location.hash && !pintar.saltado) { pintar.saltado = true; var el = document.getElementById(location.hash.slice(1)); if (el) setTimeout(function () { el.scrollIntoView(); }, 30); }
   }
