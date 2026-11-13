@@ -1327,7 +1327,8 @@ body:not(.rol-admin) .solo-admin{display:none!important}
       var tabs = [['solicitudes', 'Solicitudes de socio', pend], ['mensajes', 'Mensajes', nuevos], ['noticias', 'Noticias', 0], ['eventos', 'Actividades', 0], ['galeria', 'Galería', 0],
         ['disciplinas', 'Disciplinas', 0], ['directiva', 'Directiva', 0], ['textos', 'Textos del sitio', 0]];
       v.innerHTML = '<div class="cab-vista"><div><h2>Sitio web del club</h2><p>Lo que publiques aquí aparece en el sitio en menos de 5 minutos.</p></div>' +
-        (D.sitioUrl ? '<a class="btn azul" href="' + esc(D.sitioUrl) + '" target="_blank" rel="noopener">Ver sitio web ↗</a>' : '') + '</div>' +
+        '<div class="btns"><a class="btn" style="background:#b3261e;border-color:#b3261e;color:#fff" href="' + esc((D.sitioUrl ? D.sitioUrl.replace(/\/$/, '') + '/directiva/' : '') + 'vivo.html') + '" target="_blank" rel="noopener">● Control transmisión en vivo</a>' +
+        (D.sitioUrl ? '<a class="btn azul" href="' + esc(D.sitioUrl) + '" target="_blank" rel="noopener">Ver sitio web ↗</a>' : '') + '</div></div>' +
         '<div class="chips" style="margin-bottom:16px">' + tabs.map(function (t) {
           return '<button class="chip ' + (TAB === t[0] ? 'activo' : '') + '" data-tab="' + t[0] + '">' + t[1] + (t[2] ? ' <span class="nav-badge">' + t[2] + '</span>' : '') + '</button>';
         }).join('') + '</div><div id="st-cont"></div>';

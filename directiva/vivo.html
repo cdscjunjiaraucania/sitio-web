@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#101a14">
+<title>Control en vivo · CDSC JUNJI Araucanía</title>
+<link rel="icon" type="image/png" href="../assets/img/favicon.png">
+<link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+<script src="../assets/config.js?v=20261113a"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fondo:#0f1712; --sup:#18231c; --sup-2:#213027; --borde:#2d3e33; --tinta:#eef4f0; --tinta-2:#b4c2b9; --tinta-3:#86968c;
+  --verde:#2e9a47; --verde-os:#1e7b34; --rojo:#e5383b; --rojo-os:#b3261e; --ambar:#f2b705; --azul:#4c8ef0;
+  --oro:#e7b416; --plata:#b9c2cc; --bronce:#c4783a; --radio:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--fondo);color:var(--tinta);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:#8fb9ff}
+h1,h2,h3{margin:0;line-height:1.2}
+.oculto{display:none!important}
+.muted{color:var(--tinta-3)}
+.small{font-size:12.5px}
+.num{font-variant-numeric:tabular-nums}
+.envuelve{max-width:720px;margin:0 auto;padding:0 14px}
+
+/* Cabecera */
+.cab{position:sticky;top:0;z-index:20;background:rgba(15,23,18,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--borde);padding-top:env(safe-area-inset-top)}
+.cab-in{display:flex;align-items:center;gap:10px;padding:10px 14px;max-width:720px;margin:0 auto}
+.cab img{width:34px;height:34px;border-radius:50%;background:#fff}
+.cab .tit{font-weight:800;font-size:14.5px;line-height:1.1}
+.cab .tit small{display:block;font-weight:500;color:var(--tinta-3);font-size:11.5px}
+.cab .der{margin-left:auto;display:flex;gap:6px;align-items:center}
+.estado{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;padding:6px 11px;border-radius:99px;background:var(--sup-2);color:var(--tinta-2)}
+.estado i{width:8px;height:8px;border-radius:50%;background:#7b8a80}
+.estado.aire{background:var(--rojo);color:#fff}
+.estado.aire i{background:#fff;animation:parpadeo 1.1s infinite}
+@keyframes parpadeo{50%{opacity:.25}}
+.red{width:9px;height:9px;border-radius:50%;background:var(--verde);display:inline-block}
+.red.mal{background:var(--ambar);animation:parpadeo 1s infinite}
+
+/* Botones */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:10px 16px;border-radius:12px;border:1px solid var(--borde);background:var(--sup-2);font-weight:650;cursor:pointer;text-decoration:none;color:var(--tinta);user-select:none;transition:transform .08s,filter .15s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5;pointer-events:none}
+.btn.prim{background:var(--verde);border-color:var(--verde)}
+.btn.rojo{background:var(--rojo);border-color:var(--rojo)}
+.btn.azul{background:#2a5fb8;border-color:#2a5fb8}
+.btn.chico{min-height:34px;padding:6px 11px;font-size:13px;border-radius:10px}
+.btn.bloque{width:100%}
+.btn.fantasma{background:transparent}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Tarjetas y formularios */
+.card{background:var(--sup);border:1px solid var(--borde);border-radius:var(--radio);padding:14px;margin-top:12px}
+.card h2{font-size:16px;font-weight:750;margin-bottom:10px}
+.card-cab{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.card-cab h2{margin:0}
+.campo{display:block;margin-top:10px}
+.campo > span{display:block;font-size:12.5px;font-weight:600;color:var(--tinta-2);margin-bottom:5px}
+.inp{width:100%;background:#0c130f;border:1px solid var(--borde);border-radius:11px;padding:11px 12px;min-height:44px;outline:none}
+.inp:focus{border-color:var(--verde)}
+textarea.inp{min-height:92px;resize:vertical}
+.fila2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fila3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media (max-width:420px){.fila3{grid-template-columns:1fr 1fr}}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{border:1px solid var(--borde);background:var(--sup-2);color:var(--tinta-2);border-radius:99px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;min-height:38px}
+.chip.activo{background:var(--tinta);color:var(--fondo);border-color:var(--tinta)}
+.aviso{border-radius:12px;padding:11px 13px;font-size:13.5px;margin-top:10px;background:#2b2410;border:1px solid #5c4a14;color:#f6e3a6}
+.aviso.ok{background:#12301c;border-color:#24603a;color:#bfe9cb}
+.vacio{padding:22px 10px;text-align:center;color:var(--tinta-3);font-size:14px}
+
+/* Panel de salida al aire */
+.aire-card{border-radius:18px;padding:16px;margin-top:12px;background:linear-gradient(160deg,#1c2a21,#131c16);border:1px solid var(--borde)}
+.aire-card.encendido{background:linear-gradient(160deg,#5a1416,#2a0d0e);border-color:#7a2224}
+.aire-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.aire-top h1{font-size:19px;font-weight:800}
+.boton-aire{width:100%;min-height:64px;font-size:17px;font-weight:800;letter-spacing:.02em;border-radius:16px;margin-top:12px;border:0;cursor:pointer;color:#fff;background:var(--rojo);box-shadow:0 6px 20px rgba(229,56,59,.35)}
+.boton-aire.terminar{background:#3a4a40;box-shadow:none}
+.boton-aire:active{transform:scale(.98)}
+.rapidos{margin-top:10px}
+
+/* Marcador */
+.partido{background:var(--sup);border:1px solid var(--borde);border-radius:16px;padding:14px;margin-top:12px}
+.partido.juego{border-color:#7a2224;box-shadow:inset 0 0 0 1px #7a2224}
+.partido .p-cab{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.partido .p-cab b{font-size:16px}
+.partido .p-det{color:var(--tinta-2);font-size:13px}
+.etq{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:99px;padding:4px 9px;background:var(--sup-2);color:var(--tinta-2);white-space:nowrap}
+.etq.juego{background:var(--rojo);color:#fff}
+.etq.final{background:#1f4a2b;color:#bfe9cb}
+.etq.susp{background:#4a3a12;color:#f6e3a6}
+.tablero{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-top:12px}
+.lado{text-align:center}
+.lado .eq{font-size:12px;font-weight:700;color:var(--tinta-2);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lado .pts{font-size:46px;font-weight:800;line-height:1.05;margin:4px 0 8px}
+.lado .mm{display:grid;grid-template-columns:1fr 1.6fr;gap:6px}
+.lado .mm button{min-height:52px;border-radius:13px;border:1px solid var(--borde);background:var(--sup-2);font-size:22px;font-weight:800;cursor:pointer}
+.lado .mm button.mas{background:var(--verde);border-color:var(--verde)}
+.lado.rival .mm button.mas{background:#4b5a51;border-color:#4b5a51}
+.lado .mm button:active{transform:scale(.95)}
+.tablero .guion{font-size:30px;font-weight:800;color:var(--tinta-3)}
+.p-acc{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.p-acc .btn{flex:1 1 auto}
+
+/* Medallas */
+.med{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:99px;padding:3px 9px}
+.med.Oro{background:#3a2f08;color:var(--oro)}
+.med.Plata{background:#2b3036;color:var(--plata)}
+.med.Bronce{background:#3a2412;color:var(--bronce)}
+.medallero{display:flex;gap:10px;justify-content:space-between;align-items:center}
+.medallero div{flex:1;text-align:center;background:var(--sup-2);border-radius:12px;padding:8px 4px}
+.medallero b{display:block;font-size:24px}
+.medallero span{font-size:11.5px;color:var(--tinta-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+
+/* Listas */
+.item{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--borde)}
+.item:first-child{border-top:0}
+.item .h{font-weight:700;color:var(--tinta-3);font-size:12.5px;min-width:42px}
+.item .cuerpo{flex:1;min-width:0}
+.item .cuerpo p{margin:3px 0 0;white-space:pre-wrap;word-wrap:break-word}
+.item img{width:100%;max-width:260px;border-radius:10px;margin-top:6px;display:block}
+.item.ocultada{opacity:.45}
+.dia-tit{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--tinta-3);margin:16px 0 4px}
+
+/* Foto */
+.foto-prev{display:flex;gap:10px;align-items:center;margin-top:10px}
+.foto-prev img{width:96px;height:72px;object-fit:cover;border-radius:10px}
+
+/* Barra inferior */
+.barra{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(15,23,18,.97);backdrop-filter:blur(10px);border-top:1px solid var(--borde);padding-bottom:env(safe-area-inset-bottom)}
+.barra-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.barra button{background:none;border:0;color:var(--tinta-3);padding:9px 2px 8px;font-size:11px;font-weight:650;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+.barra button svg{width:22px;height:22px}
+.barra button.activo{color:#fff}
+.barra button.activo svg{color:var(--rojo)}
+.barra .bdg{position:absolute;top:4px;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:99px;background:var(--rojo);color:#fff;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px}
+
+/* Modales */
+.modal-fondo{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+@media (min-width:640px){.modal-fondo{align-items:center}}
+.modal{background:var(--sup);border:1px solid var(--borde);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow:auto;padding:16px 16px calc(18px + env(safe-area-inset-bottom))}
+@media (min-width:640px){.modal{border-radius:20px}}
+.modal h3{font-size:17px;font-weight:800}
+.modal .pie{display:flex;gap:8px;margin-top:16px}
+.modal .pie .btn{flex:1}
+
+/* Lectura al aire */
+.lectura{position:fixed;inset:0;z-index:60;background:#000;color:#fff;display:flex;flex-direction:column;justify-content:center;padding:28px;text-align:center}
+.lectura p{font-size:clamp(26px,7vw,54px);font-weight:800;line-height:1.2;margin:0 0 20px}
+.lectura span{font-size:clamp(18px,4.5vw,28px);color:#f2b705;font-weight:700}
+.lectura small{position:absolute;bottom:calc(20px + env(safe-area-inset-bottom));left:0;right:0;color:#888;font-size:13px}
+
+/* Toast y carga */
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom));z-index:70;display:flex;flex-direction:column;gap:8px;align-items:center;width:calc(100% - 28px);max-width:460px;pointer-events:none}
+.toast{background:#eef4f0;color:#0f1712;padding:11px 15px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:0 6px 24px rgba(0,0,0,.4);text-align:center}
+.toast.ok{background:#bfe9cb}
+.toast.error{background:#ffd5d5;color:#5a0c0c}
+.cargando{position:fixed;top:0;left:0;right:0;height:3px;z-index:80;background:linear-gradient(90deg,transparent,var(--rojo),transparent);background-size:50% 100%;animation:carga 1s linear infinite}
+@keyframes carga{from{background-position:-50% 0}to{background-position:150% 0}}
+
+/* Ingreso */
+.ingreso{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.ingreso form{width:100%;max-width:380px;background:var(--sup);border:1px solid var(--borde);border-radius:20px;padding:22px}
+.ingreso img{width:72px;height:72px;border-radius:50%;background:#fff;display:block;margin:0 auto 12px}
+.ingreso h1{text-align:center;font-size:20px;font-weight:800}
+.ingreso p{text-align:center;color:var(--tinta-3);margin:6px 0 8px;font-size:14px}
+</style>
+</head>
+<body>
+<div id="cargando" class="cargando oculto"></div>
+
+<section id="ingreso" class="ingreso oculto">
+  <form id="f-ingreso" autocomplete="on">
+    <img src="../assets/img/logo-96.webp" alt="">
+    <h1>Control de la transmisión</h1>
+    <p>Ingresa con tu usuario y clave del panel de la directiva.</p>
+    <label class="campo"><span>Usuario</span><input class="inp" name="usuario" autocomplete="username" autocapitalize="none" required></label>
+    <label class="campo"><span>Clave</span><input class="inp" name="clave" type="password" autocomplete="current-password" required></label>
+    <button class="btn prim bloque" style="margin-top:16px" type="submit">Ingresar</button>
+  </form>
+</section>
+
+<div id="app" class="oculto">
+  <header class="cab"><div class="cab-in">
+    <img src="../assets/img/logo-96.webp" alt="">
+    <div class="tit">Control en vivo<small id="u-nombre"></small></div>
+    <div class="der"><span class="red" id="red" title="Conexión"></span><span class="estado" id="estado"><i></i><span>Fuera del aire</span></span></div>
+  </div></header>
+  <main class="envuelve" id="vista"></main>
+  <nav class="barra" aria-label="Secciones"><div class="barra-in">
+    <button data-v="aire" class="activo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M4.9 4.9a10 10 0 0 0 0 14.2M19.1 4.9a10 10 0 0 1 0 14.2"/></svg>Al aire</button>
+    <button data-v="marcador"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 5v14M7 10v4M15.5 10h2v4h-2z"/></svg>Marcador</button>
+    <button data-v="publicar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Publicar</button>
+    <button data-v="programa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>Programa</button>
+    <button data-v="saludos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Saludos<span class="bdg oculto" id="bdg-saludos"></span></button>
+  </div></nav>
+</div>
+<div id="modales"></div>
+<div id="toast" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+  // ════════════ Conexión con el sistema del club (misma que el panel) ════════════
+  var API = (window.CDSC_CONFIG || {}).API_URL || '';
+  if (!/^https?:\/\//.test(API) || /PEGAR/.test(API)) API = 'https://script.google.com/macros/s/AKfycbz-yW-vBhn3dmulxr57b6ATrCYFwamZXlxDA-1Y2QbErhnZTZAF98Hh5_XS-UYQV31fTA/exec';
+  var SITIO = location.origin + location.pathname.replace(/directiva\/.*$/, '');
+  var pendientes = 0;
+  function carga(d) { pendientes += d; document.getElementById('cargando').classList.toggle('oculto', pendientes <= 0); }
+  function nuevoId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
+  /**
+   * Cada llamada lleva un identificador: si la señal del celular se corta y se reintenta, el sistema
+   * devuelve el resultado de la primera vez en vez de repetirla (un punto nunca se suma dos veces).
+   */
+  function api(fn) {
+    var args = Array.prototype.slice.call(arguments, 1), rid = nuevoId(), silencio = api.silencio;
+    api.silencio = false;
+    return new Promise(function (ok, ko) {
+      if (!silencio) carga(1);
+      var intento = 0;
+      (function llamar() {
+        intento++;
+        var ctrl = window.AbortController ? new AbortController() : null;
+        var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, 30000);
+        fetch(API, { method: 'POST', body: JSON.stringify({ tipo: 'api', fn: fn, args: args, rid: rid }), redirect: 'follow', credentials: 'omit', signal: ctrl ? ctrl.signal : undefined })
+          .then(function (r) { return r.text(); })
+          .then(function (txt) {
+            clearTimeout(t);
+            var r; try { r = JSON.parse(txt); } catch (e) { throw new Error('json'); }
+            red(true);
+            if (!silencio) carga(-1);
+            if (r.ok) return ok(r.data);
+            var msg = String(r.error || 'Error');
+            if (msg.indexOf('SESION:') >= 0) { salir(); msg = msg.replace(/^.*SESION:\s*/, ''); }
+            ko(new Error(msg));
+          })
+          .catch(function () {
+            clearTimeout(t);
+            red(false);
+            if (intento < 5) return setTimeout(llamar, 1200 * intento);
+            if (!silencio) carga(-1);
+            ko(new Error('Sin conexión con el sistema. Revisa la señal del celular e intenta de nuevo.'));
+          });
+      })();
+    });
+  }
+  function red(ok) { var r = document.getElementById('red'); if (r) { r.classList.toggle('mal', !ok); r.title = ok ? 'Conectado' : 'Reconectando…'; } }
+
+  // ════════════ Utilidades ════════════
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function leer(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function guardar(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { } }
+  function img(id, w) { return id ? 'https://lh3.googleusercontent.com/d/' + id + '=w' + (w || 400) : ''; }
+  function hora(fh) { var m = String(fh || '').match(/(\d{1,2}):(\d{2})/); return m ? ('0' + m[1]).slice(-2) + ':' + m[2] : ''; }
+  var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  function diaLargo(iso) { var p = String(iso).split('-'); var d = new Date(+p[0], +p[1] - 1, +p[2]); return isNaN(d) ? iso : DIAS[d.getDay()] + ' ' + d.getDate(); }
+  function rival(det) { var m = String(det || '').match(/^\s*vs\.?\s+([^·|,–\-]+)/i); return m ? m[1].trim() : 'Rival'; }
+  function toast(msg, tipo) {
+    var d = document.createElement('div'); d.className = 'toast ' + (tipo || ''); d.textContent = msg;
+    $('#toast').appendChild(d); setTimeout(function () { d.remove(); }, tipo === 'error' ? 6000 : 2600);
+  }
+  function fallo(e) { toast(e.message || String(e), 'error'); }
+  function vibrar() { try { if (navigator.vibrate) navigator.vibrate(18); } catch (e) { } }
+  function modal(html, alAbrir) {
+    var f = document.createElement('div'); f.className = 'modal-fondo';
+    f.innerHTML = '<div class="modal" role="dialog" aria-modal="true">' + html + '</div>';
+    $('#modales').appendChild(f);
+    f.cerrar = function () { f.remove(); };
+    f.addEventListener('mousedown', function (e) { if (e.target === f) f.cerrar(); });
+    $$('[data-cerrar]', f).forEach(function (b) { b.onclick = f.cerrar; });
+    if (alAbrir) alAbrir(f);
+    return f;
+  }
+  function confirmar(titulo, texto, si, peligro) {
+    return new Promise(function (ok) {
+      var m = modal('<h3>' + titulo + '</h3><p class="muted">' + texto + '</p><div class="pie"><button class="btn" data-no>Cancelar</button><button class="btn ' + (peligro ? 'rojo' : 'prim') + '" data-si>' + si + '</button></div>');
+      $('[data-no]', m).onclick = function () { m.cerrar(); ok(false); };
+      $('[data-si]', m).onclick = function () { m.cerrar(); ok(true); };
+    });
+  }
+
+  // ════════════ Estado ════════════
+  var S = { token: leer('club_token'), d: null, vista: leer('vivo_vista') || 'aire', tipo: 'Aviso', foto: '', borrador: '', reloj: null, editando: false, sucio: false, envios: {} };
+  var TIPOS = [['Aviso', '📣'], ['Punto', '🔥'], ['Resultado', '🏁'], ['Medalla', '🏅'], ['Foto', '📸'], ['Ambiente', '🎉']];
+  var PLANTILLAS = {
+    Aviso: ['En instantes comenzamos 🎬', 'Volvemos en 5 minutos ⏱️', '¡Gracias por acompañarnos!'],
+    Punto: ['¡Punto para Araucanía! 🔥', '¡Golazo de Araucanía! ⚽', '¡Qué jugada! 👏'],
+    Resultado: ['¡Ganamos! 🙌', 'Terminó el partido.', 'Pasamos a la siguiente fase 💪'],
+    Medalla: ['🥇 ¡Medalla de oro para Araucanía!', '🥈 ¡Medalla de plata!', '🥉 ¡Medalla de bronce!'],
+    Foto: ['Así se vive en Concepción 📸', 'La delegación lista para competir 💚'],
+    Ambiente: ['¡La barra de Araucanía se hace sentir! 📣', 'Momento de hidratarse y recargar energías 💧']
+  };
+
+  function puede() { return S.d && S.d.sesion && S.d.sesion.rol !== 'consulta'; }
+
+  // ════════════ Ingreso ════════════
+  function mostrarIngreso() { $('#app').classList.add('oculto'); $('#ingreso').classList.remove('oculto'); }
+  function salir() { S.token = null; guardar('club_token', null); clearInterval(S.reloj); mostrarIngreso(); }
+  $('#f-ingreso').onsubmit = function (e) {
+    e.preventDefault();
+    var f = e.target, b = $('button', f);
+    b.disabled = true; b.textContent = 'Ingresando…';
+    api('apiLogin', f.usuario.value, f.clave.value).then(function (s) {
+      S.token = s.token; guardar('club_token', s.token); f.clave.value = '';
+      return iniciar();
+    }).catch(fallo).then(function () { b.disabled = false; b.textContent = 'Ingresar'; });
+  };
+
+  function iniciar() {
+    return api('apiVivoDatos', S.token).then(function (d) {
+      S.d = d;
+      $('#ingreso').classList.add('oculto');
+      $('#app').classList.remove('oculto');
+      $('#u-nombre').textContent = d.sesion.nombre + (puede() ? '' : ' · solo lectura');
+      pintarEstado(); ir(S.vista);
+      clearInterval(S.reloj);
+      // Mantiene saludos y datos al día (cada 20 s, solo con la pantalla encendida y sin formularios abiertos)
+      S.reloj = setInterval(function () { if (document.visibilityState === 'visible') refrescar(true); }, 20000);
+    });
+  }
+  function refrescar(silencioso) {
+    if (silencioso && (S.editando || S.sucio || $('#modales').children.length || /INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || ''))) return Promise.resolve();
+    api.silencio = !!silencioso;
+    return api('apiVivoDatos', S.token).then(function (d) { S.d = d; pintarEstado(); ir(S.vista, true); }).catch(function (e) { if (!silencioso) fallo(e); });
+  }
+  // Si hay algo escrito sin guardar, la actualización automática espera para no borrarlo
+  document.getElementById('vista').addEventListener('input', function (e) { if (e.target.id !== 'p-txt') S.sucio = true; });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && S.d) refrescar(true); });
+
+  function pintarEstado() {
+    var aire = S.d.textos.VIVO_ACTIVO === 'SI', e = $('#estado');
+    e.className = 'estado' + (aire ? ' aire' : '');
+    e.lastChild.textContent = aire ? 'Al aire' : 'Fuera del aire';
+    var pend = S.d.saludos.filter(function (s) { return s.estado === 'Pendiente'; }).length, b = $('#bdg-saludos');
+    b.textContent = pend > 99 ? '99+' : pend; b.classList.toggle('oculto', !pend);
+  }
+
+  // ════════════ Navegación ════════════
+  $$('.barra [data-v]').forEach(function (b) { b.onclick = function () { ir(b.dataset.v); window.scrollTo(0, 0); }; });
+  function ir(v, conservarScroll) {
+    S.vista = v; guardar('vivo_vista', v); S.sucio = false;
+    $$('.barra [data-v]').forEach(function (b) { b.classList.toggle('activo', b.dataset.v === v); });
+    var y = window.scrollY;
+    ({ aire: vAire, marcador: vMarcador, publicar: vPublicar, programa: vPrograma, saludos: vSaludos })[v]($('#vista'));
+    if (conservarScroll) window.scrollTo(0, y);
+  }
+
+  // ════════════ AL AIRE ════════════
+  function vAire(v) {
+    var t = S.d.textos, aire = t.VIVO_ACTIVO === 'SI';
+    var med = { Oro: 0, Plata: 0, Bronce: 0 };
+    S.d.agenda.forEach(function (a) { if (med[a.medalla] !== undefined) med[a.medalla]++; });
+    var enJuego = S.d.agenda.filter(function (a) { return a.estado === 'En juego'; });
+    v.innerHTML =
+      '<div class="aire-card' + (aire ? ' encendido' : '') + '"><div class="aire-top"><h1>' + (aire ? '🔴 Estás al aire' : 'Transmisión') + '</h1>' +
+      '<a class="btn chico fantasma" href="' + esc(SITIO) + 'envivo.html" target="_blank" rel="noopener">Ver página ↗</a></div>' +
+      '<label class="campo"><span>Enlace de la transmisión (YouTube o Facebook)</span><input class="inp" id="a-url" inputmode="url" placeholder="https://youtube.com/live/…" value="' + esc(t.VIVO_URL) + '"></label>' +
+      (aire ? '' : '<label class="campo"><span>Aviso para el público mientras no estamos al aire</span><input class="inp" id="a-msj" maxlength="140" placeholder="Ej: Volvemos a las 15:00 con el vóleibol" value="' + esc(t.VIVO_MENSAJE) + '"></label>' +
+        '<div class="chips rapidos">' + ['Volvemos en unos minutos', 'Pausa para almorzar 🍽️ volvemos pronto', 'Mañana seguimos desde las 09:00'].map(function (x) { return '<button type="button" class="chip" data-msj="' + esc(x) + '">' + esc(x) + '</button>'; }).join('') + '</div>') +
+      '<div class="btns" style="margin-top:10px"><button class="btn chico" id="a-guardar">Guardar enlace' + (aire ? '' : ' y aviso') + '</button></div>' +
+      (puede() ? '<button class="boton-aire' + (aire ? ' terminar' : '') + '" id="a-boton">' + (aire ? '■ Terminar transmisión' : '● SALIR AL AIRE') + '</button>' : '') +
+      (aire ? '' : '<p class="muted small" style="margin:10px 0 0">Al salir al aire, la página muestra el video, aparece una barra roja «EN VIVO» en todo el sitio y se publica un aviso en el minuto a minuto.</p>') + '</div>' +
+      (enJuego.length ? '<div class="card"><div class="card-cab"><h2>Ahora en competencia</h2><button class="btn chico" data-ir="marcador">Abrir marcador</button></div>' +
+        enJuego.map(function (a) { return '<div class="item"><div class="cuerpo"><b>' + esc(a.disciplina) + '</b> <span class="muted">' + esc(a.detalle) + '</span></div><b class="num" style="font-size:20px">' + esc(a.club || 0) + ' – ' + esc(a.rival || 0) + '</b></div>'; }).join('') + '</div>' : '') +
+      '<div class="card"><h2>Medallero Araucanía</h2><div class="medallero"><div><b class="num" style="color:var(--oro)">' + med.Oro + '</b><span>Oro</span></div><div><b class="num" style="color:var(--plata)">' + med.Plata + '</b><span>Plata</span></div><div><b class="num" style="color:var(--bronce)">' + med.Bronce + '</b><span>Bronce</span></div></div>' +
+      '<p class="muted small" style="margin:8px 0 0">Se calcula solo con las medallas que marques al finalizar cada competencia.</p></div>' +
+      '<div class="card"><h2>Compartir la transmisión</h2><div class="btns"><a class="btn prim" style="background:#1f8f4d" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent('🔴 ¡Estamos EN VIVO desde ' + (String(t.VIVO_LUGAR || 'Concepción').split(',')[0]) + '! Sigue a la delegación del Club JUNJI Araucanía en ' + (t.VIVO_TITULO || 'las Olimpiadas') + ': ' + SITIO + 'envivo.html') + '">WhatsApp</a>' +
+      '<button class="btn" id="a-copiar">Copiar enlace</button></div></div>' +
+      '<div class="card"><div class="card-cab"><h2>Datos de la cobertura</h2><button class="btn chico" id="a-datos">Editar</button></div>' +
+      '<div class="small" style="color:var(--tinta-2)"><div><b>' + esc(t.VIVO_TITULO) + '</b></div><div>' + esc(t.VIVO_LUGAR) + '</div><div>' + esc(diaLargo(t.VIVO_DESDE)) + (t.VIVO_HASTA && t.VIVO_HASTA !== t.VIVO_DESDE ? ' al ' + esc(diaLargo(t.VIVO_HASTA)) : '') + ' · inicio ' + esc(t.VIVO_INICIO) + '</div></div></div>' +
+      '<div class="btns" style="justify-content:center;margin:22px 0 8px"><a class="btn chico fantasma" href="./">Panel completo</a><button class="btn chico fantasma" id="a-salir">Salir</button></div>';
+    var url = $('#a-url'), msj = $('#a-msj');
+    $$('[data-msj]', v).forEach(function (b) { b.onclick = function () { msj.value = b.dataset.msj; }; });
+    $$('[data-ir]', v).forEach(function (b) { b.onclick = function () { ir(b.dataset.ir); }; });
+    $('#a-guardar').onclick = function () {
+      var d = { VIVO_URL: url.value.trim() }; if (msj) d.VIVO_MENSAJE = msj.value.trim();
+      api('apiVivoEstado', S.token, d).then(function (r) { S.d.textos = r.textos; S.sucio = false; toast('Guardado. La página se actualiza en menos de 30 segundos.', 'ok'); }).catch(fallo);
+    };
+    var boton = $('#a-boton');
+    if (boton) boton.onclick = function () {
+      if (!aire) {
+        if (!url.value.trim()) { toast('Primero pega el enlace de la transmisión.', 'error'); url.focus(); return; }
+        var m = modal('<h3>¿Salir al aire?</h3><p class="muted">Confirma que la transmisión ya comenzó en ' + (/facebook|fb\.watch/i.test(url.value) ? 'Facebook' : 'YouTube') + '.</p>' +
+          '<label class="campo"><span>Aviso que se publicará en el minuto a minuto</span><textarea class="inp" id="m-anuncio" maxlength="280">¡Estamos en vivo desde ' + esc(String(t.VIVO_LUGAR || 'Concepción').split(',')[0]) + '! Vamos delegación Araucanía 💚</textarea></label>' +
+          '<label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="m-anunciar" checked> Publicar el aviso</label>' +
+          '<div class="pie"><button class="btn" data-cerrar>Cancelar</button><button class="btn rojo" id="m-si">● Salir al aire</button></div>');
+        $('#m-si', m).onclick = function () {
+          api('apiVivoEstado', S.token, { activo: true, VIVO_URL: url.value.trim(), anunciar: $('#m-anunciar', m).checked, anuncio: $('#m-anuncio', m).value })
+            .then(function (r) { m.cerrar(); vibrar(); toast(r.mensaje, 'ok'); return refrescar(); }).catch(fallo);
+        };
+      } else {
+        var m2 = modal('<h3>¿Terminar la transmisión?</h3><p class="muted">La página mostrará el aviso de «fuera del aire» y seguirá mostrando resultados y minuto a minuto.</p>' +
+          '<label class="campo"><span>Aviso para el público</span><input class="inp" id="m-msj" maxlength="140" placeholder="Ej: Volvemos a las 15:00 con el vóleibol"></label>' +
+          '<div class="chips rapidos">' + ['Volvemos en unos minutos', 'Pausa para almorzar 🍽️ volvemos pronto', 'Mañana seguimos desde las 09:00', '¡Gracias por acompañarnos!'].map(function (x) { return '<button type="button" class="chip" data-msj="' + esc(x) + '">' + esc(x) + '</button>'; }).join('') + '</div>' +
+          '<div class="pie"><button class="btn" data-cerrar>Cancelar</button><button class="btn rojo" id="m-fin">Terminar</button></div>');
+        $$('[data-msj]', m2).forEach(function (b) { b.onclick = function () { $('#m-msj', m2).value = b.dataset.msj; }; });
+        $('#m-fin', m2).onclick = function () {
+          api('apiVivoEstado', S.token, { activo: false, VIVO_MENSAJE: $('#m-msj', m2).value.trim() })
+            .then(function (r) { m2.cerrar(); toast(r.mensaje, 'ok'); return refrescar(); }).catch(fallo);
+        };
+      }
+    };
+    $('#a-copiar').onclick = function () {
+      var e = SITIO + 'envivo.html';
+      if (navigator.clipboard) navigator.clipboard.writeText(e).then(function () { toast('Enlace copiado.', 'ok'); }, function () { prompt('Copia el enlace:', e); });
+      else prompt('Copia el enlace:', e);
+    };
+    $('#a-datos').onclick = editarDatos;
+    $('#a-salir').onclick = function () { api('apiLogout', S.token).catch(function () { }); salir(); };
+  }
+  function editarDatos() {
+    var t = S.d.textos;
+    var m = modal('<h3>Datos de la cobertura</h3>' +
+      '<label class="campo"><span>Título</span><input class="inp" id="d-tit" value="' + esc(t.VIVO_TITULO) + '"></label>' +
+      '<label class="campo"><span>Lugar</span><input class="inp" id="d-lugar" value="' + esc(t.VIVO_LUGAR) + '"></label>' +
+      '<div class="fila2"><label class="campo"><span>Primer día</span><input class="inp" type="date" id="d-desde" value="' + esc(t.VIVO_DESDE) + '"></label>' +
+      '<label class="campo"><span>Último día</span><input class="inp" type="date" id="d-hasta" value="' + esc(t.VIVO_HASTA) + '"></label></div>' +
+      '<label class="campo"><span>Inicio de la primera transmisión (cuenta regresiva)</span><input class="inp" id="d-ini" placeholder="2026-11-20 09:00" value="' + esc(t.VIVO_INICIO) + '"></label>' +
+      '<div class="pie"><button class="btn" data-cerrar>Cancelar</button><button class="btn prim" id="d-ok">Guardar</button></div>');
+    $('#d-ok', m).onclick = function () {
+      api('apiVivoEstado', S.token, { VIVO_TITULO: $('#d-tit', m).value, VIVO_LUGAR: $('#d-lugar', m).value, VIVO_DESDE: $('#d-desde', m).value, VIVO_HASTA: $('#d-hasta', m).value, VIVO_INICIO: $('#d-ini', m).value })
+        .then(function (r) { S.d.textos = r.textos; m.cerrar(); toast('Datos guardados.', 'ok'); ir('aire'); }).catch(fallo);
+    };
+  }
+
+  // ════════════ MARCADOR ════════════
+  function vMarcador(v) {
+    var ag = S.d.agenda, hoy = S.d.hoy;
+    var enJuego = ag.filter(function (a) { return a.estado === 'En juego'; });
+    var prox = ag.filter(function (a) { return a.estado === 'Programado' && a.fecha >= hoy; }).slice(0, 4);
+    var fin = ag.filter(function (a) { return a.estado === 'Finalizado'; }).slice(-5).reverse();
+    v.innerHTML = (enJuego.length ? enJuego.map(tarjetaPartido).join('') : '<div class="card"><div class="vacio">No hay competencias en juego.<br>Inicia una de la lista de abajo.</div></div>') +
+      (prox.length ? '<div class="card"><h2>Próximas</h2>' + prox.map(function (a) {
+        return '<div class="item"><div class="h num">' + esc(a.hora || '—') + '</div><div class="cuerpo"><b>' + esc(a.disciplina) + '</b><div class="muted small">' + esc(diaLargo(a.fecha)) + (a.detalle ? ' · ' + esc(a.detalle) : '') + '</div></div>' +
+          (puede() ? '<button class="btn chico rojo" data-iniciar="' + a.id + '">Iniciar</button>' : '') + '</div>';
+      }).join('') + '</div>' : '') +
+      (fin.length ? '<div class="card"><h2>Finalizadas</h2>' + fin.map(function (a) {
+        return '<div class="item"><div class="cuerpo"><b>' + esc(a.disciplina) + '</b> ' + (a.medalla ? '<span class="med ' + esc(a.medalla) + '">● ' + esc(a.medalla) + '</span>' : '') +
+          '<div class="muted small">' + esc(a.detalle) + (a.club !== '' ? ' · ' + esc(a.club) + '–' + esc(a.rival) : '') + (a.resultado ? ' · ' + esc(a.resultado) : '') + '</div></div>' +
+          (puede() ? '<button class="btn chico" data-reabrir="' + a.id + '">Reabrir</button>' : '') + '</div>';
+      }).join('') + '</div>' : '') +
+      '<div class="btns" style="margin-top:14px"><button class="btn bloque" data-ir="programa">+ Agregar competencia al programa</button></div>';
+    enlazarPartidos(v);
+    $$('[data-iniciar]', v).forEach(function (b) { b.onclick = function () { guardarAgenda({ id: +b.dataset.iniciar, estado: 'En juego' }, 'Competencia iniciada.'); }; });
+    $$('[data-reabrir]', v).forEach(function (b) { b.onclick = function () { guardarAgenda({ id: +b.dataset.reabrir, estado: 'En juego' }, 'Competencia reabierta.'); }; });
+    $$('[data-ir]', v).forEach(function (b) { b.onclick = function () { ir(b.dataset.ir); }; });
+  }
+  function tarjetaPartido(a) {
+    var lado = function (k, nombre) {
+      return '<div class="lado ' + k + '"><div class="eq">' + esc(nombre) + '</div><div class="pts num" id="pts-' + k + '-' + a.id + '">' + esc(a[k] || 0) + '</div>' +
+        (puede() ? '<div class="mm"><button data-pt="' + a.id + ':' + k + ':-1" aria-label="Restar a ' + esc(nombre) + '">−</button><button class="mas" data-pt="' + a.id + ':' + k + ':1" aria-label="Sumar a ' + esc(nombre) + '">+1</button></div>' : '') + '</div>';
+    };
+    return '<div class="partido juego"><div class="p-cab"><div><b>' + esc(a.disciplina) + '</b><div class="p-det">' + esc(a.detalle) + (a.lugar ? ' · ' + esc(a.lugar) : '') + '</div></div><span class="etq juego">● En juego</span></div>' +
+      '<div class="tablero">' + lado('club', 'Araucanía') + '<div class="guion">–</div>' + lado('rival', rival(a.detalle)) + '</div>' +
+      (puede() ? '<div class="p-acc"><button class="btn chico" data-pub="' + a.id + '">📣 Publicar marcador</button><button class="btn chico prim" data-fin="' + a.id + '">🏁 Finalizar</button></div>' : '') + '</div>';
+  }
+  function enlazarPartidos(v) {
+    $$('[data-pt]', v).forEach(function (b) {
+      b.onclick = function () {
+        var p = b.dataset.pt.split(':'), id = +p[0], k = p[1], delta = +p[2];
+        var el = $('#pts-' + k + '-' + id), antes = +el.textContent || 0;
+        if (antes + delta < 0) return;
+        el.textContent = antes + delta; vibrar();          // se ve al instante; el sistema confirma después
+        S.envios[id] = (S.envios[id] || 0) + 1; S.editando = true;
+        api.silencio = true;
+        api('apiVivoMarcador', S.token, id, k, delta).then(function (r) {
+          actualizarItem(r.item);
+          if (--S.envios[id] > 0) return;               // aún hay toques en camino: se muestra el valor final al llegar el último
+          S.editando = Object.keys(S.envios).some(function (x) { return S.envios[x] > 0; });
+          var e1 = $('#pts-club-' + id), e2 = $('#pts-rival-' + id);
+          if (e1) e1.textContent = r.item.club || 0; if (e2) e2.textContent = r.item.rival || 0;
+        }).catch(function (e) { S.envios[id]--; S.editando = false; el.textContent = Math.max(0, (+el.textContent || 0) - delta); fallo(e); });
+      };
+    });
+    $$('[data-pub]', v).forEach(function (b) {
+      b.onclick = function () {
+        var a = buscar(+b.dataset.pub);
+        publicarRapido('Punto', a.disciplina + ': Araucanía ' + (a.club || 0) + ' – ' + (a.rival || 0) + ' ' + rival(a.detalle) + ' 🔥');
+      };
+    });
+    $$('[data-fin]', v).forEach(function (b) { b.onclick = function () { finalizar(buscar(+b.dataset.fin)); }; });
+  }
+  function buscar(id) { return S.d.agenda.filter(function (a) { return a.id === id; })[0]; }
+  function actualizarItem(it) { S.d.agenda = S.d.agenda.map(function (a) { return a.id === it.id ? it : a; }); }
+  function guardarAgenda(x, msg) {
+    return api('apiVivoGuardarAgenda', S.token, x).then(function (r) {
+      var existe = buscar(r.item.id);
+      if (existe) actualizarItem(r.item); else S.d.agenda.push(r.item);
+      S.d.agenda.sort(function (a, b) { return (a.fecha + a.hora) < (b.fecha + b.hora) ? -1 : 1; });
+      if (msg) toast(msg, 'ok');
+      ir(S.vista, true);
+      return r.item;
+    }).catch(function (e) { fallo(e); throw e; });
+  }
+  function finalizar(a) {
+    var gano = Number(a.club) > Number(a.rival), hay = a.club !== '' || a.rival !== '';
+    var sugerido = hay ? (gano ? '¡Ganamos! ' : Number(a.club) === Number(a.rival) ? 'Empate. ' : 'Terminó el partido. ') + 'Araucanía ' + (a.club || 0) + ' – ' + (a.rival || 0) + ' ' + rival(a.detalle) : '';
+    var m = modal('<h3>Finalizar: ' + esc(a.disciplina) + '</h3>' + (hay ? '<p style="font-size:28px;font-weight:800;margin:8px 0" class="num">' + esc(a.club || 0) + ' – ' + esc(a.rival || 0) + '</p>' : '') +
+      '<label class="campo"><span>Resultado o comentario (se ve en el programa)</span><input class="inp" id="f-res" maxlength="300" value="' + esc(a.resultado || (hay ? (gano ? 'Victoria' : '') : '')) + '" placeholder="Ej: Victoria · Pasamos a semifinales"></label>' +
+      '<div class="campo"><span>Medalla para Araucanía</span><div class="chips" id="f-med">' + ['', 'Oro', 'Plata', 'Bronce'].map(function (x) { return '<button type="button" class="chip' + ((a.medalla || '') === x ? ' activo' : '') + '" data-m="' + x + '">' + (x ? (x === 'Oro' ? '🥇 ' : x === 'Plata' ? '🥈 ' : '🥉 ') + x : 'Sin medalla') + '</button>'; }).join('') + '</div></div>' +
+      '<label class="campo"><span>Publicar en el minuto a minuto</span><textarea class="inp" id="f-pub" maxlength="280">' + esc(sugerido) + '</textarea></label>' +
+      '<p class="muted small" style="margin:6px 0 0">Déjalo vacío si no quieres publicar.</p>' +
+      '<div class="pie"><button class="btn" data-cerrar>Cancelar</button><button class="btn prim" id="f-ok">Finalizar</button></div>');
+    var medalla = a.medalla || '';
+    $$('[data-m]', m).forEach(function (b) {
+      b.onclick = function () {
+        medalla = b.dataset.m;
+        $$('[data-m]', m).forEach(function (x) { x.classList.toggle('activo', x === b); });
+        var pub = $('#f-pub', m);
+        var txt = { Oro: '🥇 ¡Medalla de ORO para Araucanía en ' + a.disciplina + '!', Plata: '🥈 ¡Medalla de PLATA para Araucanía en ' + a.disciplina + '!', Bronce: '🥉 ¡Medalla de BRONCE para Araucanía en ' + a.disciplina + '!' }[medalla];
+        if (txt) pub.value = txt + (hay ? ' (' + (a.club || 0) + '–' + (a.rival || 0) + ')' : '');
+        else pub.value = sugerido;
+      };
+    });
+    $('#f-ok', m).onclick = function () {
+      var pub = $('#f-pub', m).value.trim();
+      api('apiVivoGuardarAgenda', S.token, { id: a.id, estado: 'Finalizado', resultado: $('#f-res', m).value, medalla: medalla }).then(function (r) {
+        actualizarItem(r.item); m.cerrar(); vibrar();
+        if (pub) return api('apiVivoPublicar', S.token, { tipo: medalla ? 'Medalla' : 'Resultado', texto: pub }).then(function () { toast('Finalizado y publicado.', 'ok'); });
+        toast('Competencia finalizada.', 'ok');
+      }).then(function () { return refrescar(); }).catch(fallo);
+    };
+  }
+
+  // ════════════ PUBLICAR ════════════
+  function vPublicar(v) {
+    var nov = S.d.novedades;
+    v.innerHTML = (puede() ? '<div class="card"><h2>Publicar en el minuto a minuto</h2>' +
+      '<div class="chips" id="p-tipos">' + TIPOS.map(function (t) { return '<button type="button" class="chip' + (S.tipo === t[0] ? ' activo' : '') + '" data-tipo="' + t[0] + '">' + t[1] + ' ' + t[0] + '</button>'; }).join('') + '</div>' +
+      '<label class="campo"><span>Texto <span class="muted" id="p-cuenta">0/280</span></span><textarea class="inp" id="p-txt" maxlength="280" placeholder="¿Qué está pasando?"></textarea></label>' +
+      '<div class="chips" id="p-plant" style="margin-top:8px"></div>' +
+      '<div class="foto-prev" id="p-foto"></div>' +
+      '<div class="btns" style="margin-top:12px"><label class="btn" style="flex:1">📷 Foto<input type="file" accept="image/*" id="p-archivo" hidden></label><button class="btn prim" style="flex:2" id="p-ok">Publicar</button></div></div>' : '') +
+      '<div class="card"><h2>Publicado</h2>' + (nov.length ? nov.map(function (n) {
+        return '<div class="item' + (n.visible ? '' : ' ocultada') + '"><div class="h num">' + esc(hora(n.hora)) + '</div><div class="cuerpo"><b>' + esc(n.tipo) + '</b>' + (n.visible ? '' : ' <span class="muted small">(oculta)</span>') +
+          (n.texto ? '<p>' + esc(n.texto) + '</p>' : '') + (n.foto ? '<img src="' + img(n.foto, 500) + '" alt="" loading="lazy">' : '') + '</div>' +
+          (puede() ? '<button class="btn chico" data-vis="' + n.id + ':' + (n.visible ? 0 : 1) + '">' + (n.visible ? 'Ocultar' : 'Mostrar') + '</button>' : '') + '</div>';
+      }).join('') : '<div class="vacio">Aún no hay publicaciones.</div>') + '</div>';
+    $$('[data-vis]', v).forEach(function (b) {
+      b.onclick = function () { var p = b.dataset.vis.split(':'); api('apiVivoOcultarNovedad', S.token, +p[0], p[1] === '1').then(function (r) { toast(r.mensaje, 'ok'); refrescar(); }).catch(fallo); };
+    });
+    if (!puede()) return;
+    var txt = $('#p-txt');
+    txt.value = S.borrador;
+    txt.oninput = function () { S.borrador = txt.value; $('#p-cuenta').textContent = txt.value.length + '/280'; };
+    txt.oninput();
+    function plantillas() {
+      $('#p-plant').innerHTML = (PLANTILLAS[S.tipo] || []).map(function (x) { return '<button type="button" class="chip" data-pl="' + esc(x) + '">' + esc(x) + '</button>'; }).join('');
+      $$('[data-pl]', v).forEach(function (b) { b.onclick = function () { txt.value = b.dataset.pl; txt.oninput(); txt.focus(); }; });
+    }
+    plantillas();
+    $$('[data-tipo]', v).forEach(function (b) {
+      b.onclick = function () { S.tipo = b.dataset.tipo; $$('[data-tipo]', v).forEach(function (x) { x.classList.toggle('activo', x === b); }); plantillas(); };
+    });
+    function pintarFoto() {
+      $('#p-foto').innerHTML = S.foto ? '<img src="' + img(S.foto, 300) + '" alt=""><button class="btn chico" id="p-quitar">Quitar foto</button>' : '';
+      var q = $('#p-quitar'); if (q) q.onclick = function () { S.foto = ''; pintarFoto(); };
+    }
+    pintarFoto();
+    $('#p-archivo').onchange = function (e) {
+      var f = e.target.files[0]; if (!f) return;
+      $('#p-foto').innerHTML = '<span class="muted">Subiendo foto…</span>';
+      S.editando = true;
+      subirImagen(f).then(function (r) { S.foto = r.id; if (S.tipo === 'Aviso') { S.tipo = 'Foto'; ir('publicar', true); } else pintarFoto(); toast('Foto lista.', 'ok'); })
+        .catch(function (err) { pintarFoto(); fallo(err); }).then(function () { S.editando = false; });
+      e.target.value = '';
+    };
+    $('#p-ok').onclick = function () {
+      var t = $('#p-txt').value.trim();
+      if (!t && !S.foto) { toast('Escribe algo o adjunta una foto.', 'error'); return; }
+      var b = this; b.disabled = true;
+      api('apiVivoPublicar', S.token, { tipo: S.tipo, texto: t, foto: S.foto }).then(function () {
+        S.foto = ''; S.borrador = ''; vibrar(); toast('¡Publicado!', 'ok'); return refrescar();
+      }).catch(fallo).then(function () { b.disabled = false; });
+    };
+  }
+  function publicarRapido(tipo, texto) {
+    var m = modal('<h3>Publicar</h3><textarea class="inp" id="q-txt" maxlength="280">' + esc(texto) + '</textarea><div class="pie"><button class="btn" data-cerrar>Cancelar</button><button class="btn prim" id="q-ok">Publicar</button></div>');
+    $('#q-ok', m).onclick = function () {
+      api('apiVivoPublicar', S.token, { tipo: tipo, texto: $('#q-txt', m).value }).then(function () { m.cerrar(); vibrar(); toast('¡Publicado!', 'ok'); refrescar(true); }).catch(fallo);
+    };
+  }
+  /** Reduce la foto en el celular (máx. 1600 px) antes de subirla: ahorra datos móviles y tiempo. */
+  function subirImagen(file) {
+    return new Promise(function (ok, ko) {
+      if (!/^image\//.test(file.type)) return ko(new Error('El archivo no es una imagen.'));
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onerror = function () { ko(new Error('Formato no soportado. Usa JPG o PNG.')); };
+      im.onload = function () {
+        var max = 1600, k = Math.min(1, max / Math.max(im.width, im.height));
+        var cv = document.createElement('canvas'); cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
+        var cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(im, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        var b64 = cv.toDataURL('image/jpeg', 0.82).split(',')[1];
+        api('apiSubirFoto', S.token, { base64: b64, mime: 'image/jpeg', nombre: 'vivo-' + Date.now() + '.jpg' }).then(ok, ko);
+      };
+      im.src = url;
+    });
+  }
+
+  // ════════════ PROGRAMA ════════════
+  function vPrograma(v) {
+    var ag = S.d.agenda;
+    var dias = ag.map(function (a) { return a.fecha; }).filter(function (x, i, arr) { return arr.indexOf(x) === i; });
+    var cls = { 'En juego': 'juego', Finalizado: 'final', Suspendido: 'susp' };
+    v.innerHTML = '<div class="card"><div class="card-cab"><h2>Programa de competencias</h2>' + (puede() ? '<button class="btn chico prim" id="g-nuevo">+ Agregar</button>' : '') + '</div>' +
+      '<p class="muted small" style="margin:0">Escribe el rival en el detalle empezando con «vs», por ejemplo: <b>vs Ñuble · Fase de grupos</b>. Así aparece en el marcador.</p>' +
+      (dias.length ? dias.map(function (d) {
+        return '<div class="dia-tit">' + esc(diaLargo(d)) + '</div>' + ag.filter(function (a) { return a.fecha === d; }).map(function (a) {
+          return '<div class="item"><div class="h num">' + esc(a.hora || '—') + '</div><div class="cuerpo"><b>' + esc(a.disciplina) + '</b> ' + (a.transmite ? '🎥' : '') + ' ' + (a.medalla ? '<span class="med ' + esc(a.medalla) + '">● ' + esc(a.medalla) + '</span>' : '') +
+            '<div class="muted small">' + esc(a.detalle) + (a.lugar ? ' · ' + esc(a.lugar) : '') + '</div>' + (a.estado !== 'Programado' ? '<span class="etq ' + (cls[a.estado] || '') + '" style="margin-top:5px">' + esc(a.estado) + (a.club !== '' ? ' · ' + esc(a.club) + '–' + esc(a.rival) : '') + '</span>' : '') + '</div>' +
+            (puede() ? '<button class="btn chico" data-ed="' + a.id + '">Editar</button>' : '') + '</div>';
+        }).join('');
+      }).join('') : '<div class="vacio">Agrega las competencias en las que participa la delegación: aparecerán en la página con su horario y resultado.</div>') + '</div>';
+    var n = $('#g-nuevo'); if (n) n.onclick = function () { formAgenda(); };
+    $$('[data-ed]', v).forEach(function (b) { b.onclick = function () { formAgenda(buscar(+b.dataset.ed)); }; });
+  }
+  function formAgenda(a) {
+    var nuevo = !a, t = S.d.textos;
+    a = a || { fecha: (S.d.hoy >= t.VIVO_DESDE && S.d.hoy <= t.VIVO_HASTA) ? S.d.hoy : t.VIVO_DESDE, hora: '', disciplina: '', detalle: '', lugar: '', estado: 'Programado', club: '', rival: '', resultado: '', medalla: '', transmite: true };
+    var opt = function (lista, val) { return lista.map(function (x) { return '<option value="' + esc(x) + '"' + (x === val ? ' selected' : '') + '>' + esc(x || 'Sin medalla') + '</option>'; }).join(''); };
+    var m = modal('<h3>' + (nuevo ? 'Nueva competencia' : 'Editar competencia') + '</h3>' +
+      '<div class="fila2"><label class="campo"><span>Día</span><input class="inp" type="date" id="g-fecha" value="' + esc(a.fecha) + '"></label><label class="campo"><span>Hora</span><input class="inp" type="time" id="g-hora" value="' + esc(a.hora) + '"></label></div>' +
+      '<label class="campo"><span>Disciplina *</span><input class="inp" id="g-dis" list="g-lista" maxlength="120" placeholder="Ej: Vóleibol damas" value="' + esc(a.disciplina) + '"></label>' +
+      '<datalist id="g-lista">' + ['Fútbol varones', 'Fútbol damas', 'Baby fútbol', 'Vóleibol damas', 'Vóleibol varones', 'Vóleibol mixto', 'Básquetbol', 'Atletismo 100 m', 'Atletismo posta', 'Tenis de mesa', 'Ajedrez', 'Cueca', 'Juegos recreativos', 'Ceremonia inaugural', 'Premiación'].map(function (x) { return '<option value="' + x + '">'; }).join('') + '</datalist>' +
+      '<label class="campo"><span>Detalle (rival, fase)</span><input class="inp" id="g-det" maxlength="120" placeholder="vs Ñuble · Fase de grupos" value="' + esc(a.detalle) + '"></label>' +
+      '<label class="campo"><span>Lugar</span><input class="inp" id="g-lugar" maxlength="120" placeholder="Ej: Gimnasio Municipal, cancha 2" value="' + esc(a.lugar) + '"></label>' +
+      '<label style="display:flex;gap:8px;align-items:center;margin-top:12px"><input type="checkbox" id="g-tx"' + (a.transmite ? ' checked' : '') + '> 🎥 La transmitimos en video</label>' +
+      (nuevo ? '' : '<div class="fila3"><label class="campo"><span>Estado</span><select class="inp" id="g-est">' + opt(['Programado', 'En juego', 'Finalizado', 'Suspendido'], a.estado) + '</select></label>' +
+        '<label class="campo"><span>Pts Araucanía</span><input class="inp" type="number" min="0" inputmode="numeric" id="g-c" value="' + esc(a.club) + '"></label>' +
+        '<label class="campo"><span>Pts rival</span><input class="inp" type="number" min="0" inputmode="numeric" id="g-r" value="' + esc(a.rival) + '"></label></div>' +
+        '<label class="campo"><span>Resultado o comentario</span><input class="inp" id="g-res" maxlength="300" value="' + esc(a.resultado) + '"></label>' +
+        '<label class="campo"><span>Medalla</span><select class="inp" id="g-med">' + opt(['', 'Oro', 'Plata', 'Bronce'], a.medalla) + '</select></label>') +
+      '<div class="pie">' + (nuevo ? '<button class="btn" data-cerrar>Cancelar</button>' : '<button class="btn rojo" id="g-borrar">Eliminar</button>') + '<button class="btn prim" id="g-ok">Guardar</button></div>');
+    $('#g-ok', m).onclick = function () {
+      var x = { id: a.id || null, fecha: $('#g-fecha', m).value, hora: $('#g-hora', m).value, disciplina: $('#g-dis', m).value.trim(), detalle: $('#g-det', m).value.trim(), lugar: $('#g-lugar', m).value.trim(), transmite: $('#g-tx', m).checked };
+      if (!x.disciplina) { toast('Escribe la disciplina.', 'error'); return; }
+      if (!nuevo) { x.estado = $('#g-est', m).value; x.club = $('#g-c', m).value; x.rival = $('#g-r', m).value; x.resultado = $('#g-res', m).value; x.medalla = $('#g-med', m).value; }
+      guardarAgenda(x, nuevo ? 'Competencia agregada.' : 'Cambios guardados.').then(function () { m.cerrar(); }).catch(function () { });
+    };
+    var br = $('#g-borrar', m);
+    if (br) br.onclick = function () {
+      confirmar('Eliminar competencia', '¿Eliminar «' + esc(a.disciplina) + '» del programa?', 'Eliminar', true).then(function (ok) {
+        if (ok) api('apiVivoEliminarAgenda', S.token, a.id).then(function (r) { m.cerrar(); toast(r.mensaje, 'ok'); refrescar(); }).catch(fallo);
+      });
+    };
+  }
+
+  // ════════════ SALUDOS ════════════
+  function vSaludos(v) {
+    var pend = S.d.saludos.filter(function (s) { return s.estado === 'Pendiente'; });
+    var apr = S.d.saludos.filter(function (s) { return s.estado === 'Aprobado'; });
+    var fila = function (s, acciones) {
+      return '<div class="item"><div class="cuerpo"><b>' + esc(s.nombre) + '</b>' + (s.unidad ? ' <span class="muted small">· ' + esc(s.unidad) + '</span>' : '') + ' <span class="muted small">' + esc(hora(s.hora)) + '</span><p>' + esc(s.mensaje) + '</p>' +
+        '<div class="btns" style="margin-top:8px">' + acciones + '</div></div></div>';
+    };
+    v.innerHTML = '<div class="card"><div class="card-cab"><h2>Por revisar (' + pend.length + ')</h2><button class="btn chico" id="s-act">Actualizar</button></div>' +
+      (pend.length ? pend.map(function (s) {
+        return fila(s, puede() ? '<button class="btn chico prim" data-s="' + s.id + ':Aprobado">✓ Publicar</button><button class="btn chico" data-s="' + s.id + ':Rechazado">Descartar</button><button class="btn chico" data-leer="' + s.id + '">Leer al aire</button>' : '');
+      }).join('') : '<div class="vacio">No hay saludos nuevos. Llegan desde la pestaña «Saludos» de la página en vivo.</div>') + '</div>' +
+      '<div class="card"><h2>Publicados (' + apr.length + ')</h2>' + (apr.length ? apr.map(function (s) {
+        return fila(s, '<button class="btn chico" data-leer="' + s.id + '">Leer al aire</button>' + (puede() ? '<button class="btn chico" data-s="' + s.id + ':Rechazado">Quitar</button>' : ''));
+      }).join('') : '<div class="vacio">Aún no hay saludos publicados.</div>') + '</div>';
+    $('#s-act').onclick = function () { refrescar(); };
+    $$('[data-s]', v).forEach(function (b) {
+      b.onclick = function () {
+        var p = b.dataset.s.split(':');
+        b.disabled = true;
+        api('apiVivoGestionarSaludo', S.token, +p[0], p[1]).then(function (r) {
+          S.d.saludos.forEach(function (s) { if (s.id === +p[0]) s.estado = p[1]; });
+          toast(r.mensaje, 'ok'); pintarEstado(); ir('saludos', true);
+        }).catch(function (e) { b.disabled = false; fallo(e); });
+      };
+    });
+    $$('[data-leer]', v).forEach(function (b) {
+      b.onclick = function () {
+        var s = S.d.saludos.filter(function (x) { return x.id === +b.dataset.leer; })[0];
+        var l = document.createElement('div'); l.className = 'lectura';
+        l.innerHTML = '<p>“' + esc(s.mensaje) + '”</p><span>' + esc(s.nombre) + (s.unidad ? ' · ' + esc(s.unidad) : '') + '</span><small>Toca para cerrar</small>';
+        l.onclick = function () { l.remove(); };
+        document.body.appendChild(l);
+      };
+    });
+  }
+
+  // ════════════ Arranque ════════════
+  try { fetch(API + '?api=ping', { credentials: 'omit' }).catch(function () { }); } catch (e) { }
+  if (S.token) iniciar().catch(function (e) { if (S.token) fallo(e); mostrarIngreso(); });
+  else mostrarIngreso();
+})();
+</script>
+</body>
+</html>
