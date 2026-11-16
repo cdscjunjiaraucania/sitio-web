@@ -529,7 +529,7 @@
       '<div class="vc-compartir"><a class="btn btn-wa" id="v-wa" target="_blank" rel="noopener">' + marca('wa') + ' Compartir</a>' +
       '<button type="button" class="btn btn-borde blanco" id="v-copiar">' + ico('enlace') + ' Copiar enlace</button></div></div></div></section>' +
       '<section class="vivo-sec"><div class="contenedor vivo-grid">' +
-      '<div class="vivo-principal"><div class="vivo-player" id="v-player"><div class="vp-carga"><span class="girando"></span>Conectando con la transmisión…</div></div>' +
+      '<div class="vivo-principal"><div class="v-cams" id="v-cams" role="tablist" aria-label="Elige la cámara"></div><div class="vivo-player" id="v-player"><div class="vp-carga"><span class="girando"></span>Conectando con la transmisión…</div></div>' +
       '<div class="vivo-bajo" id="v-bajo"></div><div id="v-ahora"></div><div id="v-medallero"></div></div>' +
       '<aside class="vivo-lateral" aria-label="Minuto a minuto y programa"><div class="vivo-tabs" role="tablist">' +
       tab('feed', 'Minuto a minuto', true) + tab('programa', 'Programa') + '</div>' +
@@ -634,6 +634,30 @@
       return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('En vivo: ' + (dv.titulo || 'Club JUNJI Araucanía')) +
         '&dates=' + z(ini) + '/' + z(fin) + '&details=' + encodeURIComponent('Transmisión del Club Deportivo JUNJI Araucanía: ' + enlace) + '&location=' + encodeURIComponent(dv.lugar || '');
     }
+    /**
+     * Con dos cámaras (p. ej. damas y varones en gimnasios distintos) aparece un selector sobre el video.
+     * La elección del visitante se recuerda; si su cámara se apaga, se pasa sola a la que siga al aire.
+     */
+    function elegirCamara(dv) {
+      var todas = (dv.camaras && dv.camaras.length) ? dv.camaras : (dv.url ? [{ n: 1, nombre: '', url: dv.url, on: true }] : []);
+      var vivo = fase(dv) === 'vivo';
+      var vis = vivo ? todas.filter(function (c) { return c.on; }) : todas;
+      if (V.cam === undefined) { var g = leerLS('cdsc_cam'); V.cam = g || 0; }
+      var sel = vis.filter(function (c) { return c.n === V.cam; })[0] || vis[0];
+      dv.url = sel ? sel.url : '';
+      var box = $('#v-cams');
+      if (!box) return;
+      if (vis.length < 2) { box.innerHTML = ''; box.className = 'v-cams'; return; }
+      box.className = 'v-cams activo';
+      box.innerHTML = vis.map(function (c) {
+        var act = c === sel;
+        return '<button type="button" role="tab" aria-selected="' + act + '" class="v-cam' + (act ? ' activa' : '') + '" data-cam="' + c.n + '">' +
+          (vivo ? '<span class="punto-vivo"></span>' : ico('play')) + '<span>' + esc(c.nombre || 'Cámara ' + c.n) + '</span></button>';
+      }).join('');
+      $$('[data-cam]', box).forEach(function (b) {
+        b.onclick = function () { V.cam = +b.dataset.cam; guardarLS('cdsc_cam', V.cam); if (V.datos) { elegirCamara(V.datos); pintarCabecera(V.datos); pintarPlayer(V.datos); } };
+      });
+    }
     function pintarPlayer(dv) {
       var f = fuenteVideo(dv.url), fs = fase(dv);
       var clave = fs + '|' + (f ? f.url : '') + '|' + (fs === 'pausa' ? dv.mensaje : '');
@@ -734,6 +758,7 @@
       // Mientras no haya publicaciones, se abre el programa (más útil antes del evento); luego manda lo que elija el visitante
       if (!V.tabElegida && !V.datos && !dv.novedades.length) verTab('programa');
       V.datos = dv;
+      elegirCamara(dv);
       pintarCabecera(dv); pintarPlayer(dv); pintarAhora(dv); pintarFeed(dv); pintarPrograma(dv);
       var ahora = new Date();
       $('#v-act').innerHTML = '<span class="punto-ok"></span>Se actualiza sola · ' + dos(ahora.getHours()) + ':' + dos(ahora.getMinutes()) + ':' + dos(ahora.getSeconds());
