@@ -8,7 +8,7 @@
 <title>Control en vivo · CDSC JUNJI Araucanía</title>
 <link rel="icon" type="image/png" href="../assets/img/favicon.png">
 <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
-<script src="../assets/config.js?v=20261113c"></script>
+<script src="../assets/config.js?v=20261116b"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -85,6 +85,12 @@ textarea.inp{min-height:92px;resize:vertical}
 .boton-aire.terminar{background:#3a4a40;box-shadow:none}
 .boton-aire:active{transform:scale(.98)}
 .rapidos{margin-top:10px}
+.camara{margin-top:12px;padding:12px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid var(--borde)}
+.camara.cam-on{border-color:#7a2224}
+.camara.cam-off{opacity:.75}
+.cam-cab{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.camara .fila2{grid-template-columns:1fr 1.6fr}
+@media (max-width:420px){.camara .fila2{grid-template-columns:1fr}}
 
 /* Marcador */
 .partido{background:var(--sup);border:1px solid var(--borde);border-radius:16px;padding:14px;margin-top:12px}
@@ -347,6 +353,15 @@ textarea.inp{min-height:92px;resize:vertical}
   }
 
   // ════════════ AL AIRE ════════════
+  /** Bloque de una cámara: nombre, enlace y (al aire) botón para pausarla sin cortar la otra. */
+  function camaraHtml(n, t, aire) {
+    var u = t[n === 1 ? 'VIVO_URL' : 'VIVO_URL2'] || '', on = t['VIVO_ON' + n] !== 'NO';
+    return '<div class="camara' + (aire && u ? (on ? ' cam-on' : ' cam-off') : '') + '"><div class="cam-cab"><b>📹 Cámara ' + n + (n === 2 ? ' <span class="muted small">(opcional)</span>' : '') + '</b>' +
+      (aire && u ? (on ? '<span class="etq juego">● Al aire</span>' : '<span class="etq">Pausada</span>') : '') + '</div>' +
+      '<div class="fila2"><input class="inp" id="c-nom-' + n + '" maxlength="40" placeholder="' + (n === 1 ? 'Ej: Damas · Castellón' : 'Ej: Varones · Otto') + '" value="' + esc(t['VIVO_CAM' + n] && !/^Cámara \d$/.test(t['VIVO_CAM' + n]) ? t['VIVO_CAM' + n] : '') + '">' +
+      '<input class="inp" id="c-url-' + n + '" inputmode="url" placeholder="https://youtube.com/live/…" value="' + esc(u) + '"></div>' +
+      (aire && u && puede() ? '<button type="button" class="btn chico" style="margin-top:8px" data-on="' + n + '" data-v="' + (on ? 'NO' : 'SI') + '">' + (on ? '⏸ Pausar esta cámara' : '▶ Volver a poner al aire') + '</button>' : '') + '</div>';
+  }
   function vAire(v) {
     var t = S.d.textos, aire = t.VIVO_ACTIVO === 'SI';
     var med = { Oro: 0, Plata: 0, Bronce: 0 };
@@ -355,10 +370,10 @@ textarea.inp{min-height:92px;resize:vertical}
     v.innerHTML =
       '<div class="aire-card' + (aire ? ' encendido' : '') + '"><div class="aire-top"><h1>' + (aire ? '🔴 Estás al aire' : 'Transmisión') + '</h1>' +
       '<a class="btn chico fantasma" href="' + esc(SITIO) + 'envivo.html" target="_blank" rel="noopener">Ver página ↗</a></div>' +
-      '<label class="campo"><span>Enlace de la transmisión (YouTube o Facebook)</span><input class="inp" id="a-url" inputmode="url" placeholder="https://youtube.com/live/…" value="' + esc(t.VIVO_URL) + '"></label>' +
+      camaraHtml(1, t, aire) + camaraHtml(2, t, aire) +
       (aire ? '' : '<label class="campo"><span>Aviso para el público mientras no estamos al aire</span><input class="inp" id="a-msj" maxlength="140" placeholder="Ej: Volvemos a las 15:00 con el vóleibol" value="' + esc(t.VIVO_MENSAJE) + '"></label>' +
         '<div class="chips rapidos">' + ['Volvemos en unos minutos', 'Pausa para almorzar 🍽️ volvemos pronto', 'Mañana seguimos desde las 09:00'].map(function (x) { return '<button type="button" class="chip" data-msj="' + esc(x) + '">' + esc(x) + '</button>'; }).join('') + '</div>') +
-      '<div class="btns" style="margin-top:10px"><button class="btn chico" id="a-guardar">Guardar enlace' + (aire ? '' : ' y aviso') + '</button></div>' +
+      '<div class="btns" style="margin-top:10px"><button class="btn chico" id="a-guardar">Guardar cámaras' + (aire ? '' : ' y aviso') + '</button></div>' +
       (puede() ? '<button class="boton-aire' + (aire ? ' terminar' : '') + '" id="a-boton">' + (aire ? '■ Terminar transmisión' : '● SALIR AL AIRE') + '</button>' : '') +
       (aire ? '' : '<p class="muted small" style="margin:10px 0 0">Al salir al aire, la página muestra el video, aparece una barra roja «EN VIVO» en todo el sitio y se publica un aviso en el minuto a minuto.</p>') + '</div>' +
       (enJuego.length ? '<div class="card"><div class="card-cab"><h2>Ahora en competencia</h2><button class="btn chico" data-ir="marcador">Abrir marcador</button></div>' +
@@ -370,24 +385,36 @@ textarea.inp{min-height:92px;resize:vertical}
       '<div class="card"><div class="card-cab"><h2>Datos de la cobertura</h2><button class="btn chico" id="a-datos">Editar</button></div>' +
       '<div class="small" style="color:var(--tinta-2)"><div><b>' + esc(t.VIVO_TITULO) + '</b></div><div>' + esc(t.VIVO_LUGAR) + '</div><div>' + esc(diaLargo(t.VIVO_DESDE)) + (t.VIVO_HASTA && t.VIVO_HASTA !== t.VIVO_DESDE ? ' al ' + esc(diaLargo(t.VIVO_HASTA)) : '') + ' · inicio ' + esc(t.VIVO_INICIO) + '</div></div></div>' +
       '<div class="btns" style="justify-content:center;margin:22px 0 8px"><a class="btn chico fantasma" href="./">Panel completo</a><button class="btn chico fantasma" id="a-salir">Salir</button></div>';
-    var url = $('#a-url'), msj = $('#a-msj');
+    var msj = $('#a-msj');
+    function camVals() { return { VIVO_CAM1: $('#c-nom-1').value.trim() || 'Cámara 1', VIVO_URL: $('#c-url-1').value.trim(), VIVO_CAM2: $('#c-nom-2').value.trim() || 'Cámara 2', VIVO_URL2: $('#c-url-2').value.trim() }; }
+    $$('[data-on]', v).forEach(function (b) {
+      b.onclick = function () {
+        var n = b.dataset.on, on = b.dataset.v === 'SI', d = {}; d['VIVO_ON' + n] = on ? 'SI' : 'NO';
+        if (!on) {
+          var otra = $('#c-url-' + (n === '1' ? 2 : 1)).value.trim() && t['VIVO_ON' + (n === '1' ? 2 : 1)] !== 'NO';
+          if (!otra) { toast('Es la única cámara al aire. Para cortar todo usa «Terminar transmisión».', 'error'); return; }
+        }
+        api('apiVivoEstado', S.token, d).then(function (r) { S.d.textos = r.textos; toast(on ? 'Cámara ' + n + ' de vuelta al aire.' : 'Cámara ' + n + ' pausada: el público ve la otra.', 'ok'); ir('aire', true); }).catch(fallo);
+      };
+    });
     $$('[data-msj]', v).forEach(function (b) { b.onclick = function () { msj.value = b.dataset.msj; }; });
     $$('[data-ir]', v).forEach(function (b) { b.onclick = function () { ir(b.dataset.ir); }; });
     $('#a-guardar').onclick = function () {
-      var d = { VIVO_URL: url.value.trim() }; if (msj) d.VIVO_MENSAJE = msj.value.trim();
+      var d = camVals(); if (msj) d.VIVO_MENSAJE = msj.value.trim();
       api('apiVivoEstado', S.token, d).then(function (r) { S.d.textos = r.textos; S.sucio = false; toast('Guardado. La página se actualiza en menos de 30 segundos.', 'ok'); }).catch(fallo);
     };
     var boton = $('#a-boton');
     if (boton) boton.onclick = function () {
       if (!aire) {
-        if (!url.value.trim()) { toast('Primero pega el enlace de la transmisión.', 'error'); url.focus(); return; }
-        var m = modal('<h3>¿Salir al aire?</h3><p class="muted">Confirma que la transmisión ya comenzó en ' + (/facebook|fb\.watch/i.test(url.value) ? 'Facebook' : 'YouTube') + '.</p>' +
+        var cv = camVals(), nCams = (cv.VIVO_URL ? 1 : 0) + (cv.VIVO_URL2 ? 1 : 0);
+        if (!nCams) { toast('Primero pega el enlace de al menos una cámara.', 'error'); $('#c-url-1').focus(); return; }
+        var m = modal('<h3>¿Salir al aire?</h3><p class="muted">' + (nCams > 1 ? 'Confirma que <b>las dos transmisiones</b> ya comenzaron. El público podrá elegir la cámara.' : 'Confirma que la transmisión ya comenzó.') + '</p>' +
           '<label class="campo"><span>Aviso que se publicará en el minuto a minuto</span><textarea class="inp" id="m-anuncio" maxlength="280">¡Estamos en vivo desde ' + esc(String(t.VIVO_LUGAR || 'Concepción').split(',')[0]) + '! Vamos delegación Araucanía 💚</textarea></label>' +
           '<label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="m-anunciar" checked> Publicar el aviso</label>' +
           '<div class="pie"><button class="btn" data-cerrar>Cancelar</button><button class="btn rojo" id="m-si">● Salir al aire</button></div>');
         $('#m-si', m).onclick = function () {
-          api('apiVivoEstado', S.token, { activo: true, VIVO_URL: url.value.trim(), anunciar: $('#m-anunciar', m).checked, anuncio: $('#m-anuncio', m).value })
-            .then(function (r) { m.cerrar(); vibrar(); toast(r.mensaje, 'ok'); return refrescar(); }).catch(fallo);
+          var dd = camVals(); dd.activo = true; dd.anunciar = $('#m-anunciar', m).checked; dd.anuncio = $('#m-anuncio', m).value;
+          api('apiVivoEstado', S.token, dd).then(function (r) { m.cerrar(); vibrar(); toast(r.mensaje, 'ok'); return refrescar(); }).catch(fallo);
         };
       } else {
         var m2 = modal('<h3>¿Terminar la transmisión?</h3><p class="muted">La página mostrará el aviso de «fuera del aire» y seguirá mostrando resultados y minuto a minuto.</p>' +
@@ -604,7 +631,11 @@ textarea.inp{min-height:92px;resize:vertical}
     var ag = S.d.agenda;
     var dias = ag.map(function (a) { return a.fecha; }).filter(function (x, i, arr) { return arr.indexOf(x) === i; });
     var cls = { 'En juego': 'juego', Finalizado: 'final', Suspendido: 'susp' };
-    v.innerHTML = '<div class="card"><div class="card-cab"><h2>Programa de competencias</h2>' + (puede() ? '<button class="btn chico prim" id="g-nuevo">+ Agregar</button>' : '') + '</div>' +
+    var so = {}; try { so = JSON.parse(S.d.textos.VIVO_SORTEO || '{}') || {}; } catch (e) { }
+    v.innerHTML = (puede() ? '<div class="card"><div class="card-cab"><h2>🎲 Sorteo de regiones</h2><button class="btn chico rojo" id="g-sorteo">' + (so.n ? 'Cambiar' : 'Cargar sorteo') + '</button></div>' +
+      '<p class="muted small" style="margin:0">' + (so.n ? 'Araucanía es <b>R' + so.n + '</b> (Grupo ' + (so.n <= 3 ? 'A' : 'B') + '). Los partidos de básquetbol, tenis de mesa y fútbol ya están con su rival y su hora.' :
+        'Jueves 19 a las 20:00. Apenas sepas el número de Araucanía, cárgalo aquí y el programa se arma solo con nuestros partidos, rivales, horarios y canchas.') + '</p></div>' : '') +
+      '<div class="card"><div class="card-cab"><h2>Programa de competencias</h2>' + (puede() ? '<button class="btn chico prim" id="g-nuevo">+ Agregar</button>' : '') + '</div>' +
       '<p class="muted small" style="margin:0">Escribe el rival en el detalle empezando con «vs», por ejemplo: <b>vs Ñuble · Fase de grupos</b>. Así aparece en el marcador.</p>' +
       (dias.length ? dias.map(function (d) {
         return '<div class="dia-tit">' + esc(diaLargo(d)) + '</div>' + ag.filter(function (a) { return a.fecha === d; }).map(function (a) {
@@ -614,7 +645,33 @@ textarea.inp{min-height:92px;resize:vertical}
         }).join('');
       }).join('') : '<div class="vacio">Agrega las competencias en las que participa la delegación: aparecerán en la página con su horario y resultado.</div>') + '</div>';
     var n = $('#g-nuevo'); if (n) n.onclick = function () { formAgenda(); };
+    var bs = $('#g-sorteo'); if (bs) bs.onclick = function () { formSorteo(so); };
     $$('[data-ed]', v).forEach(function (b) { b.onclick = function () { formAgenda(buscar(+b.dataset.ed)); }; });
+  }
+  /** Sorteo del jueves: número de Araucanía (R1–R6) y, si se conocen, las demás regiones. */
+  function formSorteo(so) {
+    var nombres = so.nombres || {}, REG = ['Arica y Parinacota', 'Tarapacá', 'Antofagasta', 'Atacama', 'Coquimbo', 'Valparaíso', 'Metropolitana', "O'Higgins", 'Maule', 'Ñuble', 'Biobío', 'Los Ríos', 'Los Lagos', 'Aysén', 'Magallanes', 'Dirección Nacional'];
+    var m = modal('<h3>🎲 Sorteo de regiones</h3>' +
+      '<label class="campo"><span>¿Qué número le tocó a Araucanía?</span><div class="chips" id="so-n">' + [1, 2, 3, 4, 5, 6].map(function (i) { return '<button type="button" class="chip' + (so.n === i ? ' activo' : '') + '" data-n="' + i + '">R' + i + '</button>'; }).join('') + '</div></label>' +
+      '<p class="muted small" style="margin:10px 0 0">Opcional: escribe las otras regiones para que el programa diga «vs Ñuble» en vez de «vs R4».</p>' +
+      '<div class="fila2">' + [1, 2, 3, 4, 5, 6].map(function (i) { return '<label class="campo" data-fila="' + i + '"><span>R' + i + ' · Grupo ' + (i <= 3 ? 'A' : 'B') + '</span><input class="inp" list="so-reg" data-r="' + i + '" maxlength="40" value="' + esc(nombres[i] && nombres[i] !== 'Araucanía' ? nombres[i] : '') + '"></label>'; }).join('') + '</div>' +
+      '<datalist id="so-reg">' + REG.map(function (r) { return '<option value="' + esc(r) + '">'; }).join('') + '</datalist>' +
+      '<p class="muted small" style="margin:10px 0 0">Reemplaza las competencias de las Olimpiadas que aún no tienen resultado. Lo que ya finalizaste no se toca.</p>' +
+      '<div class="pie"><button class="btn" data-cerrar>Cancelar</button><button class="btn prim" id="so-ok">Cargar partidos</button></div>');
+    var n = so.n || 0;
+    function marcar() {
+      $$('[data-n]', m).forEach(function (b) { b.classList.toggle('activo', +b.dataset.n === n); });
+      $$('[data-fila]', m).forEach(function (f) { var mio = +f.dataset.fila === n; f.querySelector('input').disabled = mio; f.querySelector('input').placeholder = mio ? 'Araucanía' : 'Región'; });
+    }
+    marcar();
+    $$('[data-n]', m).forEach(function (b) { b.onclick = function () { n = +b.dataset.n; marcar(); }; });
+    $('#so-ok', m).onclick = function () {
+      if (!n) { toast('Elige el número de Araucanía.', 'error'); return; }
+      var nom = {}; $$('[data-r]', m).forEach(function (x) { if (x.value.trim() && +x.dataset.r !== n) nom[x.dataset.r] = x.value.trim(); });
+      var b = this; b.disabled = true;
+      api('apiVivoSorteo', S.token, n, nom).then(function (r) { m.cerrar(); vibrar(); toast(r.mensaje, 'ok'); return refrescar(); })
+        .catch(function (e) { b.disabled = false; fallo(e); });
+    };
   }
   function formAgenda(a) {
     var nuevo = !a, t = S.d.textos;
